@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="HotelAPI.BAL/HotelAPI.BAL.csproj" />
+  <Project Path="HotelAPI.Common/HotelAPI.Common.csproj" />
+  <Project Path="HotelAPI.DAL/HotelAPI.DAL.csproj" />
+  <Project Path="HotelAPI.Model/HotelAPI.Model.csproj" />
+  <Project Path="HotelAPI/HotelAPI.csproj" />
+</Solution>
