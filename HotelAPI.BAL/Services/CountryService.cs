@@ -42,5 +42,34 @@ namespace HotelAPI.BAL.Services
 				);
 			}
 		}
+
+		public async Task<ResponseResult<IEnumerable<ContentByCountryResponse>>> GetContentByCountryAsync(long countryId)
+		{
+			try
+			{
+				var data = await _countryRepository.GetContentByCountryAsync(countryId);
+
+				if (data == null || !data.Any())
+				{
+					return ResponseHelper<IEnumerable<ContentByCountryResponse>>.Error(
+						"No content found",
+						statusCode: StatusCode.NOT_FOUND
+					);
+				}
+
+				return ResponseHelper<IEnumerable<ContentByCountryResponse>>.Success(
+					"Content fetched successfully",
+					data
+				);
+			}
+			catch (Exception ex)
+			{
+				return ResponseHelper<IEnumerable<ContentByCountryResponse>>.Error(
+					"Failed to fetch content",
+					exception: ex,
+					statusCode: StatusCode.INTERNAL_SERVER_ERROR
+				);
+			}
+		}
 	}
 }

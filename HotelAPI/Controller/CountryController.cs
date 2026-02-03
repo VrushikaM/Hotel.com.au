@@ -20,5 +20,12 @@ namespace HotelAPI.Controller
 			var result = await _countryService.GetCountryListAsync();
 			return StatusCode(result.Code, result);
 		}
+
+		[HttpGet("get-content-by-country-id/{countryId:long}")]
+		public async Task<IActionResult> GetContentByCountryId(long countryId)
+		{
+			var result = await _countryService.GetContentByCountryAsync(countryId);
+			return StatusCode(result.Code, result);
+		}
 	}
 }

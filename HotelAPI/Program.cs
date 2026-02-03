@@ -25,15 +25,12 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+app.UseSwagger(); // ensures /swagger/v1/swagger.json is generated
+app.UseSwaggerUI(c =>
 {
-	app.UseSwagger(); // ensures /swagger/v1/swagger.json is generated
-	app.UseSwaggerUI(c =>
-	{
-		c.SwaggerEndpoint("/swagger/v1/swagger.json", "Hotel API V1");
-		c.RoutePrefix = "api";
-	});
-}
+	c.SwaggerEndpoint("/swagger/v1/swagger.json", "Hotel API V1");
+	c.RoutePrefix = "api";
+});
 
 app.UseHttpsRedirection();
 

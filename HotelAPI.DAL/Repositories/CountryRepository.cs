@@ -1,4 +1,5 @@
-﻿using HotelAPI.Common.Helper;
+﻿using Dapper;
+using HotelAPI.Common.Helper;
 using HotelAPI.DAL.Interfaces;
 using HotelAPI.Model.Country;
 
@@ -17,6 +18,18 @@ namespace HotelAPI.DAL.Repositories
 		{
 			return await _sqlHelper.QueryAsync<CountryListResponse>(
 				StoredProcedure.GetCountryList
+			);
+		}
+
+		public async Task<IEnumerable<ContentByCountryResponse>> GetContentByCountryAsync(long countryId)
+		{
+			var parameters = new DynamicParameters();
+
+			parameters.Add("@CountryId", countryId);
+
+			return await _sqlHelper.QueryAsync<ContentByCountryResponse>(
+				StoredProcedure.GetContentByCountry,
+				parameters
 			);
 		}
 	}
