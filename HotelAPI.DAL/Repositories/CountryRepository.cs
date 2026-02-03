@@ -32,5 +32,17 @@ namespace HotelAPI.DAL.Repositories
 				parameters
 			);
 		}
+
+		public async Task<IEnumerable<RegionListByCountryResponse>> GetRegionsByCountryAsync(long countryId)
+		{
+			var parameters = new DynamicParameters();
+
+			parameters.Add("@CountryId", countryId);
+
+			return await _sqlHelper.QueryAsync<RegionListByCountryResponse>(
+				StoredProcedure.GetRegionsByCountry,
+				parameters
+			);
+		}
 	}
 }

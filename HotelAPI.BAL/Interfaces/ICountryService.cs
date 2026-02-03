@@ -7,5 +7,6 @@ namespace HotelAPI.BAL.Interfaces
 	{
 		Task<ResponseResult<IEnumerable<CountryListResponse>>> GetCountryListAsync();
 		Task<ResponseResult<IEnumerable<ContentByCountryResponse>>> GetContentByCountryAsync(long countryId);
+		Task<ResponseResult<IEnumerable<RegionListByCountryResponse>>> GetRegionsByCountryAsync(long countryId);
 	}
 }
