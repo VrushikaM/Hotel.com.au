@@ -43,9 +43,9 @@ namespace HotelAPI.BAL.Services
 			}
 		}
 
-		public async Task<ResponseResult<CountryByUrlNameResponse>> GetCountryByUrlNameAsync(string urlName)
+		public async Task<ResponseResult<CountryByUrlNameResponse>> GetCountryByUrlNameAsync(string urlName, string? aplhabet)
 		{
-			var data = await _countryRepository.GetCountryByUrlNameAsync(urlName);
+			var data = await _countryRepository.GetCountryByUrlNameAsync(urlName, aplhabet);
 			try
 			{
 
