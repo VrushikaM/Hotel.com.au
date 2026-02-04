@@ -1,7 +1,4 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace HotelAPI.Common.Cache
 {
@@ -14,11 +11,7 @@ namespace HotelAPI.Common.Cache
 			_cache = cache;
 		}
 
-		public async Task<T> GetOrCreateAsync<T>(
-			string cacheKey,
-			Func<Task<T>> factory,
-			TimeSpan expiration,
-			TimeSpan? slidingExpiration = null)
+		public async Task<T> GetOrCreateAsync<T>(string cacheKey,Func<Task<T>> factory,TimeSpan expiration,TimeSpan? slidingExpiration = null)
 		{
 			return await _cache.GetOrCreateAsync(cacheKey, async entry =>
 			{
@@ -26,10 +19,16 @@ namespace HotelAPI.Common.Cache
 
 				if (slidingExpiration.HasValue)
 					entry.SlidingExpiration = slidingExpiration;
+				var result = await factory();
+				if (result == null)
+				{
+					entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(5);
+				}
 
-				return await factory();
+				return result!;
 			}) ?? default!;
 		}
+
 
 		public void Remove(string cacheKey)
 		{

@@ -11,7 +11,7 @@ namespace HotelAPI.BAL.Services
 		private readonly ICountryRepository _countryRepository;
 		private readonly ICacheService _cache;
 
-		private const string COUNTRY_LIST_CACHE_KEY = "COUNTRY_LIST";
+		private const string COUNTRY_LIST_CACHE_KEY = "country:list";
 
 		public CountryService(
 			ICountryRepository countryRepository,
@@ -26,19 +26,11 @@ namespace HotelAPI.BAL.Services
 			try
 			{
 				var data = await _cache.GetOrCreateAsync(
-					COUNTRY_LIST_CACHE_KEY,
-					async () => await _countryRepository.GetCountryListAsync(),
-					TimeSpan.FromMinutes(15),
-					TimeSpan.FromMinutes(5)
+					cacheKey: COUNTRY_LIST_CACHE_KEY,
+					factory: () => _countryRepository.GetCountryListAsync(),
+					expiration: TimeSpan.FromMinutes(15),
+					slidingExpiration: TimeSpan.FromMinutes(5)
 				);
-
-					var cacheOptions = new MemoryCacheEntryOptions
-					{
-						AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(15)
-					};
-
-					_cache.Set(COUNTRY_LIST_CACHE_KEY, data, cacheOptions);
-				}
 
 				if (data == null || !data.Any())
 				{
@@ -63,20 +55,19 @@ namespace HotelAPI.BAL.Services
 			}
 		}
 
-		public async Task<ResponseResult<CountryByUrlNameResponse>> GetCountryByUrlNameAsync(string urlName, string? alphabet)
+		public async Task<ResponseResult<CountryByUrlNameResponse>> GetCountryByUrlNameAsync(
+			string urlName,
+			string? alphabet)
 		{
 			try
 			{
-				var cacheKey = $"COUNTRY_URL_{urlName}_{alphabet}";
 
 				var data = await _cache.GetOrCreateAsync(
-					cacheKey,
-					async () => await _countryRepository.GetCountryByUrlNameAsync(urlName, alphabet),
-					TimeSpan.FromMinutes(10)
+					cacheKey: COUNTRY_LIST_CACHE_KEY,
+					factory: () => _countryRepository.GetCountryByUrlNameAsync(urlName, alphabet),
+					expiration: TimeSpan.FromMinutes(15),
+					slidingExpiration: TimeSpan.FromMinutes(10)
 				);
-
-					_cache.Set(cacheKey, data, TimeSpan.FromMinutes(15));
-				}
 
 				if (data == null)
 				{
