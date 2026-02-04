@@ -21,17 +21,10 @@ namespace HotelAPI.Controller
 			return StatusCode(result.Code, result);
 		}
 
-		[HttpGet("get-content-by-country-id/{countryId:long}")]
-		public async Task<IActionResult> GetContentByCountryId(long countryId)
+		[HttpGet("get-by-urlName/{urlName}")]
+		public async Task<IActionResult> GetCountryByUrlName(string urlName)
 		{
-			var result = await _countryService.GetContentByCountryAsync(countryId);
-			return StatusCode(result.Code, result);
-		}
-
-		[HttpGet("get-regions-by-country-id/{countryId:long}")]
-		public async Task<IActionResult> GetRegionsByCountryId(long countryId)
-		{
-			var result = await _countryService.GetRegionsByCountryAsync(countryId);
+			var result = await _countryService.GetCountryByUrlNameAsync(urlName);
 			return StatusCode(result.Code, result);
 		}
 	}

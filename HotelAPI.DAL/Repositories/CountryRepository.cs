@@ -21,26 +21,24 @@ namespace HotelAPI.DAL.Repositories
 			);
 		}
 
-		public async Task<IEnumerable<ContentByCountryResponse>> GetContentByCountryAsync(long countryId)
+		public async Task<CountryByUrlNameResponse?> GetCountryByUrlNameAsync(string urlName)
 		{
 			var parameters = new DynamicParameters();
+			parameters.Add("@UrlName", urlName);
 
-			parameters.Add("@CountryId", countryId);
+			return await _sqlHelper.QueryMultipleAsync(
+				StoredProcedure.GetCountryByUrlName,
+				async multi =>
+				{
+					var country = await multi.ReadFirstOrDefaultAsync<CountryByUrlNameResponse>();
+					if (country == null)
+						return null;
 
-			return await _sqlHelper.QueryAsync<ContentByCountryResponse>(
-				StoredProcedure.GetContentByCountry,
-				parameters
-			);
-		}
+					var countryData = (await multi.ReadAsync<CountryDataResponse>()).ToList();
+					country.CountryData = countryData;
 
-		public async Task<IEnumerable<RegionListByCountryResponse>> GetRegionsByCountryAsync(long countryId)
-		{
-			var parameters = new DynamicParameters();
-
-			parameters.Add("@CountryId", countryId);
-
-			return await _sqlHelper.QueryAsync<RegionListByCountryResponse>(
-				StoredProcedure.GetRegionsByCountry,
+					return country;
+				},
 				parameters
 			);
 		}
