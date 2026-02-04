@@ -1,22 +1,22 @@
 ﻿using HotelAPI.BAL.Interfaces;
+using HotelAPI.Common.Cache;
 using HotelAPI.Common.Helper;
 using HotelAPI.DAL.Interfaces;
 using HotelAPI.Model.Country;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace HotelAPI.BAL.Services
 {
 	public class CountryService : ICountryService
 	{
 		private readonly ICountryRepository _countryRepository;
-		private readonly IMemoryCache _cache;
+		private readonly ICacheService _cache;
 
 		private const string COUNTRY_LIST_CACHE_KEY = "COUNTRY_LIST";
 
 		public CountryService(
 			ICountryRepository countryRepository,
-			IMemoryCache cache)
-		{		
+			ICacheService cache)
+		{
 			_countryRepository = countryRepository;
 			_cache = cache;
 		}
@@ -25,24 +25,19 @@ namespace HotelAPI.BAL.Services
 		{
 			try
 			{
-				if (!_cache.TryGetValue(COUNTRY_LIST_CACHE_KEY, out IEnumerable<CountryListResponse>? data))
+				var data = await _cache.GetOrCreateAsync(
+					COUNTRY_LIST_CACHE_KEY,
+					async () => await _countryRepository.GetCountryListAsync(),
+					TimeSpan.FromMinutes(15),
+					TimeSpan.FromMinutes(5)
+				);
+
+				if (data == null || !data.Any())
 				{
-					data = await _countryRepository.GetCountryListAsync();
-
-					if (data == null || !data.Any())
-					{
-						return ResponseHelper<IEnumerable<CountryListResponse>>.Error(
-							"No countries found",
-							statusCode: StatusCode.NOT_FOUND
-						);
-					}
-
-					var cacheOptions = new MemoryCacheEntryOptions
-					{
-						AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(15)
-					};
-
-					_cache.Set(COUNTRY_LIST_CACHE_KEY, data, cacheOptions);
+					return ResponseHelper<IEnumerable<CountryListResponse>>.Error(
+						"No countries found",
+						statusCode: StatusCode.NOT_FOUND
+					);
 				}
 
 				return ResponseHelper<IEnumerable<CountryListResponse>>.Success(
@@ -68,22 +63,17 @@ namespace HotelAPI.BAL.Services
 			{
 				var cacheKey = $"COUNTRY_URL_{urlName}_{alphabet}";
 
-				if (!_cache.TryGetValue(cacheKey, out CountryByUrlNameResponse? data))
+				var data = await _cache.GetOrCreateAsync(
+					cacheKey,
+					async () => await _countryRepository.GetCountryByUrlNameAsync(urlName, alphabet),
+					TimeSpan.FromMinutes(10)
+				);
+
+				if (data == null)
 				{
-					data = await _countryRepository.GetCountryByUrlNameAsync(urlName, alphabet);
-
-					if (data == null)
-					{
-						return ResponseHelper<CountryByUrlNameResponse>.Error(
-							"No country found",
-							statusCode: StatusCode.NOT_FOUND
-						);
-					}
-
-					_cache.Set(
-						cacheKey,
-						data,
-						TimeSpan.FromMinutes(10)
+					return ResponseHelper<CountryByUrlNameResponse>.Error(
+						"No country found",
+						statusCode: StatusCode.NOT_FOUND
 					);
 				}
 

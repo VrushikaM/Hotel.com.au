@@ -1,5 +1,6 @@
 ﻿using HotelAPI.BAL.Interfaces;
 using HotelAPI.BAL.Services;
+using HotelAPI.Common.Cache;
 using HotelAPI.DAL.Database;
 using HotelAPI.DAL.Interfaces;
 using HotelAPI.DAL.Repositories;
@@ -18,6 +19,10 @@ namespace HotelAPI
 
 			// Services
 			services.AddScoped<ICountryService, CountryService>();
+
+			// CacheService 
+			services.AddScoped<ICacheService, MemoryCacheService>();
+
 		}
 	}
 }
