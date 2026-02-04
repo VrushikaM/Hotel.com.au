@@ -13,10 +13,8 @@ namespace HotelAPI.BAL.Services
 
 		private const string COUNTRY_LIST_CACHE_KEY = "COUNTRY_LIST";
 
-		public CountryService(
-			ICountryRepository countryRepository,
-			IMemoryCache cache)
-		{		
+		public CountryService(ICountryRepository countryRepository, IMemoryCache cache)
+		{
 			_countryRepository = countryRepository;
 			_cache = cache;
 		}
@@ -29,20 +27,20 @@ namespace HotelAPI.BAL.Services
 				{
 					data = await _countryRepository.GetCountryListAsync();
 
-					if (data == null || !data.Any())
-					{
-						return ResponseHelper<IEnumerable<CountryListResponse>>.Error(
-							"No countries found",
-							statusCode: StatusCode.NOT_FOUND
-						);
-					}
-
 					var cacheOptions = new MemoryCacheEntryOptions
 					{
 						AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(15)
 					};
 
 					_cache.Set(COUNTRY_LIST_CACHE_KEY, data, cacheOptions);
+				}
+
+				if (data == null || !data.Any())
+				{
+					return ResponseHelper<IEnumerable<CountryListResponse>>.Error(
+						"No countries found",
+						statusCode: StatusCode.NOT_FOUND
+					);
 				}
 
 				return ResponseHelper<IEnumerable<CountryListResponse>>.Success(
@@ -60,9 +58,7 @@ namespace HotelAPI.BAL.Services
 			}
 		}
 
-		public async Task<ResponseResult<CountryByUrlNameResponse>> GetCountryByUrlNameAsync(
-			string urlName,
-			string? alphabet)
+		public async Task<ResponseResult<CountryByUrlNameResponse>> GetCountryByUrlNameAsync(string urlName, string? alphabet)
 		{
 			try
 			{
@@ -72,18 +68,14 @@ namespace HotelAPI.BAL.Services
 				{
 					data = await _countryRepository.GetCountryByUrlNameAsync(urlName, alphabet);
 
-					if (data == null)
-					{
-						return ResponseHelper<CountryByUrlNameResponse>.Error(
-							"No country found",
-							statusCode: StatusCode.NOT_FOUND
-						);
-					}
+					_cache.Set(cacheKey, data, TimeSpan.FromMinutes(15));
+				}
 
-					_cache.Set(
-						cacheKey,
-						data,
-						TimeSpan.FromMinutes(10)
+				if (data == null)
+				{
+					return ResponseHelper<CountryByUrlNameResponse>.Error(
+						"No country found",
+						statusCode: StatusCode.NOT_FOUND
 					);
 				}
 
