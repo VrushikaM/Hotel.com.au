@@ -59,7 +59,7 @@ namespace HotelAPI.BAL.Services
 			{
 
 				var data = await _cache.GetOrCreateAsync(
-					cacheKey: COUNTRY_LIST_CACHE_KEY,
+					cacheKey: $"COUNTRY_URL_{urlName}_{alphabet}",
 					factory: () => _countryRepository.GetCountryByUrlAsync(urlName, alphabet),
 					expiration: TimeSpan.FromMinutes(15),
 					slidingExpiration: TimeSpan.FromMinutes(10)
