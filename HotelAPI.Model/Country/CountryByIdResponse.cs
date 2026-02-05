@@ -1,6 +1,6 @@
 ﻿namespace HotelAPI.Model.Country
 {
-	public class CountryByUrlNameResponse
+	public class CountryByUrlResponse
 	{
 		public long CountryID { get; set; }
 		public string? CountryContent { get; set; }

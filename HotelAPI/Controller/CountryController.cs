@@ -21,10 +21,10 @@ namespace HotelAPI.Controller
 			return StatusCode(result.Code, result);
 		}
 
-		[HttpGet("getByUrlName/{urlName}")]
-		public async Task<IActionResult> GetCountryByUrlName(string urlName, string? alphabet)
+		[HttpGet("getByUrl/{urlName}")]
+		public async Task<IActionResult> GetCountryByUrl(string urlName, string? alphabet)
 		{
-			var result = await _countryService.GetCountryByUrlNameAsync(urlName, alphabet);
+			var result = await _countryService.GetCountryByUrlAsync(urlName, alphabet);
 			return StatusCode(result.Code, result);
 		}
 	}
