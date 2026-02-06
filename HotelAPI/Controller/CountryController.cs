@@ -27,5 +27,11 @@ namespace HotelAPI.Controller
 			var result = await _countryService.GetCountryByUrlAsync(urlName, alphabet);
 			return StatusCode(result.Code, result);
 		}
+		[HttpGet("getByUrl_V2/{urlName}")]
+		public async Task<IActionResult> GetCountryByUrl_V2(string urlName, string? alphabet)
+		{
+			var result = await _countryService.GetCountryByUrlAsync_V2(urlName, alphabet);
+			return StatusCode(result.Code, result);
+		}
 	}
 }

@@ -2,6 +2,8 @@
 using HotelAPI.Common.Helper;
 using HotelAPI.DAL.Interfaces;
 using HotelAPI.Model.Country;
+using Microsoft.Data.SqlClient;
+using System.Data;
 
 namespace HotelAPI.DAL.Repositories
 {
@@ -45,6 +47,51 @@ namespace HotelAPI.DAL.Repositories
 				},
 				parameters
 			);
+		}
+		public async Task<CountryByUrlResponse?> GetCountryByUrlAsync_V2(string urlName,string? alphabet)
+		{
+			var parameters = new[] {
+			new SqlParameter("@UrlName", urlName),
+			new SqlParameter("@Alphabet", alphabet ?? (object)DBNull.Value)
+		};
+
+			var ds = await _sqlHelper.ExecuteDataSetAsync("Country_GetByUrl_v2",parameters);
+
+			if (ds.Tables.Count == 0 || ds.Tables[0].Rows.Count == 0)
+				return null;
+
+			var countryRow = ds.Tables[0].Rows[0];
+
+			var response = new CountryByUrlResponse
+			{
+				CountryID = Convert.ToInt32(countryRow["CountryID"]),
+				CountryContent = countryRow["CountryContent"]?.ToString()
+			};
+
+			// Country Data (City + Region)
+			response.CountryData = ds.Tables[1]
+				.AsEnumerable()
+				.Select(r => new CountryDataResponse
+				{
+					Id = r.Field<long>("Id"),
+					ItemName = r.Field<string>("ItemName")!,
+					UrlName = r.Field<string>("UrlName")!,
+					Type = r.Field<string>("Type")!
+				}).ToList();
+
+			// Hotel Data
+			response.HotelData = ds.Tables[2]
+	           .AsEnumerable()
+	           .Select(r => new HotelDataResponse
+	           {
+	           	Id = r.Field<long>("Id"),
+	           	ItemName = r.Field<string>("ItemName")!,
+	           	UrlName = r.Field<string>("UrlName")!,
+	           	HotelCount = Convert.ToInt32(r["HotelCount"]), // ✅ FIX
+	           	Type = r.Field<string>("Type")!
+	           })
+	           .ToList();
+			return response;
 		}
 	}
 }

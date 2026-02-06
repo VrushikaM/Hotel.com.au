@@ -6,5 +6,6 @@ namespace HotelAPI.DAL.Interfaces
 	{
 		Task<IEnumerable<CountryListResponse>> GetCountryListAsync();
 		Task<CountryByUrlResponse?> GetCountryByUrlAsync(string urlName, string? alphabet);
+		Task<CountryByUrlResponse?> GetCountryByUrlAsync_V2(string urlName, string? alphabet);
 	}
 }

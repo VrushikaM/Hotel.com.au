@@ -107,5 +107,18 @@ namespace HotelAPI.DAL.Database
 
 			return await readFunc(multi);
 		}
+		public async Task<DataSet> ExecuteDataSetAsync(string storedProcedure,SqlParameter[] parameters)
+		{
+			using var conn = new SqlConnection(_connectionString);
+			using var cmd = new SqlCommand(storedProcedure, conn)
+			{
+				CommandType = CommandType.StoredProcedure
+			};
+			if (parameters?.Length > 0)cmd.Parameters.AddRange(parameters);
+			using var adapter = new SqlDataAdapter(cmd);
+			var ds = new DataSet();
+			await Task.Run(() => adapter.Fill(ds));
+			return ds;
+		}
 	}
 }
