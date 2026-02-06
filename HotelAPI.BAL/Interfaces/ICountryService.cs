@@ -7,7 +7,5 @@ namespace HotelAPI.BAL.Interfaces
 	{
 		Task<ResponseResult<IEnumerable<CountryListResponse>>> GetCountryListAsync();
 		Task<ResponseResult<CountryByUrlResponse>> GetCountryByUrlAsync(string urlName, string? alphabet);
-		Task<ResponseResult<CountryByUrlResponse?>> GetCountryByUrlAsync_V2(string urlName,	string? alphabet);
 	}
-
 }

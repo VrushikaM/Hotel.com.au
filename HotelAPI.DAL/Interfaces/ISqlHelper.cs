@@ -1,6 +1,4 @@
 ﻿using Dapper;
-using Microsoft.Data.SqlClient;
-using System.Data;
 
 namespace HotelAPI.DAL.Interfaces
 {
@@ -13,6 +11,5 @@ namespace HotelAPI.DAL.Interfaces
 		Task<T?> QueryFirstOrDefaultAsync<T>(string storedProcedureName, DynamicParameters? parameters = null);
 		Task<int> ExecuteRawSqlAsync(string sql, object? parameters = null);
 		Task<TResult> QueryMultipleAsync<TResult>(string storedProcedureName, Func<SqlMapper.GridReader, Task<TResult>> readFunc, DynamicParameters? parameters = null);
-		Task<DataSet> ExecuteDataSetAsync(string storedProcedure,SqlParameter[] parameters);
 	}
 }

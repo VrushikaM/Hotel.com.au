@@ -12,8 +12,6 @@ namespace HotelAPI.BAL.Services
 		private readonly ICacheService _cache;
 
 		private const string COUNTRY_LIST_CACHE_KEY = "country:list";
-		private const string COUNTRY_BY_URL_V2_CACHE_KEY = "country:url:v2";
-
 
 		public CountryService(ICountryRepository countryRepository, ICacheService cache)
 		{
@@ -63,38 +61,6 @@ namespace HotelAPI.BAL.Services
 				var data = await _cache.GetOrCreateAsync(
 					cacheKey: $"COUNTRY_URL_{urlName}_{alphabet}",
 					factory: () => _countryRepository.GetCountryByUrlAsync(urlName, alphabet),
-					expiration: TimeSpan.FromMinutes(15),
-					slidingExpiration: TimeSpan.FromMinutes(10)
-				);
-
-				if (data == null)
-				{
-					return ResponseHelper<CountryByUrlResponse>.Error(
-						"No country found",
-						statusCode: StatusCode.NOT_FOUND
-					);
-				}
-
-				return ResponseHelper<CountryByUrlResponse>.Success(
-					"Country fetched successfully",
-					data
-				);
-			}
-			catch (Exception ex)
-			{
-				return ResponseHelper<CountryByUrlResponse>.Error(
-					"Failed to fetch country",
-					exception: ex,
-					statusCode: StatusCode.INTERNAL_SERVER_ERROR
-				);
-			}
-		}
-		public async Task<ResponseResult<CountryByUrlResponse>> GetCountryByUrlAsync_V2(string urlName,string? alphabet)
-		{
-			try
-			{
-				var cacheKey = $"{COUNTRY_BY_URL_V2_CACHE_KEY}:{urlName}:{alphabet}";
-				var data = await _cache.GetOrCreateAsync(cacheKey: cacheKey,factory: () => _countryRepository.GetCountryByUrlAsync_V2(urlName, alphabet),
 					expiration: TimeSpan.FromMinutes(15),
 					slidingExpiration: TimeSpan.FromMinutes(10)
 				);
