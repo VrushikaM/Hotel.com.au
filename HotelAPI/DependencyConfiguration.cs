@@ -23,6 +23,11 @@ namespace HotelAPI
 			// CacheService 
 			services.AddScoped<ICacheService, MemoryCacheService>();
 
+			// Search 
+			services.AddScoped<IGlobalSearchRepository, GlobalSearchRepository>();
+			services.AddScoped<IGlobalSearchService, GlobalSearchService>();
+
+
 		}
 	}
 }
