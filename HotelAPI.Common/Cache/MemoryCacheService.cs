@@ -11,7 +11,7 @@ namespace HotelAPI.Common.Cache
 			_cache = cache;
 		}
 
-		public async Task<T> GetOrCreateAsync<T>(string cacheKey,Func<Task<T>> factory,TimeSpan expiration,TimeSpan? slidingExpiration = null)
+		public async Task<T> GetOrCreateAsync<T>(string cacheKey, Func<Task<T>> factory, TimeSpan expiration, TimeSpan? slidingExpiration = null)
 		{
 			return await _cache.GetOrCreateAsync(cacheKey, async entry =>
 			{
@@ -19,7 +19,9 @@ namespace HotelAPI.Common.Cache
 
 				if (slidingExpiration.HasValue)
 					entry.SlidingExpiration = slidingExpiration;
+
 				var result = await factory();
+
 				if (result == null)
 				{
 					entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(5);
@@ -28,7 +30,6 @@ namespace HotelAPI.Common.Cache
 				return result!;
 			}) ?? default!;
 		}
-
 
 		public void Remove(string cacheKey)
 		{

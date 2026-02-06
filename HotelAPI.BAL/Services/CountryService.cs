@@ -13,9 +13,7 @@ namespace HotelAPI.BAL.Services
 
 		private const string COUNTRY_LIST_CACHE_KEY = "country:list";
 
-		public CountryService(
-			ICountryRepository countryRepository,
-			ICacheService cache)
+		public CountryService(ICountryRepository countryRepository, ICacheService cache)
 		{
 			_countryRepository = countryRepository;
 			_cache = cache;
@@ -55,36 +53,34 @@ namespace HotelAPI.BAL.Services
 			}
 		}
 
-		public async Task<ResponseResult<CountryByUrlNameResponse>> GetCountryByUrlNameAsync(
-			string urlName,
-			string? alphabet)
+		public async Task<ResponseResult<CountryByUrlResponse>> GetCountryByUrlAsync(string urlName, string? alphabet)
 		{
 			try
 			{
 
 				var data = await _cache.GetOrCreateAsync(
-					cacheKey: COUNTRY_LIST_CACHE_KEY,
-					factory: () => _countryRepository.GetCountryByUrlNameAsync(urlName, alphabet),
+					cacheKey: $"COUNTRY_URL_{urlName}_{alphabet}",
+					factory: () => _countryRepository.GetCountryByUrlAsync(urlName, alphabet),
 					expiration: TimeSpan.FromMinutes(15),
 					slidingExpiration: TimeSpan.FromMinutes(10)
 				);
 
 				if (data == null)
 				{
-					return ResponseHelper<CountryByUrlNameResponse>.Error(
+					return ResponseHelper<CountryByUrlResponse>.Error(
 						"No country found",
 						statusCode: StatusCode.NOT_FOUND
 					);
 				}
 
-				return ResponseHelper<CountryByUrlNameResponse>.Success(
+				return ResponseHelper<CountryByUrlResponse>.Success(
 					"Country fetched successfully",
 					data
 				);
 			}
 			catch (Exception ex)
 			{
-				return ResponseHelper<CountryByUrlNameResponse>.Error(
+				return ResponseHelper<CountryByUrlResponse>.Error(
 					"Failed to fetch country",
 					exception: ex,
 					statusCode: StatusCode.INTERNAL_SERVER_ERROR
