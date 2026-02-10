@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace HotelAPI.Model.Search
+﻿namespace HotelAPI.Model.Search
 {
 	public class GlobalSearchResponse
 	{

@@ -14,20 +14,16 @@ namespace HotelAPI
 			// Register SqlHelper 
 			services.AddScoped<ISqlHelper, SqlHelper>();
 
-			// Repositories
+			// Country
 			services.AddScoped<ICountryRepository, CountryRepository>();
-
-			// Services
 			services.AddScoped<ICountryService, CountryService>();
 
-			// CacheService 
+			// Cache
 			services.AddScoped<ICacheService, MemoryCacheService>();
 
 			// Search 
 			services.AddScoped<IGlobalSearchRepository, GlobalSearchRepository>();
 			services.AddScoped<IGlobalSearchService, GlobalSearchService>();
-
-
 		}
 	}
 }

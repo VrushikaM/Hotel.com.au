@@ -6,18 +6,9 @@ using HotelAPI.Model.Country;
 
 namespace HotelAPI.BAL.Services
 {
-	public class CountryService : ICountryService
+	public class CountryService(ICountryRepository _countryRepository, ICacheService _cache) : ICountryService
 	{
-		private readonly ICountryRepository _countryRepository;
-		private readonly ICacheService _cache;
-
 		private const string COUNTRY_LIST_CACHE_KEY = "country:list";
-
-		public CountryService(ICountryRepository countryRepository, ICacheService cache)
-		{
-			_countryRepository = countryRepository;
-			_cache = cache;
-		}
 
 		public async Task<ResponseResult<IEnumerable<CountryListResponse>>> GetCountryListAsync()
 		{

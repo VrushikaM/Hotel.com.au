@@ -5,26 +5,29 @@ namespace HotelAPI.Controller
 {
 	[ApiController]
 	[Route("api/country")]
-	public class CountryController : ControllerBase
+	public class CountryController(ICountryService countryService) : ControllerBase
 	{
-		private readonly ICountryService _countryService;
-
-		public CountryController(ICountryService countryService)
-		{
-			_countryService = countryService;
-		}
+		/// <summary>
+		/// Retrieves the list of all available countries.
+		/// </summary>
 
 		[HttpGet("list")]
 		public async Task<IActionResult> GetCountryList()
 		{
-			var result = await _countryService.GetCountryListAsync();
+			var result = await countryService.GetCountryListAsync();
 			return StatusCode(result.Code, result);
 		}
+
+		/// <summary>
+		/// Retrieves country details based on the country URL name.
+		/// </summary>
+		/// <param name="urlName">Country URL identifier</param>
+		/// <param name="alphabet">Optional alphabet filter</param>
 
 		[HttpGet("getByUrl/{urlName}")]
 		public async Task<IActionResult> GetCountryByUrl(string urlName, string? alphabet)
 		{
-			var result = await _countryService.GetCountryByUrlAsync(urlName, alphabet);
+			var result = await countryService.GetCountryByUrlAsync(urlName, alphabet);
 			return StatusCode(result.Code, result);
 		}
 	}

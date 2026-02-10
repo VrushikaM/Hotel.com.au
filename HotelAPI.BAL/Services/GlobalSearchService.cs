@@ -2,16 +2,13 @@
 using HotelAPI.Common.Helper;
 using HotelAPI.DAL.Interfaces;
 using HotelAPI.Model.Search;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace HotelAPI.BAL.Services
 {
-	public class GlobalSearchService(IGlobalSearchRepository _repository) : IGlobalSearchService
+	public class GlobalSearchService(IGlobalSearchRepository _globalSearchRepository) : IGlobalSearchService
 	{
 
-		public async Task<ResponseResult<IEnumerable<GlobalSearchResponse>>>SearchAsync(string searchText)
+		public async Task<ResponseResult<IEnumerable<GlobalSearchResponse>>> SearchAsync(string searchText)
 		{
 			try
 			{
@@ -23,7 +20,7 @@ namespace HotelAPI.BAL.Services
 					);
 				}
 
-				var data = await _repository.SearchAsync(searchText.Trim());
+				var data = await _globalSearchRepository.SearchAsync(searchText.Trim());
 
 				if (data == null || !data.Any())
 				{

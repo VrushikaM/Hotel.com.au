@@ -5,22 +5,18 @@ using HotelAPI.Model.Country;
 
 namespace HotelAPI.DAL.Repositories
 {
-	public class CountryRepository : ICountryRepository
+	public class CountryRepository(ISqlHelper _sqlHelper) : ICountryRepository
 	{
-		private readonly ISqlHelper _sqlHelper;
-
-		public CountryRepository(ISqlHelper sqlHelper)
-		{
-			_sqlHelper = sqlHelper;
-		}
-
+		#region GetCountryListAsync
 		public async Task<IEnumerable<CountryListResponse>> GetCountryListAsync()
 		{
 			return await _sqlHelper.QueryAsync<CountryListResponse>(
 				StoredProcedure.GetCountryList
 			);
 		}
+		#endregion
 
+		#region GetCountryByUrlAsync
 		public async Task<CountryByUrlResponse?> GetCountryByUrlAsync(string urlName, string? alphabet)
 		{
 			var parameters = new DynamicParameters();
@@ -37,7 +33,7 @@ namespace HotelAPI.DAL.Repositories
 
 					var countryData = (await multi.ReadAsync<CountryDataResponse>()).ToList();
 					var hotelData = (await multi.ReadAsync<HotelDataResponse>()).ToList();
-					
+
 					country.CountryData = countryData;
 					country.HotelData = hotelData;
 
@@ -46,5 +42,6 @@ namespace HotelAPI.DAL.Repositories
 				parameters
 			);
 		}
+		#endregion
 	}
 }
