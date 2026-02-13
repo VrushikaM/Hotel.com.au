@@ -8,5 +8,8 @@
 
 		// Search Stored Procedures
 		public const string GlobalSearch = "dbo.Global_Search";
+
+		// Auth Stored Procedures
+		public const string LoginAuthentication = "Sp_LoginAuthentication";
 	}
 }

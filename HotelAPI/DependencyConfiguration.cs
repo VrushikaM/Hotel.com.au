@@ -11,7 +11,7 @@ namespace HotelAPI
 	{
 		public static void RegisterServices(this IServiceCollection services)
 		{
-			// Register SqlHelper 
+			// SqlHelper 
 			services.AddScoped<ISqlHelper, SqlHelper>();
 
 			// Country
@@ -24,6 +24,10 @@ namespace HotelAPI
 			// Search 
 			services.AddScoped<IGlobalSearchRepository, GlobalSearchRepository>();
 			services.AddScoped<IGlobalSearchService, GlobalSearchService>();
+
+			// Auth
+			services.AddScoped<IAuthService, AuthService>();
+			services.AddScoped<IAuthRepository, AuthRepository>();
 		}
 	}
 }
