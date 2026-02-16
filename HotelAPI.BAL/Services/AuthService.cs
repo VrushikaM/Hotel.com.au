@@ -44,6 +44,22 @@ namespace HotelAPI.BAL.Services
 					);
 				}
 
+				if (!result.HasRole)
+				{
+					return ResponseHelper<LoginResponse>.Error(
+						"User has no role assigned",
+						statusCode: StatusCode.FORBIDDEN
+					);
+				}
+
+				if (!result.HasAccess)
+				{
+					return ResponseHelper<LoginResponse>.Error(
+						"User has no page access",
+						statusCode: StatusCode.FORBIDDEN
+					);
+				}
+
 				var token = GenerateJwtToken(result);
 
 				var response = new LoginResponse

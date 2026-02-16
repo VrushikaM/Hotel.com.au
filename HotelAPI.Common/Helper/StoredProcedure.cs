@@ -11,5 +11,8 @@
 
 		// Auth Stored Procedures
 		public const string LoginAuthentication = "Sp_LoginAuthentication";
+
+		// User Stored Procedures
+		public const string CreateUser = "Sp_RegisterUser";
 	}
 }

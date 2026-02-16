@@ -6,6 +6,8 @@
 		public UserLoginResponse? User { get; set; }
 		public List<RolesResponse> Roles { get; set; } = new List<RolesResponse>();
 		public List<PagesResponse>? Pages { get; set; } = new List<PagesResponse>();
+		public bool HasRole { get; set; }
+		public bool HasAccess { get; set; }
 		public List<string>? Errors { get; set; }
 	}
 	public class UserLoginResponse
