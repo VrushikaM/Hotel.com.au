@@ -14,5 +14,9 @@
 
 		// User Stored Procedures
 		public const string CreateUser = "Sp_RegisterUser";
+
+		// Collection Stored Procedures
+		public const string GetCollectionList = "Collection_GetList_";
+		public const string UpsertCollection = "Save_Collection";
 	}
 }

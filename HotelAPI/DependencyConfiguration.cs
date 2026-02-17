@@ -32,6 +32,10 @@ namespace HotelAPI
 			//User
 			services.AddScoped<IUserService, UserService>();
 			services.AddScoped<IUserRepository, UserRepository>();
+
+			//Collection
+			services.AddScoped<ICollectionService, CollectionService>();
+			services.AddScoped<ICollectionRepository, CollectionRepository>();
 		}
 	}
 }
