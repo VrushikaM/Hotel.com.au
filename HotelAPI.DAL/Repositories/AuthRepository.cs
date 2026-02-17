@@ -30,19 +30,9 @@ namespace HotelAPI.DAL.Repositories
 					return null;
 				}
 
-				// 2️⃣ Roles
-				var roles = (await multi.ReadAsync<RolesResponse>()).ToList();
-
-				// 3️⃣ Pages
-				var pages = (await multi.ReadAsync<PagesResponse>()).ToList();
-
 				return new LoginResponse
 				{
-					User = user,
-					Roles = roles,
-					Pages = pages,
-					HasRole = roles.Any(),
-					HasAccess = pages.Any()
+					User = user
 				};
 			},
 			parameters

@@ -44,30 +44,12 @@ namespace HotelAPI.BAL.Services
 					);
 				}
 
-				if (!result.HasRole)
-				{
-					return ResponseHelper<LoginResponse>.Error(
-						"User has no role assigned",
-						statusCode: StatusCode.FORBIDDEN
-					);
-				}
-
-				if (!result.HasAccess)
-				{
-					return ResponseHelper<LoginResponse>.Error(
-						"User has no page access",
-						statusCode: StatusCode.FORBIDDEN
-					);
-				}
-
 				var token = GenerateJwtToken(result);
 
 				var response = new LoginResponse
 				{
 					Token = token,
-					User = result.User,
-					Roles = result.Roles,
-					Pages = result.Pages
+					User = result.User
 				};
 
 				return ResponseHelper<LoginResponse>.Success(
@@ -96,23 +78,13 @@ namespace HotelAPI.BAL.Services
 
 			var user = result.User!;
 
-			var roles = result.Roles
-							.Select(r => r.RoleName)
-							.Where(r => !string.IsNullOrEmpty(r))
-							.Distinct()
-							.ToList();
-
 			var claims = new List<Claim>
 			{
 				new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
 				new Claim(ClaimTypes.Name, user.UserName ?? ""),
+				new Claim(ClaimTypes.Role, user.RoleName ?? ""),
 				new Claim(ClaimTypes.Email, user.Email ?? "")
 			};
-
-			foreach (var role in roles)
-			{
-				claims.Add(new Claim(ClaimTypes.Role, role!));
-			}
 
 			var tokenDescriptor = new SecurityTokenDescriptor
 			{
