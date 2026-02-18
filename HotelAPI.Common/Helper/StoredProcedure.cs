@@ -18,5 +18,8 @@
 		// Collection Stored Procedures
 		public const string GetCollectionList = "Collection_GetList_";
 		public const string UpsertCollection = "Save_Collection";
+
+		// Master Dropdown Stored Procedure
+		public const string MasterDropdowns = "Sp_MasterDropdowns";
 	}
 }

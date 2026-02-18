@@ -43,54 +43,34 @@ namespace HotelAPI.Common.Helper
 		}
 	}
 
-	public class ResponseResult<T>
+	public class ResponseResult<T>(
+	ResponseStatus status,
+	string message,
+	T? data = default,
+	ExceptionResponse? exceptionDetails = null,
+	List<string>? errors = null,
+	StatusCode statusCode = StatusCode.OK,
+	int? totalRecords = null,
+	int? pageNumber = null,
+	int? pageSize = null,
+	string? sortBy = null,
+	string? sortOrder = null)
 	{
-		public string Status { get; }
-		public int Code { get; }
-		public string Message { get; }
-		public T? Data { get; }
-		public ExceptionResponse? ExceptionDetails { get; }
-		public List<string>? Errors { get; }
-		public int? TotalRecords { get; }
-		public int? PageNumber { get; }
-		public int? PageSize { get; }
-		public string? SortBy { get; set; }
-		public string? SortOrder { get; set; }
-		public int? TotalPages
-		{
-			get
-			{
-				if (PageSize.HasValue && PageSize > 0 && TotalRecords.HasValue)
-				{
-					return (int)Math.Ceiling((double)TotalRecords.Value / PageSize.Value);
-				}
-				return null;
-			}
-		}
-		public ResponseResult(
-			ResponseStatus status,
-			string message,
-			T? data = default,
-			ExceptionResponse? exceptionDetails = null,
-			List<string>? errors = null,
-			StatusCode statusCode = StatusCode.OK,
-			int? totalRecords = null,
-			int? pageNumber = null,
-			int? pageSize = null,
-			 string? sortBy = null,
-		string? sortOrder = null)
-		{
-			Status = status.ToString().ToLower();
-			Code = (int)statusCode;
-			Message = message;
-			Data = data;
-			ExceptionDetails = exceptionDetails;
-			Errors = errors;
-			TotalRecords = totalRecords;
-			PageNumber = pageNumber;
-			PageSize = pageSize;
-			SortBy = sortBy;
-			SortOrder = sortOrder;
-		}
+		public string Status { get; } = status.ToString().ToLower();
+		public int Code { get; } = (int)statusCode;
+		public string Message { get; } = message;
+		public T? Data { get; } = data;
+		public ExceptionResponse? ExceptionDetails { get; } = exceptionDetails;
+		public List<string>? Errors { get; } = errors;
+		public int? TotalRecords { get; } = totalRecords;
+		public int? PageNumber { get; } = pageNumber;
+		public int? PageSize { get; } = pageSize;
+		public string? SortBy { get; set; } = sortBy;
+		public string? SortOrder { get; set; } = sortOrder;
+
+		public int? TotalPages =>
+			PageSize.HasValue && PageSize > 0 && TotalRecords.HasValue
+				? (int)Math.Ceiling((double)TotalRecords.Value / PageSize.Value)
+				: null;
 	}
 }

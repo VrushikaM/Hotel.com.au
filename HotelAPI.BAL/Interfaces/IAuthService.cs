@@ -6,5 +6,6 @@ namespace HotelAPI.BAL.Interfaces
 	public interface IAuthService
 	{
 		Task<ResponseResult<LoginResponse>> LoginAsync(LoginRequest model);
+		Task<ResponseResult<string>> LogoutAsync();
 	}
 }

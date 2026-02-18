@@ -36,6 +36,10 @@ namespace HotelAPI
 			//Collection
 			services.AddScoped<ICollectionService, CollectionService>();
 			services.AddScoped<ICollectionRepository, CollectionRepository>();
+
+			//Master Dropdowns
+			services.AddScoped<IMasterDropdownService, MasterDropdownService>();
+			services.AddScoped<IMasterDropdownRepository, MasterDropdownRepository>();
 		}
 	}
 }

@@ -4,8 +4,8 @@
 	{
 		public long CountryID { get; set; }
 		public string? CountryContent { get; set; }
-		public List<CountryDataResponse> CountryData { get; set; } = new();
-		public List<HotelDataResponse> HotelData { get; set; } = new();
+		public List<CountryDataResponse> CountryData { get; set; } = [];
+		public List<HotelDataResponse> HotelData { get; set; } = [];
 	}
 	public class CountryDataResponse
 	{

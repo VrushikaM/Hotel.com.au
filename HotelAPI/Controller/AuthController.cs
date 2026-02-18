@@ -1,5 +1,6 @@
 ﻿using HotelAPI.BAL.Interfaces;
 using HotelAPI.Model.Auth;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HotelAPI.Controller
@@ -16,6 +17,13 @@ namespace HotelAPI.Controller
 		public async Task<IActionResult> Login([FromBody] LoginRequest model)
 		{
 			var result = await authService.LoginAsync(model);
+			return StatusCode(result.Code, result);
+		}
+
+		[HttpPost("logout")]
+		public async Task<IActionResult> Logout()
+		{
+			var result = await authService.LogoutAsync();
 			return StatusCode(result.Code, result);
 		}
 	}

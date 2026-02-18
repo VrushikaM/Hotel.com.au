@@ -67,6 +67,24 @@ namespace HotelAPI.BAL.Services
 			}
 		}
 
+		public Task<ResponseResult<string>> LogoutAsync()
+		{
+			try
+			{
+				return Task.FromResult(
+					ResponseHelper<string>.Success("Logout successful")
+				);
+			}
+			catch (Exception ex)
+			{
+				return Task.FromResult(ResponseHelper<string>.Error(
+					"Logout failed",
+					exception: ex,
+					statusCode: StatusCode.INTERNAL_SERVER_ERROR)
+				);
+			}
+		}
+
 		private string GenerateJwtToken(LoginResponse result)
 		{
 			var jwtKey = _configuration["Jwt:Key"];
@@ -80,10 +98,10 @@ namespace HotelAPI.BAL.Services
 
 			var claims = new List<Claim>
 			{
-				new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
-				new Claim(ClaimTypes.Name, user.UserName ?? ""),
-				new Claim(ClaimTypes.Role, user.RoleName ?? ""),
-				new Claim(ClaimTypes.Email, user.Email ?? "")
+				new(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+				new(ClaimTypes.Name, user.UserName ?? string.Empty),
+				new(ClaimTypes.Role, user.RoleName ?? string.Empty),
+				new(ClaimTypes.Email, user.Email ?? string.Empty)
 			};
 
 			var tokenDescriptor = new SecurityTokenDescriptor
