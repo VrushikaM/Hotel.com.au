@@ -44,6 +44,10 @@ namespace HotelAPI
 			// City
 			services.AddScoped<ICityRepository, CityRepository>();
 			services.AddScoped<ICityService, CityService>();
+
+			// Hotel
+			services.AddScoped<IHotelRepository, HotelRepository>();
+			services.AddScoped<IHotelService, HotelService>();
 		}
 	}
 }

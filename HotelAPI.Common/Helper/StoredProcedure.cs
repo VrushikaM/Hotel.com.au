@@ -24,5 +24,8 @@
 
 		// City Stored Procedure
 		public const string GetCitiesByUrlRegistry = "Sp_GetCityByUrlRegistry";
+
+		// Hotel Stored Procedure
+		public const string GetHotelsByCity = "Sp_GetHotelByCity";
 	}
 }
