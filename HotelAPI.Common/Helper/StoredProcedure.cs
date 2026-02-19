@@ -23,9 +23,12 @@
 		public const string MasterDropdowns = "Sp_MasterDropdowns";
 
 		// City Stored Procedure
-		public const string GetCitiesByUrlRegistry = "Sp_GetCityByUrlRegistry";
+		public const string GetCitiesByCountryOrRegion = "Sp_GetCityByCountryOrRegion";
 
 		// Hotel Stored Procedure
 		public const string GetHotelsByCity = "Sp_GetHotelByCity";
+
+		// Region Stored Procedure
+		public const string GetRegionsByCountry = "Sp_GetRegionByCountry";
 	}
 }

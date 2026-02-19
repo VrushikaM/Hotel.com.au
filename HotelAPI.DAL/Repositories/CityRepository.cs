@@ -7,14 +7,15 @@ namespace HotelAPI.DAL.Repositories
 {
 	public class CityRepository(ISqlHelper _sqlHelper) : ICityRepository
 	{
-		#region GetCitiesByUrlRegistryAsync
-		public async Task<IEnumerable<CitiesByUrlRegistryResponse>> GetCitiesByUrlRegistryAsync(int registryId)
+		#region GetCitiesByCountryOrRegionAsync
+		public async Task<IEnumerable<CitiesByCountryOrRegionResponse>> GetCitiesByCountryOrRegionAsync(int countryId, int? regionId)
 		{
 			var parameters = new DynamicParameters();
-			parameters.Add("@RegistryId", registryId);
+			parameters.Add("@CountryId", countryId);
+			parameters.Add("@RegionId", regionId);
 
-			return await _sqlHelper.QueryAsync<CitiesByUrlRegistryResponse>(
-				StoredProcedure.GetCitiesByUrlRegistry,
+			return await _sqlHelper.QueryAsync<CitiesByCountryOrRegionResponse>(
+				StoredProcedure.GetCitiesByCountryOrRegion,
 				parameters
 			);
 		}

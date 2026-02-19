@@ -4,6 +4,6 @@ namespace HotelAPI.DAL.Interfaces
 {
 	public interface IHotelRepository
 	{
-		Task<IEnumerable<HotelsByCityResponse>> GetHotelsByCityAsync(int cityId);
+		Task<IEnumerable<HotelsByCityResponse>> GetHotelsByCityAsync(int? cityId, string? search);
 	}
 }
