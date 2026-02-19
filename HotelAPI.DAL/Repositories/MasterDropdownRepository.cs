@@ -15,7 +15,7 @@ namespace HotelAPI.DAL.Repositories
 				{
 					return new MasterDropdownsResponse
 					{
-						UrlRegistries = [.. await multi.ReadAsync<UrlRegistryListResponse>()]
+						Countries = [.. await multi.ReadAsync<CountriesResponse>()]
 					};
 				}
 			);

@@ -2,11 +2,11 @@
 {
 	public class MasterDropdownsResponse
 	{
-		public List<UrlRegistryListResponse> UrlRegistries { get; set; } = [];
+		public List<CountriesResponse> Countries { get; set; } = [];
 	}
-	public class UrlRegistryListResponse
+	public class CountriesResponse
 	{
-		public long RegistryId { get; set; }
-		public string? Slug { get; set; }
+		public long CountryID { get; set; }
+		public string? Name { get; set; }
 	}
 }
