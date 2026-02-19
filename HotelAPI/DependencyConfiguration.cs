@@ -40,6 +40,10 @@ namespace HotelAPI
 			//Master Dropdowns
 			services.AddScoped<IMasterDropdownService, MasterDropdownService>();
 			services.AddScoped<IMasterDropdownRepository, MasterDropdownRepository>();
+
+			// City
+			services.AddScoped<ICityRepository, CityRepository>();
+			services.AddScoped<ICityService, CityService>();
 		}
 	}
 }

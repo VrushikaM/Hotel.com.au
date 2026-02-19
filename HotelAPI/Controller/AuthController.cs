@@ -1,6 +1,5 @@
 ﻿using HotelAPI.BAL.Interfaces;
 using HotelAPI.Model.Auth;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HotelAPI.Controller

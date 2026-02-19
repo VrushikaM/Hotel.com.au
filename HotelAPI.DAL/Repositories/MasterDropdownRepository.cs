@@ -15,7 +15,7 @@ namespace HotelAPI.DAL.Repositories
 				{
 					return new MasterDropdownsResponse
 					{
-						GeoNodes = [.. await multi.ReadAsync<GeoNodeListResponse>()]
+						UrlRegistries = [.. await multi.ReadAsync<UrlRegistryListResponse>()]
 					};
 				}
 			);

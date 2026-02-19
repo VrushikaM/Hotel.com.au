@@ -2,11 +2,11 @@
 {
 	public class MasterDropdownsResponse
 	{
-		public List<GeoNodeListResponse> GeoNodes { get; set; } = [];
+		public List<UrlRegistryListResponse> UrlRegistries { get; set; } = [];
 	}
-	public class GeoNodeListResponse
+	public class UrlRegistryListResponse
 	{
-		public long GeoNodeId { get; set; }
-		public string? Name { get; set; }
+		public long RegistryId { get; set; }
+		public string? Slug { get; set; }
 	}
 }

@@ -21,5 +21,8 @@
 
 		// Master Dropdown Stored Procedure
 		public const string MasterDropdowns = "Sp_MasterDropdowns";
+
+		// City Stored Procedure
+		public const string GetCitiesByUrlRegistry = "Sp_GetCityByUrlRegistry";
 	}
 }
