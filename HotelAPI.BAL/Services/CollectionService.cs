@@ -10,13 +10,13 @@ namespace HotelAPI.BAL.Services
 	{
 		private const string COLLECTION_LIST_CACHE_KEY = "collection:list";
 
-		public async Task<ResponseResult<IEnumerable<CollectionListResponse>>> GetCollectionListAsync(string? status, int? geoNodeId)
+		public async Task<ResponseResult<IEnumerable<CollectionListResponse>>> GetCollectionListAsync(string? status, int? countryId, int? regionId, int? cityId)
 		{
 			try
 			{
 				var data = await _cache.GetOrCreateAsync(
-					cacheKey: $"{COLLECTION_LIST_CACHE_KEY}_{status}_{geoNodeId}",
-					factory: () => _collectionRepository.GetCollectionListAsync(status, geoNodeId),
+					cacheKey: $"{COLLECTION_LIST_CACHE_KEY}_{status}_{countryId}_{regionId}_{cityId}",
+					factory: () => _collectionRepository.GetCollectionListAsync(status, countryId, regionId, cityId),
 					expiration: TimeSpan.FromMinutes(15),
 					slidingExpiration: TimeSpan.FromMinutes(5)
 				);

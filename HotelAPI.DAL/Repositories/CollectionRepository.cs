@@ -8,11 +8,13 @@ namespace HotelAPI.DAL.Repositories
 	public class CollectionRepository(ISqlHelper _sqlHelper) : ICollectionRepository
 	{
 		#region GetCollectionListAsync
-		public async Task<IEnumerable<CollectionListResponse>> GetCollectionListAsync(string? status, int? geoNodeId)
+		public async Task<IEnumerable<CollectionListResponse>> GetCollectionListAsync(string? status, int? countryId, int? regionId, int? cityId)
 		{
 			var parameters = new DynamicParameters();
 			parameters.Add("@Status", status);
-			parameters.Add("@GeoNodeId", geoNodeId);
+			parameters.Add("@CountryId", countryId);
+			parameters.Add("@RegionId", regionId);
+			parameters.Add("@CityId", cityId);
 
 			return await _sqlHelper.QueryAsync<CollectionListResponse>(
 				StoredProcedure.GetCollectionList, parameters

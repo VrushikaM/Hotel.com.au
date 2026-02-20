@@ -16,7 +16,7 @@
 		public const string CreateUser = "Sp_RegisterUser";
 
 		// Collection Stored Procedures
-		public const string GetCollectionList = "Collection_GetList_";
+		public const string GetCollectionList = "Collection_GetList";
 		public const string UpsertCollection = "Save_Collection";
 
 		// Master Dropdown Stored Procedure
