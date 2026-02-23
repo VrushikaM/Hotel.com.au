@@ -4,6 +4,7 @@ using HotelAPI.Common.Helper;
 using HotelAPI.DAL.Interfaces;
 using HotelAPI.Model.Collection;
 using HotelAPI.Model.Collection.CollectionContent;
+using HotelAPI.Model.Collection.CollectionRule;
 
 namespace HotelAPI.BAL.Services
 {
@@ -44,7 +45,7 @@ namespace HotelAPI.BAL.Services
 				{
 					return ResponseHelper<IEnumerable<CollectionListResponse>>.Error(
 						"No collections found",
-						statusCode : StatusCode.NOT_FOUND
+						statusCode: StatusCode.NOT_FOUND
 					);
 				}
 
@@ -82,7 +83,7 @@ namespace HotelAPI.BAL.Services
 				}
 
 				// 🔥 Clear collection list cache after insert/update
-				 _cache.Remove(COLLECTION_LIST_CACHE_KEY);
+				_cache.Remove(COLLECTION_LIST_CACHE_KEY);
 
 				return ResponseHelper<CollectionUpsertResponse>.Success(
 					request.CollectionId == null
@@ -115,8 +116,8 @@ namespace HotelAPI.BAL.Services
 				await _collectionRepository.SaveAsync(request);
 
 				// 🔥 Clear content & history cache after save
-				 _cache.Remove($"{COLLECTION_CONTENT_CACHE_KEY}:{request.CollectionId}");
-				 _cache.Remove($"{COLLECTION_HISTORY_CACHE_KEY}:{request.CollectionId}");
+				_cache.Remove($"{COLLECTION_CONTENT_CACHE_KEY}:{request.CollectionId}");
+				_cache.Remove($"{COLLECTION_HISTORY_CACHE_KEY}:{request.CollectionId}");
 
 				return ResponseHelper<bool>.Success(
 					"Content saved successfully",
@@ -191,6 +192,75 @@ namespace HotelAPI.BAL.Services
 			{
 				return ResponseHelper<IEnumerable<CollectionContentHistoryResponse>>.Error(
 					"Error fetching history",
+					exception: ex,
+					statusCode: StatusCode.INTERNAL_SERVER_ERROR
+				);
+			}
+		}
+
+		#endregion
+
+		#region Save Rule
+
+		public async Task<ResponseResult<int>> SaveRuleAsync(CollectionRuleRequest request)
+		{
+			try
+			{
+				var ruleId = await _collectionRepository.SaveRuleAsync(request);
+
+				if (ruleId <= 0)
+				{
+					return ResponseHelper<int>.Error(
+						"Failed to save rule",
+						statusCode: StatusCode.BAD_REQUEST
+					);
+				}
+
+				return ResponseHelper<int>.Success(
+					request.RuleID == null
+						? "Rule created successfully"
+						: "Rule updated successfully",
+					ruleId
+				);
+			}
+			catch (Exception ex)
+			{
+				return ResponseHelper<int>.Error(
+					"Error while saving rule",
+					exception: ex,
+					statusCode: StatusCode.INTERNAL_SERVER_ERROR
+				);
+			}
+		}
+
+		#endregion
+
+
+		#region Get Rule By Id
+
+		public async Task<ResponseResult<CollectionRuleResponse?>> GetRuleByIdAsync(int ruleId)
+		{
+			try
+			{
+				var data = await _collectionRepository.GetRuleByIdAsync(ruleId);
+
+				if (data == null)
+				{
+					return ResponseHelper<CollectionRuleResponse?>.Error(
+						"Rule not found",
+						statusCode: StatusCode.NOT_FOUND
+					);
+				}
+
+				return ResponseHelper<CollectionRuleResponse?>.Success(
+					"Rule fetched successfully",
+					data
+				);
+			}
+			catch (Exception ex)
+			{
+				return ResponseHelper<CollectionRuleResponse?>.Error(
+					"Error fetching rule",
 					exception: ex,
 					statusCode: StatusCode.INTERNAL_SERVER_ERROR
 				);

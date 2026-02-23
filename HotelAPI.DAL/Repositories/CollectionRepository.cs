@@ -3,6 +3,7 @@ using HotelAPI.Common.Helper;
 using HotelAPI.DAL.Interfaces;
 using HotelAPI.Model.Collection;
 using HotelAPI.Model.Collection.CollectionContent;
+using HotelAPI.Model.Collection.CollectionRule;
 
 namespace HotelAPI.DAL.Repositories
 {
@@ -84,5 +85,40 @@ namespace HotelAPI.DAL.Repositories
 				parameters
 			);
 		}
+		#region Save Rule
+
+		public async Task<int> SaveRuleAsync(CollectionRuleRequest request)
+		{
+			var parameters = new DynamicParameters();
+			parameters.Add("@RuleID", request.RuleID);
+			parameters.Add("@CollectionID", request.CollectionID);
+			parameters.Add("@Field", request.Field);
+			parameters.Add("@Operator", request.Operator);
+			parameters.Add("@Value", request.Value);
+			parameters.Add("@LogicalGroup", request.LogicalGroup);
+
+			return await _sqlHelper.QueryFirstOrDefaultAsync<int>(
+				"CollectionRules_AddOrUpdate",
+				parameters
+			);
+		}
+
+		#endregion
+
+
+		#region Get Rule By Id
+
+		public async Task<CollectionRuleResponse?> GetRuleByIdAsync(int ruleId)
+		{
+			var parameters = new DynamicParameters();
+			parameters.Add("@RuleID", ruleId);
+
+			return await _sqlHelper.QueryFirstOrDefaultAsync<CollectionRuleResponse>(
+				"CollectionRules_GetById",
+				parameters
+			);
+		}
+
+		#endregion
 	}
 }

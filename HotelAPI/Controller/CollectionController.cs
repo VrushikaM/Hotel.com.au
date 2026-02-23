@@ -2,6 +2,7 @@
 using HotelAPI.BAL.Services;
 using HotelAPI.Model.Collection;
 using HotelAPI.Model.Collection.CollectionContent;
+using HotelAPI.Model.Collection.CollectionRule;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HotelAPI.Controller
@@ -32,11 +33,13 @@ namespace HotelAPI.Controller
             return StatusCode(result.Code, result);
         }
 
+        #region Basic Tab
+
         /// POST /api/collections  (CREATE)
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CollectionUpsertRequest request)
         {
-            request.CollectionId = null;   
+            request.CollectionId = null;
             var result = await collectionService.UpsertCollectionAsync(request);
             return StatusCode(result.Code, result);
         }
@@ -49,6 +52,10 @@ namespace HotelAPI.Controller
             var result = await collectionService.UpsertCollectionAsync(request);
             return StatusCode(result.Code, result);
         }
+
+        #endregion
+
+        #region Content Tab
 
         /// GET /api/collections/{id}/content
         [HttpGet("{id}/content")]
@@ -74,5 +81,23 @@ namespace HotelAPI.Controller
             var result = await collectionService.GetHistoryAsync(id);
             return StatusCode((int)result.Code, result);
         }
-    }
+		#endregion
+		/// POST /api/collections/rules
+		[HttpPost("rules")]
+		public async Task<IActionResult> SaveRule([FromBody] CollectionRuleRequest request)
+		{
+			var result = await collectionService.SaveRuleAsync(request);
+			return StatusCode((int)result.Code, result);
+		}
+
+		/// GET /api/collections/rules/{id}
+		[HttpGet("rules/{id}")]
+		public async Task<IActionResult> GetRuleById(int id)
+		{
+			var result = await collectionService.GetRuleByIdAsync(id);
+			return StatusCode((int)result.Code, result);
+		}
+
+
+	}
 }
