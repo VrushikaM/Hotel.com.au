@@ -7,28 +7,28 @@
 		public const string GetCountryByUrl = "Country_GetByUrl";
 
 		// Search Stored Procedures
-		public const string GlobalSearch = "dbo.Global_Search";
+		public const string GlobalSearch = "Search_Global";
 
 		// Auth Stored Procedures
-		public const string LoginAuthentication = "Sp_LoginAuthentication";
+		public const string LoginAuthentication = "Auth_Login";
 
 		// User Stored Procedures
-		public const string CreateUser = "Sp_RegisterUser";
+		public const string CreateUser = "User_Register";
 
 		// Collection Stored Procedures
 		public const string GetCollectionList = "Collection_GetList";
-		public const string UpsertCollection = "Save_Collection";
+		public const string UpsertCollection = "Collection_Save";
 
 		// Master Dropdown Stored Procedure
-		public const string MasterDropdowns = "Sp_MasterDropdowns";
+		public const string MasterDropdowns = "MasterDropdown_Get";
 
 		// City Stored Procedure
-		public const string GetCitiesByCountryOrRegion = "Sp_GetCityByCountryOrRegion";
+		public const string GetCitiesByCountryOrRegion = "City_GetByCountryOrRegion";
 
 		// Hotel Stored Procedure
-		public const string GetHotelsByCity = "Sp_GetHotelByCity";
+		public const string GetHotelsByCity = "Hotel_GetByCity";
 
 		// Region Stored Procedure
-		public const string GetRegionsByCountry = "Sp_GetRegionByCountry";
+		public const string GetRegionsByCountry = "Region_GetByCountry";
 	}
 }
