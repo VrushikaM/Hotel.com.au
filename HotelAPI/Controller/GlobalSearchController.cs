@@ -12,7 +12,7 @@ namespace HotelAPI.Controller
 		/// </summary>
 		/// <param name="q">Search text (minimum 2 characters)</param>
 
-		[HttpGet("Globalsearch")]
+		[HttpGet("search")]
 		public async Task<IActionResult> Search([FromQuery] string q)
 		{
 			var result = await globalSearchService.SearchAsync(q);

@@ -11,7 +11,7 @@ namespace HotelAPI.Controller
 		/// Retrieves the list of all master dropdowns.
 		/// </summary>
 
-		[HttpGet("masterDropdowns")]
+		[HttpGet("list")]
 		public async Task<IActionResult> GetMasterDropdowns()
 		{
 			var result = await masterDropdownService.GetMasterDropdownsAsync();
