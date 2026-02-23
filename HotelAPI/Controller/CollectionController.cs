@@ -32,29 +32,35 @@ namespace HotelAPI.Controller
             return StatusCode(result.Code, result);
         }
 
-       
+		/// <summary>
+		/// Create or Update Collection
+		/// </summary>
+		[HttpPost("upsert")]
+		public async Task<IActionResult> UpsertCollection([FromBody] CollectionUpsertRequest request)
+		{
+			var result = await collectionService.UpsertCollectionAsync(request);
+			return StatusCode(result.Code, result);
+		}
 
-        [HttpPost]
-        public async Task<IActionResult> CreateCollection([FromBody] CollectionUpsertRequest request)
-        {
-            request.CollectionId = null;
+		[HttpPost("save")]
+		public async Task<IActionResult> Save(CollectionContentRequest request)
+		{
+			var result = await collectionService.SaveAsync(request);
+			return StatusCode((int)result.Code, result);
+		}
 
-            var result = await collectionService.UpsertCollectionAsync(request);
-            return StatusCode(result.Code, result);
-        }
+		[HttpGet("{collectionId}")]
+		public async Task<IActionResult> Get(int collectionId)
+		{
+			var result = await collectionService.GetAsync(collectionId);
+			return StatusCode((int)result.Code, result);
+		}
 
-
-        [HttpPut("{collectionId}")]
-        public async Task<IActionResult> UpdateCollection(int collectionId, [FromBody] CollectionUpsertRequest request)
-        {
-            request.CollectionId = collectionId;
-
-            var result = await collectionService.UpsertCollectionAsync(request);
-
-            return StatusCode(result.Code, result);
-        }
-
-        
-
-    }
+		[HttpGet("history/{collectionId}")]
+		public async Task<IActionResult> GetHistory(int collectionId)
+		{
+			var result = await collectionService.GetHistoryAsync(collectionId);
+			return StatusCode((int)result.Code, result);
+		}
+	}
 }
