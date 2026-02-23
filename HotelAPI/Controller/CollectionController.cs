@@ -1,5 +1,6 @@
 ﻿using HotelAPI.BAL.Interfaces;
 using HotelAPI.Model.Collection;
+using HotelAPI.Model.Collection.CollectionContent;
 using Microsoft.AspNetCore.Mvc;
 
 namespace HotelAPI.Controller
@@ -36,6 +37,27 @@ namespace HotelAPI.Controller
 		{
 			var result = await collectionService.UpsertCollectionAsync(request);
 			return StatusCode(result.Code, result);
+		}
+
+		[HttpPost("save")]
+		public async Task<IActionResult> Save(CollectionContentRequest request)
+		{
+			var result = await collectionService.SaveAsync(request);
+			return StatusCode((int)result.Code, result);
+		}
+
+		[HttpGet("{collectionId}")]
+		public async Task<IActionResult> Get(int collectionId)
+		{
+			var result = await collectionService.GetAsync(collectionId);
+			return StatusCode((int)result.Code, result);
+		}
+
+		[HttpGet("history/{collectionId}")]
+		public async Task<IActionResult> GetHistory(int collectionId)
+		{
+			var result = await collectionService.GetHistoryAsync(collectionId);
+			return StatusCode((int)result.Code, result);
 		}
 	}
 }

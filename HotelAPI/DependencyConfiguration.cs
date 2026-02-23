@@ -53,9 +53,6 @@ namespace HotelAPI
 			services.AddScoped<IRegionRepository, RegionRepository>();
 			services.AddScoped<IRegionService, RegionService>();
 			
-			//Collection Content
-			services.AddScoped<ICollectionContentRepository, CollectionContentRepository>();
-			services.AddScoped<ICollectionContentService, CollectionContentService>();
 		}
 	}
 }
