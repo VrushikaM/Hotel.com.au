@@ -72,6 +72,29 @@ namespace HotelAPI.BAL.Services
 		{
 			try
 			{
+				if (request == null)
+				{
+					return ResponseHelper<CollectionUpsertResponse>.Error(
+						"Request body cannot be null",
+						statusCode: StatusCode.BAD_REQUEST
+					);
+				}
+
+				if (string.IsNullOrWhiteSpace(request.CollectionJson))
+				{
+					return ResponseHelper<CollectionUpsertResponse>.Error(
+						"CollectionJson is required",
+						statusCode: StatusCode.UNPROCESSABLE_ENTITY
+					);
+				}
+				if (string.IsNullOrWhiteSpace(request.ChangedBy))
+				{
+					return ResponseHelper<CollectionUpsertResponse>.Error(
+						"ChangedBy is required",
+						statusCode: StatusCode.UNPROCESSABLE_ENTITY
+					);
+				}
+
 				var collectionId = await _collectionRepository.UpsertCollectionAsync(request);
 
 				if (collectionId <= 0)
@@ -82,7 +105,6 @@ namespace HotelAPI.BAL.Services
 					);
 				}
 
-				// 🔥 Clear collection list cache after insert/update
 				_cache.Remove(COLLECTION_LIST_CACHE_KEY);
 
 				return ResponseHelper<CollectionUpsertResponse>.Success(
@@ -105,15 +127,41 @@ namespace HotelAPI.BAL.Services
 			}
 		}
 
-		#endregion
+        #endregion
 
-		#region Save Content
+        #region Save Content
 
-		public async Task<ResponseResult<bool>> SaveAsync(CollectionContentRequest request)
+        public async Task<ResponseResult<bool>> SaveAsync(CollectionContentRequest request)
 		{
 			try
 			{
-				await _collectionRepository.SaveAsync(request);
+
+
+                if (request == null)
+                {
+                    return ResponseHelper<bool>.Error(
+                        "Request body cannot be null",
+                        statusCode: StatusCode.BAD_REQUEST
+                    );
+                }
+
+                if (request.CollectionId <= 0)
+                {
+                    return ResponseHelper<bool>.Error(
+                        "Valid CollectionId is required",
+                        statusCode: StatusCode.UNPROCESSABLE_ENTITY
+                    );
+                }
+
+                if (string.IsNullOrWhiteSpace(request.Header))
+                {
+                    return ResponseHelper<bool>.Error(
+                        "Header is required",
+                        statusCode: StatusCode.UNPROCESSABLE_ENTITY
+                    );
+                }
+
+                await _collectionRepository.SaveAsync(request);
 
 				// 🔥 Clear content & history cache after save
 				_cache.Remove($"{COLLECTION_CONTENT_CACHE_KEY}:{request.CollectionId}");
@@ -142,7 +190,14 @@ namespace HotelAPI.BAL.Services
 		{
 			try
 			{
-				var cacheKey = $"{COLLECTION_CONTENT_CACHE_KEY}:{collectionId}";
+                if (collectionId <= 0)
+                {
+                    return ResponseHelper<CollectionContentResponse?>.Error(
+                        "Valid CollectionId is required",
+                        statusCode: StatusCode.UNPROCESSABLE_ENTITY
+                    );
+                }
+                var cacheKey = $"{COLLECTION_CONTENT_CACHE_KEY}:{collectionId}";
 
 				var data = await _cache.GetOrCreateAsync(
 					cacheKey,
@@ -150,8 +205,16 @@ namespace HotelAPI.BAL.Services
 					TimeSpan.FromMinutes(30),
 					TimeSpan.FromMinutes(10)
 				);
+                if (data == null)
+                {
+                    return ResponseHelper<CollectionContentResponse?>.Error(
+                        "Collection content not found",
+                        statusCode: StatusCode.NOT_FOUND
+                    );
+                }
 
-				return ResponseHelper<CollectionContentResponse?>.Success(
+
+                return ResponseHelper<CollectionContentResponse?>.Success(
 					"Content fetched successfully",
 					data
 				);
@@ -174,7 +237,15 @@ namespace HotelAPI.BAL.Services
 		{
 			try
 			{
-				var cacheKey = $"{COLLECTION_HISTORY_CACHE_KEY}:{collectionId}";
+                if (collectionId <= 0)
+                {
+                    return ResponseHelper<IEnumerable<CollectionContentHistoryResponse>>.Error(
+                        "Valid CollectionId is required",
+                        statusCode: StatusCode.UNPROCESSABLE_ENTITY
+                    );
+                }
+
+                var cacheKey = $"{COLLECTION_HISTORY_CACHE_KEY}:{collectionId}";
 
 				var data = await _cache.GetOrCreateAsync(
 					cacheKey,
@@ -182,8 +253,15 @@ namespace HotelAPI.BAL.Services
 					TimeSpan.FromMinutes(30),
 					TimeSpan.FromMinutes(10)
 				);
+                if (data == null || !data.Any())
+                {
+                    return ResponseHelper<IEnumerable<CollectionContentHistoryResponse>>.Error(
+                        "No content history found",
+                        statusCode: StatusCode.NOT_FOUND
+                    );
+                }
 
-				return ResponseHelper<IEnumerable<CollectionContentHistoryResponse>>.Success(
+                return ResponseHelper<IEnumerable<CollectionContentHistoryResponse>>.Success(
 					"History fetched successfully",
 					data
 				);

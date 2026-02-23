@@ -67,7 +67,7 @@ namespace HotelAPI.Controller
 
         /// POST /api/collections/{id}/content
         [HttpPost("{id}/content")]
-        public async Task<IActionResult> CreateNewVersion(int id, [FromBody] CollectionContentRequest request)
+        public async Task<IActionResult> CreateContent(int id, [FromBody] CollectionContentRequest request)
         {
             request.CollectionId = id;
             var result = await collectionService.SaveAsync(request);
