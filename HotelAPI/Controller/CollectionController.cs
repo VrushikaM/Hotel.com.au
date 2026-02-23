@@ -32,35 +32,47 @@ namespace HotelAPI.Controller
             return StatusCode(result.Code, result);
         }
 
-		/// <summary>
-		/// Create or Update Collection
-		/// </summary>
-		[HttpPost("upsert")]
-		public async Task<IActionResult> UpsertCollection([FromBody] CollectionUpsertRequest request)
-		{
-			var result = await collectionService.UpsertCollectionAsync(request);
-			return StatusCode(result.Code, result);
-		}
+        /// POST /api/collections  (CREATE)
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] CollectionUpsertRequest request)
+        {
+            request.CollectionId = null;   
+            var result = await collectionService.UpsertCollectionAsync(request);
+            return StatusCode(result.Code, result);
+        }
 
-		[HttpPost("save")]
-		public async Task<IActionResult> Save(CollectionContentRequest request)
-		{
-			var result = await collectionService.SaveAsync(request);
-			return StatusCode((int)result.Code, result);
-		}
+        /// PUT /api/collections/{id}  (UPDATE)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(int id, [FromBody] CollectionUpsertRequest request)
+        {
+            request.CollectionId = id;
+            var result = await collectionService.UpsertCollectionAsync(request);
+            return StatusCode(result.Code, result);
+        }
 
-		[HttpGet("{collectionId}")]
-		public async Task<IActionResult> Get(int collectionId)
-		{
-			var result = await collectionService.GetAsync(collectionId);
-			return StatusCode((int)result.Code, result);
-		}
+        /// GET /api/collections/{id}/content
+        [HttpGet("{id}/content")]
+        public async Task<IActionResult> GetContent(int id)
+        {
+            var result = await collectionService.GetAsync(id);
+            return StatusCode((int)result.Code, result);
+        }
 
-		[HttpGet("history/{collectionId}")]
-		public async Task<IActionResult> GetHistory(int collectionId)
-		{
-			var result = await collectionService.GetHistoryAsync(collectionId);
-			return StatusCode((int)result.Code, result);
-		}
-	}
+        /// POST /api/collections/{id}/content
+        [HttpPost("{id}/content")]
+        public async Task<IActionResult> CreateNewVersion(int id, [FromBody] CollectionContentRequest request)
+        {
+            request.CollectionId = id;
+            var result = await collectionService.SaveAsync(request);
+            return StatusCode((int)result.Code, result);
+        }
+
+        /// GET /api/collections/{id}/content/history
+        [HttpGet("{id}/content/history")]
+        public async Task<IActionResult> GetContentHistory(int id)
+        {
+            var result = await collectionService.GetHistoryAsync(id);
+            return StatusCode((int)result.Code, result);
+        }
+    }
 }
