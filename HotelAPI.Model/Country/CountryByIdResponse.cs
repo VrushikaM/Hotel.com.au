@@ -1,0 +1,32 @@
+﻿namespace HotelAPI.Model.Country
+{
+	public class CountryByUrlResponse
+	{
+		public long CountryId { get; set; }
+		public string? CountryContent { get; set; }
+		public List<CountryDataResponse> CountryData { get; set; } = [];
+		public List<HotelDataResponse> HotelData { get; set; } = [];
+	}
+	public class CountryDataResponse
+	{
+		public long Id { get; set; }
+		public string? ItemName { get; set; }
+		public string? UrlName { get; set; }
+		public CountryItemType Type { get; set; }
+	}
+	public class HotelDataResponse
+	{
+		public long Id { get; set; }
+		public string? ItemName { get; set; }
+		public string? UrlName { get; set; }
+		public int HotelCount { get; set; }
+		public CountryItemType Type { get; set; }
+	}
+}
+public enum CountryItemType
+{
+	City = 0,
+	Region = 1,
+	HotelBrand = 2,
+	HotelType = 3
+}

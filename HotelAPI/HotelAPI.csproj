@@ -7,11 +7,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+    <PackageReference Include="FluentValidation" Version="12.1.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.2" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.2" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="10.1.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controller\" />
+    <Folder Include="MiddleWare\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\HotelAPI.BAL\HotelAPI.BAL.csproj" />
+    <ProjectReference Include="..\HotelAPI.Common\HotelAPI.Common.csproj" />
+    <ProjectReference Include="..\HotelAPI.DAL\HotelAPI.DAL.csproj" />
+    <ProjectReference Include="..\HotelAPI.Model\HotelAPI.Model.csproj" />
   </ItemGroup>
 
 </Project>
