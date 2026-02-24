@@ -127,5 +127,19 @@ namespace HotelAPI.Controller
 			var result = await collectionService.GetRuleByIdAsync(id);
 			return StatusCode(result.Code, result);
 		}
+
+		/// <summary>
+		/// Changes the status of a collection to Draft or Publish.
+		/// </summary>
+		/// <param name="id">Identifier of the collection.</param>
+		/// <param name="action">Status action (Draft or Publish).</param>
+		/// <returns>Returns the updated collection identifier.</returns>
+
+		[HttpPost("{id}/status")]
+		public async Task<IActionResult> ChangeStatus(int id, [FromQuery] string action)
+		{
+			var result = await collectionService.ChangeStatusAsync(id, action);
+			return StatusCode(result.Code, result);
+		}
 	}
 }

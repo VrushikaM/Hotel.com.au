@@ -14,5 +14,6 @@ namespace HotelAPI.BAL.Interfaces
 		Task<ResponseResult<IEnumerable<CollectionContentHistoryResponse>>> GetHistoryAsync(int collectionId);
 		Task<ResponseResult<int>> SaveRuleAsync(CollectionRuleRequest request);
 		Task<ResponseResult<CollectionRuleResponse?>> GetRuleByIdAsync(int ruleId);
+		Task<ResponseResult<long>> ChangeStatusAsync(long collectionId, string action);
 	}
 }

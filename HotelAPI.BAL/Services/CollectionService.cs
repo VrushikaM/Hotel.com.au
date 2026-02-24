@@ -310,5 +310,65 @@ namespace HotelAPI.BAL.Services
 				);
 			}
 		}
+
+		public async Task<ResponseResult<long>> ChangeStatusAsync(long collectionId, string action)
+		{
+			try
+			{
+				if (collectionId <= 0)
+				{
+					return ResponseHelper<long>.Error(
+						"Valid CollectionId is required",
+						statusCode: StatusCode.UNPROCESSABLE_ENTITY
+					);
+				}
+
+				if (string.IsNullOrWhiteSpace(action))
+				{
+					return ResponseHelper<long>.Error(
+						"Action is required",
+						statusCode: StatusCode.UNPROCESSABLE_ENTITY
+					);
+				}
+
+				var normalizedAction = action.Trim().ToLowerInvariant();
+
+				if (normalizedAction != "draft" && normalizedAction != "publish")
+				{
+					return ResponseHelper<long>.Error(
+						"Action must be either 'Draft' or 'Publish'",
+						statusCode: StatusCode.UNPROCESSABLE_ENTITY
+					);
+				}
+
+				var result = await _collectionRepository.ChangeStatusAsync(collectionId, normalizedAction);
+
+				if (result <= 0)
+				{
+					return ResponseHelper<long>.Error(
+						"Failed to change collection status",
+						statusCode: StatusCode.BAD_REQUEST
+					);
+				}
+
+				// 🔥 Clear collection list cache after status change
+				_cache.Remove(COLLECTION_LIST_CACHE_KEY);
+
+				return ResponseHelper<long>.Success(
+					normalizedAction == "publish"
+						? "Collection published successfully"
+						: "Collection moved to draft successfully",
+					result
+				);
+			}
+			catch (Exception ex)
+			{
+				return ResponseHelper<long>.Error(
+					"Error while changing collection status",
+					exception: ex,
+					statusCode: StatusCode.INTERNAL_SERVER_ERROR
+				);
+			}
+		}
 	}
 }

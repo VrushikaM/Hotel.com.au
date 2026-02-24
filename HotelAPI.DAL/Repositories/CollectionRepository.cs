@@ -124,5 +124,19 @@ namespace HotelAPI.DAL.Repositories
 			);
 		}
 		#endregion
+
+		#region ChangeStatusAsync
+		public async Task<long> ChangeStatusAsync(long collectionId, string action)
+		{
+			var parameters = new DynamicParameters();
+			parameters.Add("@CollectionId", collectionId);
+			parameters.Add("@Action", action);
+
+			return await _sqlHelper.QueryFirstOrDefaultAsync<long>(
+				StoredProcedure.ChangeCollectionStatus,
+				parameters
+			);
+		}
+		#endregion
 	}
 }

@@ -23,6 +23,7 @@
 		public const string GetCollectionContentHistory = "CollectionContent_GetHistory";
 		public const string UpsertCollectionRules = "CollectionRules_AddOrUpdate";
 		public const string GetCollectionRules = "CollectionRules_GetById";
+		public const string ChangeCollectionStatus = "Collection_ChangeStatus";
 
 		// Master Dropdown Stored Procedure
 		public const string MasterDropdowns = "MasterDropdown_Get";
