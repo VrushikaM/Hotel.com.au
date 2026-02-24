@@ -1,5 +1,6 @@
 ﻿using HotelAPI.Model.Collection;
 using HotelAPI.Model.Collection.CollectionContent;
+using HotelAPI.Model.Collection.CollectionCuration;
 using HotelAPI.Model.Collection.CollectionRule;
 
 namespace HotelAPI.DAL.Interfaces
@@ -14,5 +15,6 @@ namespace HotelAPI.DAL.Interfaces
 		Task<int> SaveRuleAsync(CollectionRuleRequest request);
 		Task<CollectionRuleResponse?> GetRuleByIdAsync(int ruleId);
 		Task<long> ChangeStatusAsync(long collectionId, string action);
+		Task<CollectionCurationResponse?> SaveCurationAsync(CollectionCurationRequest request);
 	}
 }

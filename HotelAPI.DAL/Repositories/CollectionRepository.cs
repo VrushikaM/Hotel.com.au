@@ -3,6 +3,7 @@ using HotelAPI.Common.Helper;
 using HotelAPI.DAL.Interfaces;
 using HotelAPI.Model.Collection;
 using HotelAPI.Model.Collection.CollectionContent;
+using HotelAPI.Model.Collection.CollectionCuration;
 using HotelAPI.Model.Collection.CollectionRule;
 
 namespace HotelAPI.DAL.Repositories
@@ -35,7 +36,7 @@ namespace HotelAPI.DAL.Repositories
 			parameters.Add("@ExcludeJson", request.ExcludeJson);
 			parameters.Add("@ChangedBy", request.ChangedBy);
 			parameters.Add("@IsDebug", request.IsDebug);
-			
+
 			var result = await _sqlHelper.QueryFirstOrDefaultAsync<CollectionUpsertResponse>(
 				StoredProcedure.UpsertCollection,
 				parameters
@@ -134,6 +135,43 @@ namespace HotelAPI.DAL.Repositories
 
 			return await _sqlHelper.QueryFirstOrDefaultAsync<long>(
 				StoredProcedure.ChangeCollectionStatus,
+				parameters
+			);
+		}
+		#endregion
+
+		#region	SaveCurationAsync
+		public async Task<CollectionCurationResponse?> SaveCurationAsync(CollectionCurationRequest request)
+		{
+			var parameters = new DynamicParameters();
+			parameters.Add("@CollectionID", request.CollectionId);
+			parameters.Add("@PinnedJson", request.PinnedJson);
+			parameters.Add("@ExcludeJson", request.ExcludeJson);
+
+			return await _sqlHelper.QueryMultipleAsync(
+				StoredProcedure.UpsertCollectionCuration,
+				async multi =>
+				{
+					// Result set 1 → CollectionID (from SP)
+					var collectionResult = (await multi.ReadAsync<long>()).FirstOrDefault();
+					if (collectionResult == 0)
+						return null;
+
+					// Result set 2 → Exclusion IDs
+					var exclusionIds = (await multi.ReadAsync<long>()).ToList();
+
+					return new CollectionCurationResponse
+					{
+						PinnedHotels = new PinnedHotelsResponse
+						{
+							CollectionId = collectionResult
+						},
+						ExcludedHotels = new ExcludedHotelsResponse
+						{
+							ExclusionIds = exclusionIds
+						}
+					};
+				},
 				parameters
 			);
 		}
