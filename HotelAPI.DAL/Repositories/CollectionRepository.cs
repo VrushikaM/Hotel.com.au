@@ -35,7 +35,7 @@ namespace HotelAPI.DAL.Repositories
 			parameters.Add("@ExcludeJson", request.ExcludeJson);
 			parameters.Add("@ChangedBy", request.ChangedBy);
 			parameters.Add("@IsDebug", request.IsDebug);
-
+			
 			var result = await _sqlHelper.QueryFirstOrDefaultAsync<CollectionUpsertResponse>(
 				StoredProcedure.UpsertCollection,
 				parameters
@@ -98,15 +98,15 @@ namespace HotelAPI.DAL.Repositories
 		public async Task<int> SaveRuleAsync(CollectionRuleRequest request)
 		{
 			var parameters = new DynamicParameters();
-			parameters.Add("@RuleID", request.RuleID);
-			parameters.Add("@CollectionID", request.CollectionID);
+			parameters.Add("@RuleID", request.RuleId);
+			parameters.Add("@CollectionID", request.CollectionId);
 			parameters.Add("@Field", request.Field);
 			parameters.Add("@Operator", request.Operator);
 			parameters.Add("@Value", request.Value);
 			parameters.Add("@LogicalGroup", request.LogicalGroup);
 
 			return await _sqlHelper.QueryFirstOrDefaultAsync<int>(
-				"CollectionRules_AddOrUpdate",
+				StoredProcedure.UpsertCollectionRules,
 				parameters
 			);
 		}
@@ -119,7 +119,7 @@ namespace HotelAPI.DAL.Repositories
 			parameters.Add("@RuleID", ruleId);
 
 			return await _sqlHelper.QueryFirstOrDefaultAsync<CollectionRuleResponse>(
-				"CollectionRules_GetById",
+				StoredProcedure.GetCollectionRules,
 				parameters
 			);
 		}

@@ -21,6 +21,8 @@
 		public const string SaveCollectionContent = "CollectionContent_Save";
 		public const string GetCollectionContent = "CollectionContent_Get";
 		public const string GetCollectionContentHistory = "CollectionContent_GetHistory";
+		public const string UpsertCollectionRules = "CollectionRules_AddOrUpdate";
+		public const string GetCollectionRules = "CollectionRules_GetById";
 
 		// Master Dropdown Stored Procedure
 		public const string MasterDropdowns = "MasterDropdown_Get";
