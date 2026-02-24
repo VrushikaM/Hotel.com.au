@@ -266,7 +266,7 @@ namespace HotelAPI.BAL.Services
 				}
 
 				return ResponseHelper<int>.Success(
-					request.RuleID == null
+					request.RuleId == null
 						? "Rule created successfully"
 						: "Rule updated successfully",
 					ruleId
