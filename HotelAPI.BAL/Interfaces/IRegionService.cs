@@ -5,6 +5,6 @@ namespace HotelAPI.BAL.Interfaces
 {
 	public interface IRegionService
 	{
-		Task<ResponseResult<IEnumerable<RegionsByCountryResponse>>> GetRegionsByCountryAsync(int countryId);
+		Task<ResponseResult<IEnumerable<RegionsByCountryResponse>>> GetRegionsByCountryAsync(int countryId, string? searchTerm);
 	}
 }

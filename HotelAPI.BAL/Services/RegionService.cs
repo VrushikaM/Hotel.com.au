@@ -8,15 +8,15 @@ namespace HotelAPI.BAL.Services
 {
 	public class RegionService(IRegionRepository _regionRepository, ICacheService _cache) : IRegionService
 	{
-		public async Task<ResponseResult<IEnumerable<RegionsByCountryResponse>>> GetRegionsByCountryAsync(int countryId)
+		public async Task<ResponseResult<IEnumerable<RegionsByCountryResponse>>> GetRegionsByCountryAsync(int countryId, string? searchTerm)
 		{
-			var cacheKey = CacheKeyBuilder.RegionsByCountry(countryId);
+			var cacheKey = CacheKeyBuilder.RegionsByCountry(countryId,searchTerm);
 
 			try
 			{
 				var result = await _cache.GetOrCreateAsync(
 					cacheKey,
-					factory: () => _regionRepository.GetRegionsByCountryAsync(countryId),
+					factory: () => _regionRepository.GetRegionsByCountryAsync(countryId,searchTerm),
 					expiration: TimeSpan.FromMinutes(15),
 					slidingExpiration: TimeSpan.FromMinutes(10)
 				);
