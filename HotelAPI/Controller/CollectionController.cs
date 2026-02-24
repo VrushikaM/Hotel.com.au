@@ -1,6 +1,7 @@
 ﻿using HotelAPI.BAL.Interfaces;
 using HotelAPI.Model.Collection;
 using HotelAPI.Model.Collection.CollectionContent;
+using HotelAPI.Model.Collection.CollectionCuration;
 using HotelAPI.Model.Collection.CollectionRule;
 using Microsoft.AspNetCore.Mvc;
 
@@ -139,6 +140,19 @@ namespace HotelAPI.Controller
 		public async Task<IActionResult> ChangeStatus(int id, [FromQuery] string action)
 		{
 			var result = await collectionService.ChangeStatusAsync(id, action);
+			return StatusCode(result.Code, result);
+		}
+
+		/// <summary>
+		/// Saves pinned and excluded hotels for a collection.
+		/// </summary>
+		/// <param name="request">Pinned and excluded hotel details.</param>
+		/// <returns>Returns CollectionId and created ExclusionIds.</returns>
+
+		[HttpPost("curations")]
+		public async Task<IActionResult> SaveCuration([FromBody] CollectionCurationRequest request)
+		{
+			var result = await collectionService.SaveCurationAsync(request);
 			return StatusCode(result.Code, result);
 		}
 	}

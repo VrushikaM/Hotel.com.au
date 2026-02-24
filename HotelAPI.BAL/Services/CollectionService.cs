@@ -4,6 +4,7 @@ using HotelAPI.Common.Helper;
 using HotelAPI.DAL.Interfaces;
 using HotelAPI.Model.Collection;
 using HotelAPI.Model.Collection.CollectionContent;
+using HotelAPI.Model.Collection.CollectionCuration;
 using HotelAPI.Model.Collection.CollectionRule;
 
 namespace HotelAPI.BAL.Services
@@ -115,35 +116,35 @@ namespace HotelAPI.BAL.Services
 			}
 		}
 
-        public async Task<ResponseResult<bool>> SaveAsync(CollectionContentRequest request)
+		public async Task<ResponseResult<bool>> SaveAsync(CollectionContentRequest request)
 		{
 			try
 			{
-                if (request == null)
-                {
-                    return ResponseHelper<bool>.Error(
-                        "Request body cannot be null",
-                        statusCode: StatusCode.BAD_REQUEST
-                    );
-                }
+				if (request == null)
+				{
+					return ResponseHelper<bool>.Error(
+						"Request body cannot be null",
+						statusCode: StatusCode.BAD_REQUEST
+					);
+				}
 
-                if (request.CollectionId <= 0)
-                {
-                    return ResponseHelper<bool>.Error(
-                        "Valid CollectionId is required",
-                        statusCode: StatusCode.UNPROCESSABLE_ENTITY
-                    );
-                }
+				if (request.CollectionId <= 0)
+				{
+					return ResponseHelper<bool>.Error(
+						"Valid CollectionId is required",
+						statusCode: StatusCode.UNPROCESSABLE_ENTITY
+					);
+				}
 
-                if (string.IsNullOrWhiteSpace(request.Header))
-                {
-                    return ResponseHelper<bool>.Error(
-                        "Header is required",
-                        statusCode: StatusCode.UNPROCESSABLE_ENTITY
-                    );
-                }
+				if (string.IsNullOrWhiteSpace(request.Header))
+				{
+					return ResponseHelper<bool>.Error(
+						"Header is required",
+						statusCode: StatusCode.UNPROCESSABLE_ENTITY
+					);
+				}
 
-                await _collectionRepository.SaveAsync(request);
+				await _collectionRepository.SaveAsync(request);
 
 				// 🔥 Clear content & history cache after save
 				_cache.Remove($"{COLLECTION_CONTENT_CACHE_KEY}:{request.CollectionId}");
@@ -168,13 +169,13 @@ namespace HotelAPI.BAL.Services
 		{
 			try
 			{
-                if (collectionId <= 0)
-                {
-                    return ResponseHelper<CollectionContentResponse?>.Error(
-                        "Valid CollectionId is required",
-                        statusCode: StatusCode.UNPROCESSABLE_ENTITY
-                    );
-                }
+				if (collectionId <= 0)
+				{
+					return ResponseHelper<CollectionContentResponse?>.Error(
+						"Valid CollectionId is required",
+						statusCode: StatusCode.UNPROCESSABLE_ENTITY
+					);
+				}
 
 				var cacheKey = CacheKeyBuilder.CollectionContent(collectionId);
 
@@ -184,16 +185,16 @@ namespace HotelAPI.BAL.Services
 					TimeSpan.FromMinutes(15),
 					TimeSpan.FromMinutes(10)
 				);
-                if (data == null)
-                {
-                    return ResponseHelper<CollectionContentResponse?>.Error(
-                        "Collection content not found",
-                        statusCode: StatusCode.NOT_FOUND
-                    );
-                }
+				if (data == null)
+				{
+					return ResponseHelper<CollectionContentResponse?>.Error(
+						"Collection content not found",
+						statusCode: StatusCode.NOT_FOUND
+					);
+				}
 
 
-                return ResponseHelper<CollectionContentResponse?>.Success(
+				return ResponseHelper<CollectionContentResponse?>.Success(
 					"Content fetched successfully",
 					data
 				);
@@ -212,13 +213,13 @@ namespace HotelAPI.BAL.Services
 		{
 			try
 			{
-                if (collectionId <= 0)
-                {
-                    return ResponseHelper<IEnumerable<CollectionContentHistoryResponse>>.Error(
-                        "Valid CollectionId is required",
-                        statusCode: StatusCode.UNPROCESSABLE_ENTITY
-                    );
-                }
+				if (collectionId <= 0)
+				{
+					return ResponseHelper<IEnumerable<CollectionContentHistoryResponse>>.Error(
+						"Valid CollectionId is required",
+						statusCode: StatusCode.UNPROCESSABLE_ENTITY
+					);
+				}
 
 				var cacheKey = CacheKeyBuilder.CollectionHistory(collectionId);
 
@@ -228,15 +229,15 @@ namespace HotelAPI.BAL.Services
 					TimeSpan.FromMinutes(15),
 					TimeSpan.FromMinutes(10)
 				);
-                if (data == null || !data.Any())
-                {
-                    return ResponseHelper<IEnumerable<CollectionContentHistoryResponse>>.Error(
-                        "No content history found",
-                        statusCode: StatusCode.NOT_FOUND
-                    );
-                }
+				if (data == null || !data.Any())
+				{
+					return ResponseHelper<IEnumerable<CollectionContentHistoryResponse>>.Error(
+						"No content history found",
+						statusCode: StatusCode.NOT_FOUND
+					);
+				}
 
-                return ResponseHelper<IEnumerable<CollectionContentHistoryResponse>>.Success(
+				return ResponseHelper<IEnumerable<CollectionContentHistoryResponse>>.Success(
 					"History fetched successfully",
 					data
 				);
@@ -365,6 +366,66 @@ namespace HotelAPI.BAL.Services
 			{
 				return ResponseHelper<long>.Error(
 					"Error while changing collection status",
+					exception: ex,
+					statusCode: StatusCode.INTERNAL_SERVER_ERROR
+				);
+			}
+		}
+
+		public async Task<ResponseResult<CollectionCurationResponse>> SaveCurationAsync(CollectionCurationRequest request)
+		{
+			try
+			{
+				if (request == null)
+				{
+					return ResponseHelper<CollectionCurationResponse>.Error(
+						"Request body cannot be null",
+						statusCode: StatusCode.BAD_REQUEST
+					);
+				}
+
+				if (request.CollectionId == null || request.CollectionId <= 0)
+				{
+					return ResponseHelper<CollectionCurationResponse>.Error(
+						"Valid CollectionId is required",
+						statusCode: StatusCode.UNPROCESSABLE_ENTITY
+					);
+				}
+
+				if (string.IsNullOrWhiteSpace(request.PinnedJson) &&
+					string.IsNullOrWhiteSpace(request.ExcludeJson))
+				{
+					return ResponseHelper<CollectionCurationResponse>.Error(
+						"PinnedJson or ExcludeJson must be provided",
+						statusCode: StatusCode.UNPROCESSABLE_ENTITY
+					);
+				}
+
+				// 🔥 Call repository (SP: CollectionCuration_Save)
+				var result = await _collectionRepository.SaveCurationAsync(request);
+
+				if (result == null)
+				{
+					return ResponseHelper<CollectionCurationResponse>.Error(
+						"Failed to save collection curation",
+						statusCode: StatusCode.BAD_REQUEST
+					);
+				}
+
+				// 🔥 Clear relevant caches
+				_cache.Remove(COLLECTION_LIST_CACHE_KEY);
+				_cache.Remove($"{COLLECTION_CONTENT_CACHE_KEY}:{request.CollectionId}");
+				_cache.Remove($"{COLLECTION_HISTORY_CACHE_KEY}:{request.CollectionId}");
+
+				return ResponseHelper<CollectionCurationResponse>.Success(
+					"Collection curation saved successfully",
+					result
+				);
+			}
+			catch (Exception ex)
+			{
+				return ResponseHelper<CollectionCurationResponse>.Error(
+					"Error while saving collection curation",
 					exception: ex,
 					statusCode: StatusCode.INTERNAL_SERVER_ERROR
 				);
