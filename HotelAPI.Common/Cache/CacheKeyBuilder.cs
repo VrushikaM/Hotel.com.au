@@ -3,7 +3,7 @@
 	public class CacheKeyBuilder
 	{
 		public static string CountryList(string? searchTerm)
-			=> $"country:list:{searchTerm?.Trim().ToLowerInvariant() ?? "all"}";
+			=> $"country:list:{(string.IsNullOrWhiteSpace(searchTerm) ? "all" : searchTerm.Trim().ToLowerInvariant())}";
 
 		public static string CountryByUrl(string normalizedUrl, string? normalizedAlphabet)
 			=> $"country:url:{normalizedUrl}:{normalizedAlphabet ?? "all"}";
