@@ -8,10 +8,14 @@ namespace HotelAPI.DAL.Repositories
 	public class CountryRepository(ISqlHelper _sqlHelper) : ICountryRepository
 	{
 		#region GetCountryListAsync
-		public async Task<IEnumerable<CountryListResponse>> GetCountryListAsync()
+		public async Task<IEnumerable<CountryListResponse>> GetCountryListAsync(string? searchTerm)
 		{
+			var parameters = new DynamicParameters();
+			parameters.Add("@SearchTerm", searchTerm);
+
 			return await _sqlHelper.QueryAsync<CountryListResponse>(
-				StoredProcedure.GetCountryList
+				StoredProcedure.GetCountryList,
+				parameters
 			);
 		}
 		#endregion

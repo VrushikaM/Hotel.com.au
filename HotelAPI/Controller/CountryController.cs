@@ -12,9 +12,9 @@ namespace HotelAPI.Controller
 		/// </summary>
 
 		[HttpGet]
-		public async Task<IActionResult> GetCountryList()
+		public async Task<IActionResult> GetCountryList(string? searchTerm)
 		{
-			var result = await countryService.GetCountryListAsync();
+			var result = await countryService.GetCountryListAsync(searchTerm);
 			return StatusCode(result.Code, result);
 		}
 

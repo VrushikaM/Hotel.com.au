@@ -2,6 +2,9 @@
 {
 	public class CacheKeyBuilder
 	{
+		public static string CountryList(string? searchTerm)
+			=> $"country:list:{searchTerm?.Trim().ToLowerInvariant() ?? "all"}";
+
 		public static string CountryByUrl(string normalizedUrl, string? normalizedAlphabet)
 			=> $"country:url:{normalizedUrl}:{normalizedAlphabet ?? "all"}";
 

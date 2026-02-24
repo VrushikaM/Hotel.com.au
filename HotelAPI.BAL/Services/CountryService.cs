@@ -8,15 +8,15 @@ namespace HotelAPI.BAL.Services
 {
 	public class CountryService(ICountryRepository _countryRepository, ICacheService _cache) : ICountryService
 	{
-		private const string COUNTRY_LIST_CACHE_KEY = "country:list";
-
-		public async Task<ResponseResult<IEnumerable<CountryListResponse>>> GetCountryListAsync()
+		public async Task<ResponseResult<IEnumerable<CountryListResponse>>> GetCountryListAsync(string? searchTerm)
 		{
 			try
 			{
+				var cacheKey = CacheKeyBuilder.CountryList(searchTerm);
+
 				var result = await _cache.GetOrCreateAsync(
-					cacheKey: COUNTRY_LIST_CACHE_KEY,
-					factory: () => _countryRepository.GetCountryListAsync(),
+					cacheKey,
+					factory: () => _countryRepository.GetCountryListAsync(searchTerm),
 					expiration: TimeSpan.FromMinutes(15),
 					slidingExpiration: TimeSpan.FromMinutes(10)
 				);
