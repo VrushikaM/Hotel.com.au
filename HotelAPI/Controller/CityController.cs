@@ -14,9 +14,9 @@ namespace HotelAPI.Controller
 		/// <param name="regionId">Region identifier (Region Id)</param>
 
 		[HttpGet]
-		public async Task<IActionResult> GetCitiesByCountryOrRegion(int countryId, int? regionId)
+		public async Task<IActionResult> GetCitiesByCountryOrRegion(int countryId, int? regionId, string? searchTerm)
 		{
-			var result = await cityService.GetCitiesByCountryOrRegionAsync(countryId, regionId);
+			var result = await cityService.GetCitiesByCountryOrRegionAsync(countryId, regionId,searchTerm);
 			return StatusCode(result.Code, result);
 		}
 	}

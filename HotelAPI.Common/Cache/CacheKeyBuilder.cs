@@ -8,8 +8,8 @@
 		public static string CountryByUrl(string normalizedUrl, string? normalizedAlphabet)
 			=> $"country:url:{normalizedUrl}:{normalizedAlphabet ?? "all"}";
 
-		public static string CitiesByCountryOrRegion(int countryId, int? regionId)
-			=> $"city:list:{countryId}:{regionId ?? 0}";
+		public static string CitiesByCountryOrRegion(int countryId, int? regionId, string? searchTerm)
+			=> $"city:list:{countryId}:{regionId ?? 0}:{(string.IsNullOrWhiteSpace(searchTerm) ? "all" : searchTerm.Trim().ToLowerInvariant())}";
 
 		public static string RegionsByCountry(int countryId)
 			=> $"region:list:{countryId}";

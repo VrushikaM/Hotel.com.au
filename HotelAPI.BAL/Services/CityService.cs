@@ -8,15 +8,15 @@ namespace HotelAPI.BAL.Services
 {
 	public class CityService(ICityRepository _cityRepository, ICacheService _cache) : ICityService
 	{
-		public async Task<ResponseResult<IEnumerable<CitiesByCountryOrRegionResponse>>> GetCitiesByCountryOrRegionAsync(int countryId, int? regionId)
+		public async Task<ResponseResult<IEnumerable<CitiesByCountryOrRegionResponse>>> GetCitiesByCountryOrRegionAsync(int countryId, int? regionId, string? searchTerm)
 		{
-			var cacheKey = CacheKeyBuilder.CitiesByCountryOrRegion(countryId, regionId);
+			var cacheKey = CacheKeyBuilder.CitiesByCountryOrRegion(countryId, regionId,searchTerm);
 
 			try
 			{
 				var result = await _cache.GetOrCreateAsync(
 					cacheKey,
-					factory: () => _cityRepository.GetCitiesByCountryOrRegionAsync(countryId, regionId),
+					factory: () => _cityRepository.GetCitiesByCountryOrRegionAsync(countryId, regionId,searchTerm),
 					expiration: TimeSpan.FromMinutes(15),
 					slidingExpiration: TimeSpan.FromMinutes(10)
 				);
