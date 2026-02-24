@@ -1,5 +1,4 @@
-﻿using Azure;
-using HotelAPI.BAL.Interfaces;
+﻿using HotelAPI.BAL.Interfaces;
 using HotelAPI.Common.Helper;
 using HotelAPI.Common.Password;
 using HotelAPI.DAL.Interfaces;

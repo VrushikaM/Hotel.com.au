@@ -2,7 +2,7 @@
 {
 	public class CitiesByCountryOrRegionResponse
 	{
-		public long CityID { get; set; }
+		public long CityId { get; set; }
 		public string? Name { get; set; }
 	}
 }

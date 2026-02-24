@@ -8,27 +8,20 @@ namespace HotelAPI.BAL.Services
 {
 	public class RegionService(IRegionRepository _regionRepository, ICacheService _cache) : IRegionService
 	{
-		private const string REGION_BY_COUNTRY_LIST_CACHE_KEY = "regionsByCountry:list";
-
 		public async Task<ResponseResult<IEnumerable<RegionsByCountryResponse>>> GetRegionsByCountryAsync(int countryId)
 		{
+			var cacheKey = CacheKeyBuilder.RegionsByCountry(countryId);
+
 			try
 			{
-
-				var data = await _cache.GetOrCreateAsync(
-					cacheKey: $"{REGION_BY_COUNTRY_LIST_CACHE_KEY}_{countryId}",
+				var result = await _cache.GetOrCreateAsync(
+					cacheKey,
 					factory: () => _regionRepository.GetRegionsByCountryAsync(countryId),
 					expiration: TimeSpan.FromMinutes(15),
 					slidingExpiration: TimeSpan.FromMinutes(10)
 				);
 
-				if (data == null || !data.Any())
-				{
-					return ResponseHelper<IEnumerable<RegionsByCountryResponse>>.Error(
-						"No regions found",
-						statusCode: StatusCode.NOT_FOUND
-					);
-				}
+				var data = result ?? Enumerable.Empty<RegionsByCountryResponse>();
 
 				return ResponseHelper<IEnumerable<RegionsByCountryResponse>>.Success(
 					"Region list fetched successfully",

@@ -8,26 +8,20 @@ namespace HotelAPI.BAL.Services
 {
 	public class CityService(ICityRepository _cityRepository, ICacheService _cache) : ICityService
 	{
-		private const string CITY_BY_COUNTRY_OR_REGION_LIST_CACHE_KEY = "citiesByCountryOrRegion:list";
-
 		public async Task<ResponseResult<IEnumerable<CitiesByCountryOrRegionResponse>>> GetCitiesByCountryOrRegionAsync(int countryId, int? regionId)
 		{
+			var cacheKey = CacheKeyBuilder.CitiesByCountryOrRegion(countryId, regionId);
+
 			try
 			{
-					var data = await _cache.GetOrCreateAsync(
-					cacheKey: $"{CITY_BY_COUNTRY_OR_REGION_LIST_CACHE_KEY}_{countryId}_{regionId}",
-					factory: () => _cityRepository.GetCitiesByCountryOrRegionAsync(countryId,regionId),
+				var result = await _cache.GetOrCreateAsync(
+					cacheKey,
+					factory: () => _cityRepository.GetCitiesByCountryOrRegionAsync(countryId, regionId),
 					expiration: TimeSpan.FromMinutes(15),
 					slidingExpiration: TimeSpan.FromMinutes(10)
 				);
 
-				if (data == null || !data.Any())
-				{
-					return ResponseHelper<IEnumerable<CitiesByCountryOrRegionResponse>>.Error(
-						"No cities found",
-						statusCode: StatusCode.NOT_FOUND
-					);
-				}
+				var data = result ?? Enumerable.Empty<CitiesByCountryOrRegionResponse>();
 
 				return ResponseHelper<IEnumerable<CitiesByCountryOrRegionResponse>>.Success(
 					"City list fetched successfully",

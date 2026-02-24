@@ -27,7 +27,8 @@ namespace HotelAPI.DAL.Repositories
 				StoredProcedure.GetCountryByUrl,
 				async multi =>
 				{
-					var country = await multi.ReadFirstOrDefaultAsync<CountryByUrlResponse>();
+					var country = await multi.ReadSingleOrDefaultAsync<CountryByUrlResponse>();
+
 					if (country == null)
 						return null;
 

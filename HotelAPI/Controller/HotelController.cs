@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace HotelAPI.Controller
 {
 	[ApiController]
-	[Route("api/hotel")]
+	[Route("api/hotels")]
 	public class HotelController(IHotelService hotelService) : ControllerBase
 	{
 		/// <summary>
@@ -13,7 +13,7 @@ namespace HotelAPI.Controller
 		/// <param name="cityId">City identifier (City Id)</param>
 		/// <param name="search">Hotel name search keyword (Search)</param>
 
-		[HttpGet("hotelsByCity")]
+		[HttpGet]
 		public async Task<IActionResult> GetHotelsByCity(int? cityId, string? search)
 		{
 			var result = await hotelService.GetHotelsByCityAsync(cityId, search);

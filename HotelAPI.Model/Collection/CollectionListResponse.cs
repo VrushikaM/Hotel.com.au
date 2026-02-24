@@ -2,7 +2,7 @@
 {
 	public class CollectionListResponse
 	{
-		public long CollectionID { get; set; }
+		public long CollectionId { get; set; }
 		public string? Name { get; set; }
 		public string? Slug { get; set; }
 		public string? Type { get; set; }

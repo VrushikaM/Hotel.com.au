@@ -6,7 +6,7 @@
 	}
 	public class CountriesResponse
 	{
-		public long CountryID { get; set; }
+		public long CountryId { get; set; }
 		public string? Name { get; set; }
 	}
 }

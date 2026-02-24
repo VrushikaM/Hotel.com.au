@@ -8,26 +8,20 @@ namespace HotelAPI.BAL.Services
 {
 	public class MasterDropdownService(IMasterDropdownRepository _masterDropdownRepository, ICacheService _cache) : IMasterDropdownService
 	{
-		private const string MASTER_DRODOWNS_CACHE_KEY = "masterDropdowns";
+		private const string MASTER_DROPDOWNS_CACHE_KEY = "masterDropdowns";
 
 		public async Task<ResponseResult<MasterDropdownsResponse>> GetMasterDropdownsAsync()
 		{
 			try
 			{
-				var data = await _cache.GetOrCreateAsync(
-					cacheKey: MASTER_DRODOWNS_CACHE_KEY,
+				var result = await _cache.GetOrCreateAsync(
+					cacheKey: MASTER_DROPDOWNS_CACHE_KEY,
 					factory: () => _masterDropdownRepository.GetMasterDropdownsAsync(),
 					expiration: TimeSpan.FromMinutes(15),
-					slidingExpiration: TimeSpan.FromMinutes(5)
+					slidingExpiration: TimeSpan.FromMinutes(10)
 				);
 
-				if (data == null)
-				{
-					return ResponseHelper<MasterDropdownsResponse>.Error(
-						"No dropdowns found",
-						statusCode: StatusCode.NOT_FOUND
-					);
-				}
+				var data = result ?? new MasterDropdownsResponse();
 
 				return ResponseHelper<MasterDropdownsResponse>.Success(
 					"Dropdowns fetched successfully",

@@ -4,14 +4,14 @@ using Microsoft.AspNetCore.Mvc;
 namespace HotelAPI.Controller
 {
 	[ApiController]
-	[Route("api/masterDropdown")]
+	[Route("api/masterdropdowns")]
 	public class MasterDropdownController(IMasterDropdownService masterDropdownService) : ControllerBase
 	{
 		/// <summary>
 		/// Retrieves the list of all master dropdowns.
 		/// </summary>
 
-		[HttpGet("list")]
+		[HttpGet]
 		public async Task<IActionResult> GetMasterDropdowns()
 		{
 			var result = await masterDropdownService.GetMasterDropdownsAsync();

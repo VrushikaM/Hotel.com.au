@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace HotelAPI.Controller
 {
 	[ApiController]
-	[Route("api/user")]
+	[Route("api/users")]
 	public class UserController(IUserService userService) : ControllerBase
 	{
 		/// <summary>
@@ -13,7 +13,7 @@ namespace HotelAPI.Controller
 		/// </summary>
 		/// <param name="model">User creation request</param>
 
-		[HttpPost("create")]
+		[HttpPost]
 		public async Task<IActionResult> CreateUser([FromBody] UserCreateRequest model)
 		{
 			var result = await userService.CreateUserAsync(model);

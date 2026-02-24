@@ -8,16 +8,11 @@ using HotelAPI.Model.Collection.CollectionRule;
 
 namespace HotelAPI.BAL.Services
 {
-	public class CollectionService(
-		ICollectionRepository _collectionRepository,
-		ICacheService _cache
-	) : ICollectionService
+	public class CollectionService(ICollectionRepository _collectionRepository, ICacheService _cache) : ICollectionService
 	{
 		private const string COLLECTION_LIST_CACHE_KEY = "collection:list";
 		private const string COLLECTION_CONTENT_CACHE_KEY = "collection:content";
 		private const string COLLECTION_HISTORY_CACHE_KEY = "collection:history";
-
-		#region Collection List
 
 		public async Task<ResponseResult<IEnumerable<CollectionListResponse>>> GetCollectionListAsync(
 			string? status,
@@ -27,27 +22,23 @@ namespace HotelAPI.BAL.Services
 		{
 			try
 			{
-				var cacheKey =
-					$"{COLLECTION_LIST_CACHE_KEY}:" +
-					$"{status ?? "all"}:" +
-					$"{countryId ?? 0}:" +
-					$"{regionId ?? 0}:" +
-					$"{cityId ?? 0}";
+				var version = await _cache.GetOrCreateAsync(
+					COLLECTION_LIST_CACHE_KEY,
+					() => Task.FromResult(Guid.NewGuid().ToString()),
+					TimeSpan.FromHours(1),
+					TimeSpan.FromHours(1)
+				);
 
-				var data = await _cache.GetOrCreateAsync(
+				var cacheKey = $"{CacheKeyBuilder.CollectionList(status, countryId, regionId, cityId)}:{version}";
+
+				var result = await _cache.GetOrCreateAsync(
 					cacheKey,
 					() => _collectionRepository.GetCollectionListAsync(status, countryId, regionId, cityId),
 					TimeSpan.FromMinutes(15),
-					TimeSpan.FromMinutes(5)
+					TimeSpan.FromMinutes(10)
 				);
 
-				if (data == null || !data.Any())
-				{
-					return ResponseHelper<IEnumerable<CollectionListResponse>>.Error(
-						"No collections found",
-						statusCode: StatusCode.NOT_FOUND
-					);
-				}
+				var data = result ?? Enumerable.Empty<CollectionListResponse>();
 
 				return ResponseHelper<IEnumerable<CollectionListResponse>>.Success(
 					"Collection list fetched successfully",
@@ -63,10 +54,6 @@ namespace HotelAPI.BAL.Services
 				);
 			}
 		}
-
-		#endregion
-
-		#region Upsert Collection
 
 		public async Task<ResponseResult<CollectionUpsertResponse>> UpsertCollectionAsync(CollectionUpsertRequest request)
 		{
@@ -105,6 +92,7 @@ namespace HotelAPI.BAL.Services
 					);
 				}
 
+				// 🔥 Clear collection list cache after insert/update
 				_cache.Remove(COLLECTION_LIST_CACHE_KEY);
 
 				return ResponseHelper<CollectionUpsertResponse>.Success(
@@ -127,16 +115,10 @@ namespace HotelAPI.BAL.Services
 			}
 		}
 
-        #endregion
-
-        #region Save Content
-
         public async Task<ResponseResult<bool>> SaveAsync(CollectionContentRequest request)
 		{
 			try
 			{
-
-
                 if (request == null)
                 {
                     return ResponseHelper<bool>.Error(
@@ -182,10 +164,6 @@ namespace HotelAPI.BAL.Services
 			}
 		}
 
-		#endregion
-
-		#region Get Content
-
 		public async Task<ResponseResult<CollectionContentResponse?>> GetAsync(int collectionId)
 		{
 			try
@@ -197,12 +175,13 @@ namespace HotelAPI.BAL.Services
                         statusCode: StatusCode.UNPROCESSABLE_ENTITY
                     );
                 }
-                var cacheKey = $"{COLLECTION_CONTENT_CACHE_KEY}:{collectionId}";
+
+				var cacheKey = CacheKeyBuilder.CollectionContent(collectionId);
 
 				var data = await _cache.GetOrCreateAsync(
 					cacheKey,
 					() => _collectionRepository.GetAsync(collectionId),
-					TimeSpan.FromMinutes(30),
+					TimeSpan.FromMinutes(15),
 					TimeSpan.FromMinutes(10)
 				);
                 if (data == null)
@@ -229,10 +208,6 @@ namespace HotelAPI.BAL.Services
 			}
 		}
 
-		#endregion
-
-		#region Get History
-
 		public async Task<ResponseResult<IEnumerable<CollectionContentHistoryResponse>>> GetHistoryAsync(int collectionId)
 		{
 			try
@@ -245,12 +220,12 @@ namespace HotelAPI.BAL.Services
                     );
                 }
 
-                var cacheKey = $"{COLLECTION_HISTORY_CACHE_KEY}:{collectionId}";
+				var cacheKey = CacheKeyBuilder.CollectionHistory(collectionId);
 
 				var data = await _cache.GetOrCreateAsync(
 					cacheKey,
 					() => _collectionRepository.GetHistoryAsync(collectionId),
-					TimeSpan.FromMinutes(30),
+					TimeSpan.FromMinutes(15),
 					TimeSpan.FromMinutes(10)
 				);
                 if (data == null || !data.Any())
@@ -275,10 +250,6 @@ namespace HotelAPI.BAL.Services
 				);
 			}
 		}
-
-		#endregion
-
-		#region Save Rule
 
 		public async Task<ResponseResult<int>> SaveRuleAsync(CollectionRuleRequest request)
 		{
@@ -311,11 +282,6 @@ namespace HotelAPI.BAL.Services
 			}
 		}
 
-		#endregion
-
-
-		#region Get Rule By Id
-
 		public async Task<ResponseResult<CollectionRuleResponse?>> GetRuleByIdAsync(int ruleId)
 		{
 			try
@@ -344,7 +310,5 @@ namespace HotelAPI.BAL.Services
 				);
 			}
 		}
-
-		#endregion
 	}
 }

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace HotelAPI.Controller
 {
 	[ApiController]
-	[Route("api/city")]
+	[Route("api/cities")]
 	public class CityController(ICityService cityService) : ControllerBase
 	{
 		/// <summary>
@@ -13,7 +13,7 @@ namespace HotelAPI.Controller
 		/// <param name="countryId">Country identifier (Country Id)</param>
 		/// <param name="regionId">Region identifier (Region Id)</param>
 
-		[HttpGet("citiesByCountryOrRegion")]
+		[HttpGet]
 		public async Task<IActionResult> GetCitiesByCountryOrRegion(int countryId, int? regionId)
 		{
 			var result = await cityService.GetCitiesByCountryOrRegionAsync(countryId, regionId);

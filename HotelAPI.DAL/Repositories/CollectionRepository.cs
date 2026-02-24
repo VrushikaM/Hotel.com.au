@@ -44,6 +44,8 @@ namespace HotelAPI.DAL.Repositories
 			return result?.CollectionId ?? 0;
 		}
 		#endregion
+
+		#region SaveAsync
 		public async Task SaveAsync(CollectionContentRequest request)
 		{
 			var parameters = new DynamicParameters();
@@ -60,33 +62,39 @@ namespace HotelAPI.DAL.Repositories
 			parameters.Add("@UserId", 33);
 
 			await _sqlHelper.ExecuteAsync(
-				"CollectionContent_Save",
+				StoredProcedure.SaveCollectionContent,
 				parameters
 			);
 		}
+		#endregion
 
+		#region GetAsync
 		public async Task<CollectionContentResponse?> GetAsync(int collectionId)
 		{
 			var parameters = new DynamicParameters();
 			parameters.Add("@CollectionId", collectionId);
 
 			return await _sqlHelper.QueryFirstOrDefaultAsync<CollectionContentResponse>(
-				"CollectionContent_Get",
+				StoredProcedure.GetCollectionContent,
 				parameters
 			);
 		}
+		#endregion
+
+		#region GetHistoryAsync
 		public async Task<IEnumerable<CollectionContentHistoryResponse>> GetHistoryAsync(int collectionId)
 		{
 			var parameters = new DynamicParameters();
 			parameters.Add("@CollectionId", collectionId);
 
 			return await _sqlHelper.QueryAsync<CollectionContentHistoryResponse>(
-				"CollectionContent_GetHistory",
+				StoredProcedure.GetCollectionContentHistory,
 				parameters
 			);
 		}
-		#region Save Rule
+		#endregion
 
+		#region SaveRuleAsync
 		public async Task<int> SaveRuleAsync(CollectionRuleRequest request)
 		{
 			var parameters = new DynamicParameters();
@@ -102,12 +110,9 @@ namespace HotelAPI.DAL.Repositories
 				parameters
 			);
 		}
-
 		#endregion
 
-
-		#region Get Rule By Id
-
+		#region GetRuleByIdAsync
 		public async Task<CollectionRuleResponse?> GetRuleByIdAsync(int ruleId)
 		{
 			var parameters = new DynamicParameters();
@@ -118,7 +123,6 @@ namespace HotelAPI.DAL.Repositories
 				parameters
 			);
 		}
-
 		#endregion
 	}
 }

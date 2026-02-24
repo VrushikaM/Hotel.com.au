@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace HotelAPI.Controller
 {
 	[ApiController]
-	[Route("api/[controller]")]
+	[Route("api/globalsearch")]
 	public class GlobalSearchController(IGlobalSearchService globalSearchService) : ControllerBase
 	{
 		/// <summary>
@@ -12,7 +12,7 @@ namespace HotelAPI.Controller
 		/// </summary>
 		/// <param name="q">Search text (minimum 2 characters)</param>
 
-		[HttpGet("search")]
+		[HttpGet]
 		public async Task<IActionResult> Search([FromQuery] string q)
 		{
 			var result = await globalSearchService.SearchAsync(q);

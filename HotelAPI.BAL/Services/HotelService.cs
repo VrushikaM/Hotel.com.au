@@ -8,27 +8,20 @@ namespace HotelAPI.BAL.Services
 {
 	public class HotelService(IHotelRepository _hotelRepository, ICacheService _cache) : IHotelService
 	{
-		private const string HOTEL_BY_CITY_LIST_CACHE_KEY = "hotelsByCity:list";
-
 		public async Task<ResponseResult<IEnumerable<HotelsByCityResponse>>> GetHotelsByCityAsync(int? cityId, string? search)
 		{
+			var cacheKey = CacheKeyBuilder.HotelsByCity(cityId, search);
+
 			try
 			{
-
-				var data = await _cache.GetOrCreateAsync(
-					cacheKey: $"{HOTEL_BY_CITY_LIST_CACHE_KEY}_{cityId}_{search}",
+				var result = await _cache.GetOrCreateAsync(
+					cacheKey,
 					factory: () => _hotelRepository.GetHotelsByCityAsync(cityId, search),
 					expiration: TimeSpan.FromMinutes(15),
 					slidingExpiration: TimeSpan.FromMinutes(10)
 				);
 
-				if (data == null || !data.Any())
-				{
-					return ResponseHelper<IEnumerable<HotelsByCityResponse>>.Error(
-						"No hotels found",
-						statusCode: StatusCode.NOT_FOUND
-					);
-				}
+				var data = result ?? Enumerable.Empty<HotelsByCityResponse>();
 
 				return ResponseHelper<IEnumerable<HotelsByCityResponse>>.Success(
 					"Hotel list fetched successfully",

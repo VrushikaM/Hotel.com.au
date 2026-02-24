@@ -1,6 +1,7 @@
 ﻿using HotelAPI.BAL.Interfaces;
 using HotelAPI.Common.Helper;
 using HotelAPI.DAL.Interfaces;
+using HotelAPI.Model.City;
 using HotelAPI.Model.Search;
 
 namespace HotelAPI.BAL.Services
@@ -20,16 +21,10 @@ namespace HotelAPI.BAL.Services
 					);
 				}
 
-				var data = await _globalSearchRepository.SearchAsync(searchText.Trim());
+				var result = await _globalSearchRepository.SearchAsync(searchText.Trim());
 
-				if (data == null || !data.Any())
-				{
-					return ResponseHelper<IEnumerable<GlobalSearchResponse>>.Error(
-						"No matching results found",
-						statusCode: StatusCode.NOT_FOUND
-					);
-				}
-
+				var data = result ?? Enumerable.Empty<GlobalSearchResponse>();
+				
 				return ResponseHelper<IEnumerable<GlobalSearchResponse>>.Success(
 					"Search suggestions fetched successfully",
 					data

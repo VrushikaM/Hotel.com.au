@@ -67,7 +67,9 @@ namespace HotelAPI.Common.Helper
 		public int? PageSize { get; } = pageSize;
 		public string? SortBy { get; set; } = sortBy;
 		public string? SortOrder { get; set; } = sortOrder;
-
+		public string TraceId { get; } =
+				System.Diagnostics.Activity.Current?.Id
+				?? Guid.NewGuid().ToString();
 		public int? TotalPages =>
 			PageSize.HasValue && PageSize > 0 && TotalRecords.HasValue
 				? (int)Math.Ceiling((double)TotalRecords.Value / PageSize.Value)

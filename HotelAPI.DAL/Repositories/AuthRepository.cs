@@ -19,7 +19,7 @@ namespace HotelAPI.DAL.Repositories
 			return await _sqlHelper.QueryMultipleAsync(StoredProcedure.LoginAuthentication, async multi =>
 			{
 				// 1️⃣ User Basic Info
-				var user = await multi.ReadFirstOrDefaultAsync<UserLoginResponse>();
+				var user = await multi.ReadSingleOrDefaultAsync<UserLoginResponse>();
 				if (user == null)
 					return null;
 

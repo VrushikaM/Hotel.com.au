@@ -14,20 +14,14 @@ namespace HotelAPI.BAL.Services
 		{
 			try
 			{
-				var data = await _cache.GetOrCreateAsync(
+				var result = await _cache.GetOrCreateAsync(
 					cacheKey: COUNTRY_LIST_CACHE_KEY,
 					factory: () => _countryRepository.GetCountryListAsync(),
 					expiration: TimeSpan.FromMinutes(15),
-					slidingExpiration: TimeSpan.FromMinutes(5)
+					slidingExpiration: TimeSpan.FromMinutes(10)
 				);
 
-				if (data == null || !data.Any())
-				{
-					return ResponseHelper<IEnumerable<CountryListResponse>>.Error(
-						"No countries found",
-						statusCode: StatusCode.NOT_FOUND
-					);
-				}
+				var data = result ?? Enumerable.Empty<CountryListResponse>();
 
 				return ResponseHelper<IEnumerable<CountryListResponse>>.Success(
 					"Country list fetched successfully",
@@ -46,12 +40,40 @@ namespace HotelAPI.BAL.Services
 
 		public async Task<ResponseResult<CountryByUrlResponse>> GetCountryByUrlAsync(string urlName, string? alphabet)
 		{
+			string? normalizedAlphabet = null;
+
+			if (string.IsNullOrWhiteSpace(urlName))
+			{
+				return ResponseHelper<CountryByUrlResponse>.Error(
+					"UrlName is required.",
+					statusCode: StatusCode.BAD_REQUEST
+				);
+			}
+
+			if (!string.IsNullOrWhiteSpace(alphabet))
+			{
+				alphabet = alphabet.Trim().ToLowerInvariant();
+
+				if (alphabet.Length != 1 || !char.IsLetter(alphabet[0]))
+				{
+					return ResponseHelper<CountryByUrlResponse>.Error(
+							"Alphabet must be a single letter (a-z).",
+							statusCode: StatusCode.BAD_REQUEST
+					);
+				}
+
+				normalizedAlphabet = alphabet;
+			}
+
+			var normalizedUrl = urlName.Trim().ToLowerInvariant();
+
+			var cacheKey = CacheKeyBuilder.CountryByUrl(normalizedUrl, normalizedAlphabet);
+
 			try
 			{
-
 				var data = await _cache.GetOrCreateAsync(
-					cacheKey: $"COUNTRY_URL_{urlName}_{alphabet}",
-					factory: () => _countryRepository.GetCountryByUrlAsync(urlName, alphabet),
+					cacheKey,
+					factory: () => _countryRepository.GetCountryByUrlAsync(normalizedUrl, normalizedAlphabet),
 					expiration: TimeSpan.FromMinutes(15),
 					slidingExpiration: TimeSpan.FromMinutes(10)
 				);
