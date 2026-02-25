@@ -14,8 +14,8 @@
 		public static string RegionsByCountry(int countryId, string? searchTerm)
 			=> $"region:list:{countryId}:{(string.IsNullOrWhiteSpace(searchTerm) ? "all" : searchTerm.Trim().ToLowerInvariant())}";
 
-		public static string HotelsByCity(int? cityId, string? search)
-			=> $"hotel:list:{cityId ?? 0}:{search?.Trim().ToLowerInvariant() ?? "all"}";
+		public static string HotelsByCity(int? cityId, string? searchTerm)
+			=> $"hotel:list:{cityId ?? 0}:{(string.IsNullOrWhiteSpace(searchTerm) ? "all" : searchTerm.Trim().ToLowerInvariant())}";
 
 		public static string CollectionList(string? status, int? countryId, int? regionId, int? cityId)
 			=> $"collection:list:{status?.Trim().ToLowerInvariant() ?? "all"}:{countryId ?? 0}:{regionId ?? 0}:{cityId ?? 0}";

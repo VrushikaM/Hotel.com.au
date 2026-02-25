@@ -8,11 +8,11 @@ namespace HotelAPI.DAL.Repositories
 	public class HotelRepository(ISqlHelper _sqlHelper) : IHotelRepository
 	{
 		#region GetHotelsByCityAsync
-		public async Task<IEnumerable<HotelsByCityResponse>> GetHotelsByCityAsync(int? cityId, string? search)
+		public async Task<IEnumerable<HotelsByCityResponse>> GetHotelsByCityAsync(int? cityId, string? searchTerm)
 		{
 			var parameters = new DynamicParameters();
 			parameters.Add("@CityId", cityId);
-			parameters.Add("@Search",  search);
+			parameters.Add("@SearchTerm", searchTerm);
 
 			return await _sqlHelper.QueryAsync<HotelsByCityResponse>(
 				StoredProcedure.GetHotelsByCity,

@@ -14,9 +14,9 @@ namespace HotelAPI.Controller
 		/// <param name="search">Hotel name search keyword (Search)</param>
 
 		[HttpGet]
-		public async Task<IActionResult> GetHotelsByCity(int? cityId, string? search)
+		public async Task<IActionResult> GetHotelsByCity(int? cityId, string? searchTerm)
 		{
-			var result = await hotelService.GetHotelsByCityAsync(cityId, search);
+			var result = await hotelService.GetHotelsByCityAsync(cityId, searchTerm);
 			return StatusCode(result.Code, result);
 		}
 	}
