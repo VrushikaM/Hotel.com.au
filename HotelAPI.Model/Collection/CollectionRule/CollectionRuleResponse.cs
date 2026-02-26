@@ -2,6 +2,10 @@
 {
 	public class CollectionRuleResponse
 	{
+		public List<Rules>? Rules { get; set; }
+	}
+	public class Rules
+	{
 		public int RuleId { get; set; }
 		public int CollectionId { get; set; }
 		public string Field { get; set; } = string.Empty;

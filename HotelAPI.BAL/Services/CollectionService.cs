@@ -276,6 +276,14 @@ namespace HotelAPI.BAL.Services
 					);
 				}
 
+				if (affectedRuleIds.Count() == 1 && affectedRuleIds.First() == 0)
+				{
+					return ResponseHelper<IEnumerable<int>>.Error(
+						"Cannot exceed 8 rules per collection",
+						statusCode: StatusCode.BAD_REQUEST
+					);
+				}
+
 				return ResponseHelper<IEnumerable<int>>.Success(
 					"Rules saved successfully",
 					affectedRuleIds
@@ -291,11 +299,11 @@ namespace HotelAPI.BAL.Services
 			}
 		}
 
-		public async Task<ResponseResult<CollectionRuleResponse?>> GetRulesByIdAsync(int ruleId)
+		public async Task<ResponseResult<CollectionRuleResponse?>> GetRulesByIdAsync(int collectionId)
 		{
 			try
 			{
-				var data = await _collectionRepository.GetRulesByIdAsync(ruleId);
+				var data = await _collectionRepository.GetRulesByIdAsync(collectionId);
 
 				if (data == null)
 				{

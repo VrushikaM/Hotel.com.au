@@ -112,15 +112,19 @@ namespace HotelAPI.DAL.Repositories
 		#endregion
 
 		#region GetRulesByIdAsync
-		public async Task<CollectionRuleResponse?> GetRulesByIdAsync(int ruleId)
+		public async Task<CollectionRuleResponse?> GetRulesByIdAsync(int collectionId)
 		{
 			var parameters = new DynamicParameters();
-			parameters.Add("@RuleID", ruleId);
+			parameters.Add("@CollectionID", collectionId);
 
-			return await _sqlHelper.QueryFirstOrDefaultAsync<CollectionRuleResponse>(
+			var rules = await _sqlHelper.QueryAsync<Rules>(
 				StoredProcedure.GetCollectionRules,
 				parameters
 			);
+			return new CollectionRuleResponse
+			{
+				Rules = rules.ToList()
+			};
 		}
 		#endregion
 
