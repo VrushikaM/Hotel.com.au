@@ -89,7 +89,7 @@ namespace HotelAPI.BAL.Services
 				if (collectionId <= 0)
 				{
 					return ResponseHelper<CollectionUpsertResponse>.Error(
-						"Failed to save collection",
+						"Slug already exists.",
 						statusCode: StatusCode.BAD_REQUEST
 					);
 				}
