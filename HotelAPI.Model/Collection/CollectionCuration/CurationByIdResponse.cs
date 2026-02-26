@@ -9,6 +9,7 @@
 	{
 		public long CollectionID { get; set; }
 		public long HotelID { get; set; }
+		public string? HotelName { get; set; }
 		public int Position { get; set; }
 		public string? PinType { get; set; }
 	}
@@ -18,6 +19,7 @@
 		public long ExclusionID { get; set; }
 		public long CollectionID { get; set; }
 		public long HotelID { get; set; }
+		public string? HotelName { get; set; }
 		public long? ChainID { get; set; }
 		public string? Reason { get; set; }
 	}

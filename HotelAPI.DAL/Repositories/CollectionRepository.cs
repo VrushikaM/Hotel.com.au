@@ -31,11 +31,7 @@ namespace HotelAPI.DAL.Repositories
 			var parameters = new DynamicParameters();
 			parameters.Add("@CollectionId", request.CollectionId);
 			parameters.Add("@CollectionJson", request.CollectionJson);
-			parameters.Add("@RulesJson", request.RulesJson);
-			parameters.Add("@PinnedJson", request.PinnedJson);
-			parameters.Add("@ExcludeJson", request.ExcludeJson);
 			parameters.Add("@ChangedBy", request.ChangedBy);
-			parameters.Add("@IsDebug", request.IsDebug);
 
 			var result = await _sqlHelper.QueryFirstOrDefaultAsync<CollectionUpsertResponse>(
 				StoredProcedure.UpsertCollection,
