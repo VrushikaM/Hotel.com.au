@@ -15,11 +15,7 @@ namespace HotelAPI.BAL.Services
 		private const string COLLECTION_CONTENT_CACHE_KEY = "collection:content";
 		private const string COLLECTION_HISTORY_CACHE_KEY = "collection:history";
 
-		public async Task<ResponseResult<IEnumerable<CollectionListResponse>>> GetCollectionListAsync(
-			string? status,
-			int? countryId,
-			int? regionId,
-			int? cityId)
+		public async Task<ResponseResult<IEnumerable<CollectionListResponse>>> GetCollectionListAsync(string? status, int? countryId, int? regionId, int? cityId)
 		{
 			try
 			{
@@ -110,6 +106,51 @@ namespace HotelAPI.BAL.Services
 			{
 				return ResponseHelper<CollectionUpsertResponse>.Error(
 					"Error occurred while saving collection",
+					exception: ex,
+					statusCode: StatusCode.INTERNAL_SERVER_ERROR
+				);
+			}
+		}
+
+		public async Task<ResponseResult<CollectionByIdResponse?>> GetCollectionAsync(int collectionId)
+		{
+			try
+			{
+				if (collectionId <= 0)
+				{
+					return ResponseHelper<CollectionByIdResponse?>.Error(
+						"Valid CollectionId is required",
+						statusCode: StatusCode.UNPROCESSABLE_ENTITY
+					);
+				}
+
+				var cacheKey = CacheKeyBuilder.CollectionById(collectionId);
+
+				var data = await _cache.GetOrCreateAsync(
+					cacheKey,
+					() => _collectionRepository.GetCollectionAsync(collectionId),
+					TimeSpan.FromMinutes(15),
+					TimeSpan.FromMinutes(10)
+				);
+
+				if (data == null)
+				{
+					return ResponseHelper<CollectionByIdResponse?>.Error(
+						"Collection not found",
+						statusCode: StatusCode.NOT_FOUND
+					);
+				}
+
+
+				return ResponseHelper<CollectionByIdResponse?>.Success(
+					"Collection fetched successfully",
+					data
+				);
+			}
+			catch (Exception ex)
+			{
+				return ResponseHelper<CollectionByIdResponse?>.Error(
+					"Error fetching collection",
 					exception: ex,
 					statusCode: StatusCode.INTERNAL_SERVER_ERROR
 				);
@@ -503,51 +544,6 @@ namespace HotelAPI.BAL.Services
 			{
 				return ResponseHelper<CurationByIdResponse?>.Error(
 					"Error while fetching collection curations",
-					exception: ex,
-					statusCode: StatusCode.INTERNAL_SERVER_ERROR
-				);
-			}
-		}
-
-		public async Task<ResponseResult<CollectionByIdResponse?>> GetCollectionAsync(int collectionId)
-		{
-			try
-			{
-				if (collectionId <= 0)
-				{
-					return ResponseHelper<CollectionByIdResponse?>.Error(
-						"Valid CollectionId is required",
-						statusCode: StatusCode.UNPROCESSABLE_ENTITY
-					);
-				}
-
-				var cacheKey = CacheKeyBuilder.CollectionById(collectionId);
-
-				var data = await _cache.GetOrCreateAsync(
-					cacheKey,
-					() => _collectionRepository.GetCollectionAsync(collectionId),
-					TimeSpan.FromMinutes(15),
-					TimeSpan.FromMinutes(10)
-				);
-
-				if (data == null)
-				{
-					return ResponseHelper<CollectionByIdResponse?>.Error(
-						"Collection not found",
-						statusCode: StatusCode.NOT_FOUND
-					);
-				}
-
-
-				return ResponseHelper<CollectionByIdResponse?>.Success(
-					"Collection fetched successfully",
-					data
-				);
-			}
-			catch (Exception ex)
-			{
-				return ResponseHelper<CollectionByIdResponse?>.Error(
-					"Error fetching collection",
 					exception: ex,
 					statusCode: StatusCode.INTERNAL_SERVER_ERROR
 				);

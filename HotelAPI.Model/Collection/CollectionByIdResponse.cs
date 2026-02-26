@@ -2,6 +2,7 @@
 {
 	public class CollectionByIdResponse
 	{
+		public long CollectionId { get; set; }
 		public string? Name { get; set; }
 		public string? Slug { get; set; }
 		public long GeoNodeId { get; set; }

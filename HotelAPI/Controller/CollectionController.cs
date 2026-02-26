@@ -39,7 +39,7 @@ namespace HotelAPI.Controller
 		/// <returns>Returns the created collection with assigned CollectionId.</returns>
 
 		[HttpPost]
-		public async Task<IActionResult> Create([FromBody] CollectionUpsertRequest request)
+		public async Task<IActionResult> UpsertCollection([FromBody] CollectionUpsertRequest request)
 		{
 			request.CollectionId = null;
 			var result = await collectionService.UpsertCollectionAsync(request);
@@ -56,22 +56,6 @@ namespace HotelAPI.Controller
 		public async Task<IActionResult> GetCollection(int id)
 		{
 			var result = await collectionService.GetCollectionAsync(id);
-			return StatusCode(result.Code, result);
-		}
-
-		/// <summary>
-		/// Updates an existing collection identified by the provided `id`.
-		/// The `CollectionId` in the request body is overridden with the URL `id`.
-		/// </summary>
-		/// <param name="id">Identifier of the collection to update.</param>
-		/// <param name="request">Updated collection details.</param>
-		/// <returns>Returns the updated collection information.</returns>
-		
-		[HttpPost("{id}")]
-		public async Task<IActionResult> Update(int id, [FromBody] CollectionUpsertRequest request)
-		{
-			request.CollectionId = id;
-			var result = await collectionService.UpsertCollectionAsync(request);
 			return StatusCode(result.Code, result);
 		}
 

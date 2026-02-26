@@ -9,6 +9,7 @@ namespace HotelAPI.DAL.Interfaces
 	{
 		Task<IEnumerable<CollectionListResponse>> GetCollectionListAsync(string? status, int? countryId, int? regionId, int? cityId);
 		Task<int> UpsertCollectionAsync(CollectionUpsertRequest request);
+		Task<CollectionByIdResponse?> GetCollectionAsync(int collectionId);
 		Task UpsertContentAsync(CollectionContentRequest request);
 		Task<CollectionContentResponse?> GetContentAsync(int collectionId);
 		Task<IEnumerable<CollectionContentHistoryResponse>> GetContentHistoryAsync(int collectionId);
@@ -17,6 +18,5 @@ namespace HotelAPI.DAL.Interfaces
 		Task<int> ChangeStatusAsync(int collectionId, string action);
 		Task<CollectionCurationResponse?> UpsertCurationsAsync(CollectionCurationRequest request);
 		Task<CurationByIdResponse?> GetCurationsByIdAsync(int collectionId);
-		Task<CollectionByIdResponse?> GetCollectionAsync(int collectionId);
 	}
 }

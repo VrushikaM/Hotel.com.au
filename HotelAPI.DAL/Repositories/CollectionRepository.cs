@@ -42,6 +42,19 @@ namespace HotelAPI.DAL.Repositories
 		}
 		#endregion
 
+		#region GetCollectionAsync
+		public async Task<CollectionByIdResponse?> GetCollectionAsync(int collectionId)
+		{
+			var parameters = new DynamicParameters();
+			parameters.Add("@CollectionId", collectionId);
+
+			return await _sqlHelper.QueryFirstOrDefaultAsync<CollectionByIdResponse>(
+				StoredProcedure.GetCollectionById,
+				parameters
+			);
+		}
+		#endregion
+
 		#region UpsertContentAsync
 		public async Task UpsertContentAsync(CollectionContentRequest request)
 		{
@@ -200,19 +213,6 @@ namespace HotelAPI.DAL.Repositories
 						ExcludedHotels = excludedHotels
 					};
 				},
-				parameters
-			);
-		}
-		#endregion
-
-		#region GetCollectionAsync
-		public async Task<CollectionByIdResponse?> GetCollectionAsync(int collectionId)
-		{
-			var parameters = new DynamicParameters();
-			parameters.Add("@CollectionId", collectionId);
-
-			return await _sqlHelper.QueryFirstOrDefaultAsync<CollectionByIdResponse>(
-				StoredProcedure.GetCollectionById,
 				parameters
 			);
 		}

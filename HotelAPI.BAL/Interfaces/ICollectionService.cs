@@ -10,6 +10,7 @@ namespace HotelAPI.BAL.Interfaces
 	{
 		Task<ResponseResult<IEnumerable<CollectionListResponse>>> GetCollectionListAsync(string? status, int? countryId, int? regionId, int? cityId);
 		Task<ResponseResult<CollectionUpsertResponse>> UpsertCollectionAsync(CollectionUpsertRequest request);
+		Task<ResponseResult<CollectionByIdResponse?>> GetCollectionAsync(int collectionId);
 		Task<ResponseResult<bool>> UpsertContentAsync(CollectionContentRequest request);
 		Task<ResponseResult<CollectionContentResponse?>> GetContentAsync(int collectionId);
 		Task<ResponseResult<IEnumerable<CollectionContentHistoryResponse>>> GetContentHistoryAsync(int collectionId);
@@ -18,6 +19,5 @@ namespace HotelAPI.BAL.Interfaces
 		Task<ResponseResult<int>> ChangeStatusAsync(int collectionId, string action);
 		Task<ResponseResult<CollectionCurationResponse>> UpsertCurationsAsync(CollectionCurationRequest request);
 		Task<ResponseResult<CurationByIdResponse?>> GetCurationsByIdAsync(int collectionId);
-		Task<ResponseResult<CollectionByIdResponse?>> GetCollectionAsync(int collectionId);
 	}
 }
