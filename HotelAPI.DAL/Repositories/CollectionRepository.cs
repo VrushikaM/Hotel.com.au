@@ -65,8 +65,8 @@ namespace HotelAPI.DAL.Repositories
 		}
 		#endregion
 
-		#region GetAsync
-		public async Task<CollectionContentResponse?> GetAsync(int collectionId)
+		#region GetContentAsync
+		public async Task<CollectionContentResponse?> GetContentAsync(int collectionId)
 		{
 			var parameters = new DynamicParameters();
 			parameters.Add("@CollectionId", collectionId);
@@ -79,7 +79,7 @@ namespace HotelAPI.DAL.Repositories
 		#endregion
 
 		#region GetHistoryAsync
-		public async Task<IEnumerable<CollectionContentHistoryResponse>> GetHistoryAsync(int collectionId)
+		public async Task<IEnumerable<CollectionContentHistoryResponse>> GetContentHistoryAsync(int collectionId)
 		{
 			var parameters = new DynamicParameters();
 			parameters.Add("@CollectionId", collectionId);
@@ -125,13 +125,13 @@ namespace HotelAPI.DAL.Repositories
 		#endregion
 
 		#region ChangeStatusAsync
-		public async Task<long> ChangeStatusAsync(long collectionId, string action)
+		public async Task<int> ChangeStatusAsync(int collectionId, string action)
 		{
 			var parameters = new DynamicParameters();
 			parameters.Add("@CollectionId", collectionId);
 			parameters.Add("@Action", action);
 
-			return await _sqlHelper.QueryFirstOrDefaultAsync<long>(
+			return await _sqlHelper.QueryFirstOrDefaultAsync<int>(
 				StoredProcedure.ChangeCollectionStatus,
 				parameters
 			);
@@ -176,7 +176,7 @@ namespace HotelAPI.DAL.Repositories
 		#endregion
 
 		#region GetCurationsByIdAsync
-		public async Task<CurationByIdResponse?> GetCurationsByIdAsync(long collectionId)
+		public async Task<CurationByIdResponse?> GetCurationsByIdAsync(int collectionId)
 		{
 			var parameters = new DynamicParameters();
 			parameters.Add("@CollectionID", collectionId);
@@ -200,6 +200,19 @@ namespace HotelAPI.DAL.Repositories
 						ExcludedHotels = excludedHotels
 					};
 				},
+				parameters
+			);
+		}
+		#endregion
+
+		#region GetCollectionAsync
+		public async Task<CollectionByIdResponse?> GetCollectionAsync(int collectionId)
+		{
+			var parameters = new DynamicParameters();
+			parameters.Add("@CollectionId", collectionId);
+
+			return await _sqlHelper.QueryFirstOrDefaultAsync<CollectionByIdResponse>(
+				StoredProcedure.GetCollectionById,
 				parameters
 			);
 		}

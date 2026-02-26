@@ -6,7 +6,6 @@ using HotelAPI.Model.Collection;
 using HotelAPI.Model.Collection.CollectionContent;
 using HotelAPI.Model.Collection.CollectionCuration;
 using HotelAPI.Model.Collection.CollectionRule;
-using System.Text.Json;
 
 namespace HotelAPI.BAL.Services
 {
@@ -166,7 +165,7 @@ namespace HotelAPI.BAL.Services
 			}
 		}
 
-		public async Task<ResponseResult<CollectionContentResponse?>> GetAsync(int collectionId)
+		public async Task<ResponseResult<CollectionContentResponse?>> GetContentAsync(int collectionId)
 		{
 			try
 			{
@@ -182,10 +181,11 @@ namespace HotelAPI.BAL.Services
 
 				var data = await _cache.GetOrCreateAsync(
 					cacheKey,
-					() => _collectionRepository.GetAsync(collectionId),
+					() => _collectionRepository.GetContentAsync(collectionId),
 					TimeSpan.FromMinutes(15),
 					TimeSpan.FromMinutes(10)
 				);
+
 				if (data == null)
 				{
 					return ResponseHelper<CollectionContentResponse?>.Error(
@@ -210,7 +210,7 @@ namespace HotelAPI.BAL.Services
 			}
 		}
 
-		public async Task<ResponseResult<IEnumerable<CollectionContentHistoryResponse>>> GetHistoryAsync(int collectionId)
+		public async Task<ResponseResult<IEnumerable<CollectionContentHistoryResponse>>> GetContentHistoryAsync(int collectionId)
 		{
 			try
 			{
@@ -226,10 +226,11 @@ namespace HotelAPI.BAL.Services
 
 				var data = await _cache.GetOrCreateAsync(
 					cacheKey,
-					() => _collectionRepository.GetHistoryAsync(collectionId),
+					() => _collectionRepository.GetContentHistoryAsync(collectionId),
 					TimeSpan.FromMinutes(15),
 					TimeSpan.FromMinutes(10)
 				);
+
 				if (data == null || !data.Any())
 				{
 					return ResponseHelper<IEnumerable<CollectionContentHistoryResponse>>.Error(
@@ -257,7 +258,7 @@ namespace HotelAPI.BAL.Services
 		{
 			try
 			{
-				if (request == null || request.RulesJson == null || !request.RulesJson.Any())
+				if (request == null || request.RulesJson == null || request.RulesJson.Length == 0)
 				{
 					return ResponseHelper<IEnumerable<int>>.Error(
 						"Rules list cannot be empty",
@@ -303,7 +304,23 @@ namespace HotelAPI.BAL.Services
 		{
 			try
 			{
-				var data = await _collectionRepository.GetRulesByIdAsync(collectionId);
+
+				if (collectionId <= 0)
+				{
+					return ResponseHelper<CollectionRuleResponse?>.Error(
+						"Valid CollectionId is required",
+						statusCode: StatusCode.UNPROCESSABLE_ENTITY
+					);
+				}
+
+				var cacheKey = CacheKeyBuilder.CollectionRule(collectionId);
+
+				var data = await _cache.GetOrCreateAsync(
+					cacheKey,
+					() => _collectionRepository.GetRulesByIdAsync(collectionId),
+					TimeSpan.FromMinutes(15),
+					TimeSpan.FromMinutes(10)
+				);
 
 				if (data == null)
 				{
@@ -328,13 +345,13 @@ namespace HotelAPI.BAL.Services
 			}
 		}
 
-		public async Task<ResponseResult<long>> ChangeStatusAsync(long collectionId, string action)
+		public async Task<ResponseResult<int>> ChangeStatusAsync(int collectionId, string action)
 		{
 			try
 			{
 				if (collectionId <= 0)
 				{
-					return ResponseHelper<long>.Error(
+					return ResponseHelper<int>.Error(
 						"Valid CollectionId is required",
 						statusCode: StatusCode.UNPROCESSABLE_ENTITY
 					);
@@ -342,7 +359,7 @@ namespace HotelAPI.BAL.Services
 
 				if (string.IsNullOrWhiteSpace(action))
 				{
-					return ResponseHelper<long>.Error(
+					return ResponseHelper<int>.Error(
 						"Action is required",
 						statusCode: StatusCode.UNPROCESSABLE_ENTITY
 					);
@@ -352,7 +369,7 @@ namespace HotelAPI.BAL.Services
 
 				if (normalizedAction != "draft" && normalizedAction != "publish")
 				{
-					return ResponseHelper<long>.Error(
+					return ResponseHelper<int>.Error(
 						"Action must be either 'Draft' or 'Publish'",
 						statusCode: StatusCode.UNPROCESSABLE_ENTITY
 					);
@@ -362,7 +379,7 @@ namespace HotelAPI.BAL.Services
 
 				if (result <= 0)
 				{
-					return ResponseHelper<long>.Error(
+					return ResponseHelper<int>.Error(
 						"Failed to change collection status",
 						statusCode: StatusCode.BAD_REQUEST
 					);
@@ -371,7 +388,7 @@ namespace HotelAPI.BAL.Services
 				// 🔥 Clear collection list cache after status change
 				_cache.Remove(COLLECTION_LIST_CACHE_KEY);
 
-				return ResponseHelper<long>.Success(
+				return ResponseHelper<int>.Success(
 					normalizedAction == "publish"
 						? "Collection published successfully"
 						: "Collection moved to draft successfully",
@@ -380,7 +397,7 @@ namespace HotelAPI.BAL.Services
 			}
 			catch (Exception ex)
 			{
-				return ResponseHelper<long>.Error(
+				return ResponseHelper<int>.Error(
 					"Error while changing collection status",
 					exception: ex,
 					statusCode: StatusCode.INTERNAL_SERVER_ERROR
@@ -448,7 +465,7 @@ namespace HotelAPI.BAL.Services
 			}
 		}
 
-		public async Task<ResponseResult<CurationByIdResponse?>> GetCurationsByIdAsync(long collectionId)
+		public async Task<ResponseResult<CurationByIdResponse?>> GetCurationsByIdAsync(int collectionId)
 		{
 			try
 			{
@@ -460,8 +477,14 @@ namespace HotelAPI.BAL.Services
 					);
 				}
 
-				// 🔥 Call repository (SP: CollectionCurations_GetById)
-				var data = await _collectionRepository.GetCurationsByIdAsync(collectionId);
+				var cacheKey = CacheKeyBuilder.CollectionCuration(collectionId);
+
+				var data = await _cache.GetOrCreateAsync(
+					cacheKey,
+					() => _collectionRepository.GetCurationsByIdAsync(collectionId),
+					TimeSpan.FromMinutes(15),
+					TimeSpan.FromMinutes(10)
+				);
 
 				if (data == null)
 				{
@@ -480,6 +503,51 @@ namespace HotelAPI.BAL.Services
 			{
 				return ResponseHelper<CurationByIdResponse?>.Error(
 					"Error while fetching collection curations",
+					exception: ex,
+					statusCode: StatusCode.INTERNAL_SERVER_ERROR
+				);
+			}
+		}
+
+		public async Task<ResponseResult<CollectionByIdResponse?>> GetCollectionAsync(int collectionId)
+		{
+			try
+			{
+				if (collectionId <= 0)
+				{
+					return ResponseHelper<CollectionByIdResponse?>.Error(
+						"Valid CollectionId is required",
+						statusCode: StatusCode.UNPROCESSABLE_ENTITY
+					);
+				}
+
+				var cacheKey = CacheKeyBuilder.CollectionById(collectionId);
+
+				var data = await _cache.GetOrCreateAsync(
+					cacheKey,
+					() => _collectionRepository.GetCollectionAsync(collectionId),
+					TimeSpan.FromMinutes(15),
+					TimeSpan.FromMinutes(10)
+				);
+
+				if (data == null)
+				{
+					return ResponseHelper<CollectionByIdResponse?>.Error(
+						"Collection not found",
+						statusCode: StatusCode.NOT_FOUND
+					);
+				}
+
+
+				return ResponseHelper<CollectionByIdResponse?>.Success(
+					"Collection fetched successfully",
+					data
+				);
+			}
+			catch (Exception ex)
+			{
+				return ResponseHelper<CollectionByIdResponse?>.Error(
+					"Error fetching collection",
 					exception: ex,
 					statusCode: StatusCode.INTERNAL_SERVER_ERROR
 				);

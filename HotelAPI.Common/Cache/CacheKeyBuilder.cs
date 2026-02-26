@@ -25,5 +25,14 @@
 
 		public static string CollectionHistory(int collectionId)
 			=> $"collection:history:{collectionId}";
+
+		public static string CollectionRule(int collectionId)
+			=> $"collection:rule:{collectionId}";
+
+		public static string CollectionCuration(int collectionId)
+			=> $"collection:curation:{collectionId}";
+
+		public static string CollectionById(int collectionId)
+			=> $"collection:byId:{collectionId}";
 	}
 }

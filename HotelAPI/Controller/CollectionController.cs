@@ -47,14 +47,27 @@ namespace HotelAPI.Controller
 		}
 
 		/// <summary>
+		/// Retrieves basic collection items for the specified collection.
+		/// </summary>
+		/// <param name="id">Identifier of the collection.</param>
+		/// <returns>Returns the list of basic collection items for the collection.</returns>
+
+		[HttpGet("{id}")]
+		public async Task<IActionResult> GetCollection(int id)
+		{
+			var result = await collectionService.GetCollectionAsync(id);
+			return StatusCode(result.Code, result);
+		}
+
+		/// <summary>
 		/// Updates an existing collection identified by the provided `id`.
 		/// The `CollectionId` in the request body is overridden with the URL `id`.
 		/// </summary>
 		/// <param name="id">Identifier of the collection to update.</param>
 		/// <param name="request">Updated collection details.</param>
 		/// <returns>Returns the updated collection information.</returns>
-
-		[HttpPut("{id}")]
+		
+		[HttpPost("{id}")]
 		public async Task<IActionResult> Update(int id, [FromBody] CollectionUpsertRequest request)
 		{
 			request.CollectionId = id;
@@ -71,7 +84,7 @@ namespace HotelAPI.Controller
 		[HttpGet("{id}/content")]
 		public async Task<IActionResult> GetContent(int id)
 		{
-			var result = await collectionService.GetAsync(id);
+			var result = await collectionService.GetContentAsync(id);
 			return StatusCode(result.Code, result);
 		}
 
@@ -99,7 +112,7 @@ namespace HotelAPI.Controller
 		[HttpGet("{id}/content/history")]
 		public async Task<IActionResult> GetContentHistory(int id)
 		{
-			var result = await collectionService.GetHistoryAsync(id);
+			var result = await collectionService.GetContentHistoryAsync(id);
 			return StatusCode(result.Code, result);
 		}
 
