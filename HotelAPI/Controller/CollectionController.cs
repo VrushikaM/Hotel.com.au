@@ -9,7 +9,7 @@ namespace HotelAPI.Controller
 {
 
 	[ApiController]
-	[Route("api/collections")]
+	[Route("collections")]
 	public class CollectionController(ICollectionService collectionService) : ControllerBase
 	{
 		/// <summary>

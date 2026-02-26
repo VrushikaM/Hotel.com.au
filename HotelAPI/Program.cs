@@ -17,24 +17,31 @@ builder.Services.AddCors(options =>
 	options.AddPolicy("AllowFrontend", policy =>
 	{
 		policy
-			.AllowAnyOrigin()
-			.WithOrigins("http://localhost:3000")
+			.WithOrigins(
+				"http://localhost:3000",
+				"http://hotel.au",
+				"https://hotel.au",
+				"http://www.hotel.au",
+				"https://www.hotel.au"
+			)
 			.AllowAnyHeader()
-			.AllowAnyMethod();
+			.AllowAnyMethod()
+			.AllowCredentials();
 	});
 });
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-app.UseSwagger(); // ensures /swagger/v1/swagger.json is generated
+
+app.UsePathBase("/api");
+app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
-	c.SwaggerEndpoint("/swagger/v1/swagger.json", "Hotel API V1");
-	c.RoutePrefix = "api";
+	c.SwaggerEndpoint("/api/swagger/v1/swagger.json", "Hotel API V1");
 });
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
 
 app.UseCors("AllowFrontend");
 

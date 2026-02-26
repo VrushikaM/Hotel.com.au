@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace HotelAPI.Controller
 {
 	[ApiController]
-	[Route("api/regions")]
+	[Route("regions")]
 	public class RegionController(IRegionService regionService) : ControllerBase
 	{
 		/// <summary>

@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace HotelAPI.Controller
 {
 	[ApiController]
-	[Route("api/users")]
+	[Route("users")]
 	public class UserController(IUserService userService) : ControllerBase
 	{
 		/// <summary>

@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace HotelAPI.Controller
 {
 	[ApiController]
-	[Route("api/masterdropdowns")]
+	[Route("masterdropdowns")]
 	public class MasterDropdownController(IMasterDropdownService masterDropdownService) : ControllerBase
 	{
 		/// <summary>

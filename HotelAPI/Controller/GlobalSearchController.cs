@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace HotelAPI.Controller
 {
 	[ApiController]
-	[Route("api/globalsearch")]
+	[Route("globalsearch")]
 	public class GlobalSearchController(IGlobalSearchService globalSearchService) : ControllerBase
 	{
 		/// <summary>
