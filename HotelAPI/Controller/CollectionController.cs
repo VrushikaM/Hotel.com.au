@@ -41,7 +41,6 @@ namespace HotelAPI.Controller
 		[HttpPost]
 		public async Task<IActionResult> UpsertCollection([FromBody] CollectionUpsertRequest request)
 		{
-			request.CollectionId = null;
 			var result = await collectionService.UpsertCollectionAsync(request);
 			return StatusCode(result.Code, result);
 		}
