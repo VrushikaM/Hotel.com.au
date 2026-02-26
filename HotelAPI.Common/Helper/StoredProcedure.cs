@@ -18,13 +18,14 @@
 		// Collection Stored Procedures
 		public const string GetCollectionList = "Collection_GetList";
 		public const string UpsertCollection = "Collection_Save";
-		public const string SaveCollectionContent = "CollectionContent_Save";
+		public const string UpsertCollectionContent = "CollectionContent_Save";
 		public const string GetCollectionContent = "CollectionContent_Get";
 		public const string GetCollectionContentHistory = "CollectionContent_GetHistory";
 		public const string UpsertCollectionRules = "CollectionRules_AddOrUpdate";
 		public const string GetCollectionRules = "CollectionRules_GetById";
 		public const string ChangeCollectionStatus = "Collection_ChangeStatus";
-		public const string UpsertCollectionCuration = "CollectionCuration_Save";
+		public const string UpsertCollectionCurations = "CollectionCuration_Save";
+		public const string GetCollectionCurations = "CollectionCurations_GetById";
 
 		// Master Dropdown Stored Procedure
 		public const string MasterDropdowns = "MasterDropdown_Get";

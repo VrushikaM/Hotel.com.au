@@ -46,8 +46,8 @@ namespace HotelAPI.DAL.Repositories
 		}
 		#endregion
 
-		#region SaveAsync
-		public async Task SaveAsync(CollectionContentRequest request)
+		#region UpsertContentAsync
+		public async Task UpsertContentAsync(CollectionContentRequest request)
 		{
 			var parameters = new DynamicParameters();
 
@@ -63,7 +63,7 @@ namespace HotelAPI.DAL.Repositories
 			parameters.Add("@UserId", 33);
 
 			await _sqlHelper.ExecuteAsync(
-				StoredProcedure.SaveCollectionContent,
+				StoredProcedure.UpsertCollectionContent,
 				parameters
 			);
 		}
@@ -95,26 +95,24 @@ namespace HotelAPI.DAL.Repositories
 		}
 		#endregion
 
-		#region SaveRuleAsync
-		public async Task<int> SaveRuleAsync(CollectionRuleRequest request)
+		#region UpsertRulesAsync
+		public async Task<IEnumerable<int>> UpsertRulesAsync(int collectionId, string rulesJson)
 		{
 			var parameters = new DynamicParameters();
-			parameters.Add("@RuleID", request.RuleId);
-			parameters.Add("@CollectionID", request.CollectionId);
-			parameters.Add("@Field", request.Field);
-			parameters.Add("@Operator", request.Operator);
-			parameters.Add("@Value", request.Value);
-			parameters.Add("@LogicalGroup", request.LogicalGroup);
+			parameters.Add("@CollectionID", collectionId);
+			parameters.Add("@RulesJson", rulesJson);
 
-			return await _sqlHelper.QueryFirstOrDefaultAsync<int>(
+			var ruleIds = await _sqlHelper.QueryAsync<int>(
 				StoredProcedure.UpsertCollectionRules,
 				parameters
 			);
+
+			return ruleIds;
 		}
 		#endregion
 
-		#region GetRuleByIdAsync
-		public async Task<CollectionRuleResponse?> GetRuleByIdAsync(int ruleId)
+		#region GetRulesByIdAsync
+		public async Task<CollectionRuleResponse?> GetRulesByIdAsync(int ruleId)
 		{
 			var parameters = new DynamicParameters();
 			parameters.Add("@RuleID", ruleId);
@@ -140,8 +138,8 @@ namespace HotelAPI.DAL.Repositories
 		}
 		#endregion
 
-		#region	SaveCurationAsync
-		public async Task<CollectionCurationResponse?> SaveCurationAsync(CollectionCurationRequest request)
+		#region	UpsertCurationsAsync
+		public async Task<CollectionCurationResponse?> UpsertCurationsAsync(CollectionCurationRequest request)
 		{
 			var parameters = new DynamicParameters();
 			parameters.Add("@CollectionID", request.CollectionId);
@@ -149,7 +147,7 @@ namespace HotelAPI.DAL.Repositories
 			parameters.Add("@ExcludeJson", request.ExcludeJson);
 
 			return await _sqlHelper.QueryMultipleAsync(
-				StoredProcedure.UpsertCollectionCuration,
+				StoredProcedure.UpsertCollectionCurations,
 				async multi =>
 				{
 					// Result set 1 → CollectionID (from SP)
@@ -170,6 +168,36 @@ namespace HotelAPI.DAL.Repositories
 						{
 							ExclusionIds = exclusionIds
 						}
+					};
+				},
+				parameters
+			);
+		}
+		#endregion
+
+		#region GetCurationsByIdAsync
+		public async Task<CurationByIdResponse?> GetCurationsByIdAsync(long collectionId)
+		{
+			var parameters = new DynamicParameters();
+			parameters.Add("@CollectionID", collectionId);
+
+			return await _sqlHelper.QueryMultipleAsync(
+				StoredProcedure.GetCollectionCurations,
+				async multi =>
+				{
+					// Result set 1 → Pinned Hotels
+					var pinnedHotels = (await multi.ReadAsync<PinnedHotelsByIdResponse>()).ToList();
+
+					// Result set 2 → Excluded Hotels
+					var excludedHotels = (await multi.ReadAsync<ExcludedHotelsByIdResponse>()).ToList();
+
+					if (pinnedHotels.Count == 0 && excludedHotels.Count == 0)
+						return null;
+
+					return new CurationByIdResponse
+					{
+						PinnedHotels = pinnedHotels,
+						ExcludedHotels = excludedHotels
 					};
 				},
 				parameters

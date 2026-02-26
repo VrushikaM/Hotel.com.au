@@ -6,6 +6,7 @@ using HotelAPI.Model.Collection;
 using HotelAPI.Model.Collection.CollectionContent;
 using HotelAPI.Model.Collection.CollectionCuration;
 using HotelAPI.Model.Collection.CollectionRule;
+using System.Text.Json;
 
 namespace HotelAPI.BAL.Services
 {
@@ -116,7 +117,7 @@ namespace HotelAPI.BAL.Services
 			}
 		}
 
-		public async Task<ResponseResult<bool>> SaveAsync(CollectionContentRequest request)
+		public async Task<ResponseResult<bool>> UpsertContentAsync(CollectionContentRequest request)
 		{
 			try
 			{
@@ -144,7 +145,7 @@ namespace HotelAPI.BAL.Services
 					);
 				}
 
-				await _collectionRepository.SaveAsync(request);
+				await _collectionRepository.UpsertContentAsync(request);
 
 				// 🔥 Clear content & history cache after save
 				_cache.Remove($"{COLLECTION_CONTENT_CACHE_KEY}:{request.CollectionId}");
@@ -252,60 +253,67 @@ namespace HotelAPI.BAL.Services
 			}
 		}
 
-		public async Task<ResponseResult<int>> SaveRuleAsync(CollectionRuleRequest request)
+		public async Task<ResponseResult<IEnumerable<int>>> UpsertRulesAsync(CollectionRuleRequest request)
 		{
 			try
 			{
-				var ruleId = await _collectionRepository.SaveRuleAsync(request);
-
-				if (ruleId <= 0)
+				if (request == null || request.RulesJson == null || !request.RulesJson.Any())
 				{
-					return ResponseHelper<int>.Error(
-						"Failed to save rule",
+					return ResponseHelper<IEnumerable<int>>.Error(
+						"Rules list cannot be empty",
 						statusCode: StatusCode.BAD_REQUEST
 					);
 				}
 
-				return ResponseHelper<int>.Success(
-					request.RuleId == null
-						? "Rule created successfully"
-						: "Rule updated successfully",
-					ruleId
+				// Call repository with JSON string and CollectionId
+				var affectedRuleIds = await _collectionRepository.UpsertRulesAsync(request.CollectionId, request.RulesJson);
+
+				if (affectedRuleIds == null || !affectedRuleIds.Any())
+				{
+					return ResponseHelper<IEnumerable<int>>.Error(
+						"Failed to save rules",
+						statusCode: StatusCode.BAD_REQUEST
+					);
+				}
+
+				return ResponseHelper<IEnumerable<int>>.Success(
+					"Rules saved successfully",
+					affectedRuleIds
 				);
 			}
 			catch (Exception ex)
 			{
-				return ResponseHelper<int>.Error(
-					"Error while saving rule",
+				return ResponseHelper<IEnumerable<int>>.Error(
+					"Error while saving rules",
 					exception: ex,
 					statusCode: StatusCode.INTERNAL_SERVER_ERROR
 				);
 			}
 		}
 
-		public async Task<ResponseResult<CollectionRuleResponse?>> GetRuleByIdAsync(int ruleId)
+		public async Task<ResponseResult<CollectionRuleResponse?>> GetRulesByIdAsync(int ruleId)
 		{
 			try
 			{
-				var data = await _collectionRepository.GetRuleByIdAsync(ruleId);
+				var data = await _collectionRepository.GetRulesByIdAsync(ruleId);
 
 				if (data == null)
 				{
 					return ResponseHelper<CollectionRuleResponse?>.Error(
-						"Rule not found",
+						"Rules not found",
 						statusCode: StatusCode.NOT_FOUND
 					);
 				}
 
 				return ResponseHelper<CollectionRuleResponse?>.Success(
-					"Rule fetched successfully",
+					"Rules fetched successfully",
 					data
 				);
 			}
 			catch (Exception ex)
 			{
 				return ResponseHelper<CollectionRuleResponse?>.Error(
-					"Error fetching rule",
+					"Error fetching rules",
 					exception: ex,
 					statusCode: StatusCode.INTERNAL_SERVER_ERROR
 				);
@@ -372,7 +380,7 @@ namespace HotelAPI.BAL.Services
 			}
 		}
 
-		public async Task<ResponseResult<CollectionCurationResponse>> SaveCurationAsync(CollectionCurationRequest request)
+		public async Task<ResponseResult<CollectionCurationResponse>> UpsertCurationsAsync(CollectionCurationRequest request)
 		{
 			try
 			{
@@ -402,12 +410,12 @@ namespace HotelAPI.BAL.Services
 				}
 
 				// 🔥 Call repository (SP: CollectionCuration_Save)
-				var result = await _collectionRepository.SaveCurationAsync(request);
+				var result = await _collectionRepository.UpsertCurationsAsync(request);
 
 				if (result == null)
 				{
 					return ResponseHelper<CollectionCurationResponse>.Error(
-						"Failed to save collection curation",
+						"Failed to save collection curations",
 						statusCode: StatusCode.BAD_REQUEST
 					);
 				}
@@ -418,14 +426,52 @@ namespace HotelAPI.BAL.Services
 				_cache.Remove($"{COLLECTION_HISTORY_CACHE_KEY}:{request.CollectionId}");
 
 				return ResponseHelper<CollectionCurationResponse>.Success(
-					"Collection curation saved successfully",
+					"Collection curations saved successfully",
 					result
 				);
 			}
 			catch (Exception ex)
 			{
 				return ResponseHelper<CollectionCurationResponse>.Error(
-					"Error while saving collection curation",
+					"Error while saving collection curations",
+					exception: ex,
+					statusCode: StatusCode.INTERNAL_SERVER_ERROR
+				);
+			}
+		}
+
+		public async Task<ResponseResult<CurationByIdResponse?>> GetCurationsByIdAsync(long collectionId)
+		{
+			try
+			{
+				if (collectionId <= 0)
+				{
+					return ResponseHelper<CurationByIdResponse?>.Error(
+						"Valid CollectionId is required",
+						statusCode: StatusCode.UNPROCESSABLE_ENTITY
+					);
+				}
+
+				// 🔥 Call repository (SP: CollectionCurations_GetById)
+				var data = await _collectionRepository.GetCurationsByIdAsync(collectionId);
+
+				if (data == null)
+				{
+					return ResponseHelper<CurationByIdResponse?>.Error(
+						"Collection curations not found",
+						statusCode: StatusCode.NOT_FOUND
+					);
+				}
+
+				return ResponseHelper<CurationByIdResponse?>.Success(
+					"Collection curations fetched successfully",
+					data
+				);
+			}
+			catch (Exception ex)
+			{
+				return ResponseHelper<CurationByIdResponse?>.Error(
+					"Error while fetching collection curations",
 					exception: ex,
 					statusCode: StatusCode.INTERNAL_SERVER_ERROR
 				);
