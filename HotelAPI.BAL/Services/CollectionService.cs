@@ -91,6 +91,7 @@ namespace HotelAPI.BAL.Services
 
 				// 🔥 Clear collection list cache after insert/update
 				_cache.Remove(COLLECTION_LIST_CACHE_KEY);
+				_cache.Remove(CacheKeyBuilder.CollectionById(collectionId));
 
 				return ResponseHelper<CollectionUpsertResponse>.Success(
 					request.CollectionId == null
@@ -188,8 +189,8 @@ namespace HotelAPI.BAL.Services
 				await _collectionRepository.UpsertContentAsync(request);
 
 				// 🔥 Clear content & history cache after save
-				_cache.Remove($"{COLLECTION_CONTENT_CACHE_KEY}:{request.CollectionId}");
-				_cache.Remove($"{COLLECTION_HISTORY_CACHE_KEY}:{request.CollectionId}");
+				_cache.Remove(CacheKeyBuilder.CollectionContent(request.CollectionId));
+				_cache.Remove(CacheKeyBuilder.CollectionHistory(request.CollectionId));
 
 				return ResponseHelper<bool>.Success(
 					"Content saved successfully",
@@ -325,6 +326,8 @@ namespace HotelAPI.BAL.Services
 						statusCode: StatusCode.BAD_REQUEST
 					);
 				}
+
+				_cache.Remove(CacheKeyBuilder.CollectionRule(request.CollectionId));
 
 				return ResponseHelper<IEnumerable<int>>.Success(
 					"Rules saved successfully",
@@ -488,8 +491,9 @@ namespace HotelAPI.BAL.Services
 
 				// 🔥 Clear relevant caches
 				_cache.Remove(COLLECTION_LIST_CACHE_KEY);
-				_cache.Remove($"{COLLECTION_CONTENT_CACHE_KEY}:{request.CollectionId}");
-				_cache.Remove($"{COLLECTION_HISTORY_CACHE_KEY}:{request.CollectionId}");
+				_cache.Remove(CacheKeyBuilder.CollectionContent(request.CollectionId.Value));
+				_cache.Remove(CacheKeyBuilder.CollectionHistory(request.CollectionId.Value));
+				_cache.Remove(CacheKeyBuilder.CollectionCuration(request.CollectionId.Value));
 
 				return ResponseHelper<CollectionCurationResponse>.Success(
 					"Collection curations saved successfully",
