@@ -551,5 +551,45 @@ namespace HotelAPI.BAL.Services
 				);
 			}
 		}
+
+		public async Task<ResponseResult<long>> CloneCollectionAsync(int sourceCollectionId)
+		{
+			try
+			{
+				if (sourceCollectionId <= 0)
+				{
+					return ResponseHelper<long>.Error(
+						"Valid CollectionId is required",
+						statusCode: StatusCode.UNPROCESSABLE_ENTITY
+					);
+				}
+
+				var newId = await _collectionRepository.CloneCollectionAsync(sourceCollectionId);
+
+				if (newId <= 0)
+				{
+					return ResponseHelper<long>.Error(
+						"Failed to clone collection",
+						statusCode: StatusCode.BAD_REQUEST
+					);
+				}
+
+				// 🔥 Clear collection list cache
+				_cache.Remove(COLLECTION_LIST_CACHE_KEY);
+
+				return ResponseHelper<long>.Success(
+					"Collection cloned successfully",
+					newId
+				);
+			}
+			catch (Exception ex)
+			{
+				return ResponseHelper<long>.Error(
+					"Error while cloning collection",
+					exception: ex,
+					statusCode: StatusCode.INTERNAL_SERVER_ERROR
+				);
+			}
+		}
 	}
 }

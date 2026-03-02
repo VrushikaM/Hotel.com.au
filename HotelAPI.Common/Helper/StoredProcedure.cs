@@ -27,6 +27,7 @@
 		public const string ChangeCollectionStatus = "Collection_ChangeStatus";
 		public const string UpsertCollectionCurations = "CollectionCuration_Save";
 		public const string GetCollectionCurations = "CollectionCurations_GetById";
+		public const string CloneCollection = "Collection_Clone";
 
 		// Master Dropdown Stored Procedure
 		public const string MasterDropdowns = "MasterDropdown_Get";

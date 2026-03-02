@@ -162,5 +162,17 @@ namespace HotelAPI.Controller
 			var result = await collectionService.GetCurationsByIdAsync(id);
 			return StatusCode(result.Code, result);
 		}
+
+		/// <summary>
+		/// Clones an existing collection as Draft.
+		/// </summary>
+		/// <param name="id">Source CollectionId to clone.</param>
+		/// <returns>Returns the newly created CollectionId.</returns>
+		[HttpPost("{id}/clone")]
+		public async Task<IActionResult> CloneCollection(int id)
+		{
+			var result = await collectionService.CloneCollectionAsync(id);
+			return StatusCode(result.Code, result);
+		}
 	}
 }

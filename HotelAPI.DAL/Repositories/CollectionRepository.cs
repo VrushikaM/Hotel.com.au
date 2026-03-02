@@ -216,5 +216,21 @@ namespace HotelAPI.DAL.Repositories
 			);
 		}
 		#endregion
+
+		#region CloneCollectionAsync
+		public async Task<long> CloneCollectionAsync(long sourceCollectionId)
+		{
+			var parameters = new DynamicParameters();
+			parameters.Add("@SourceCollectionId", sourceCollectionId);
+			parameters.Add("@NewCollectionId", dbType: System.Data.DbType.Int64, direction: System.Data.ParameterDirection.Output);
+
+			await _sqlHelper.ExecuteAsync(
+				StoredProcedure.CloneCollection,
+				parameters
+			);
+
+			return parameters.Get<long>("@NewCollectionId");
+		}
+		#endregion
 	}
 }

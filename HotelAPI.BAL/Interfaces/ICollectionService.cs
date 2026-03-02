@@ -19,5 +19,6 @@ namespace HotelAPI.BAL.Interfaces
 		Task<ResponseResult<int>> ChangeStatusAsync(int collectionId, string action);
 		Task<ResponseResult<CollectionCurationResponse>> UpsertCurationsAsync(CollectionCurationRequest request);
 		Task<ResponseResult<CurationByIdResponse?>> GetCurationsByIdAsync(int collectionId);
+		Task<ResponseResult<long>> CloneCollectionAsync(int sourceCollectionId);
 	}
 }

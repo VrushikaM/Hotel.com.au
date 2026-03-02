@@ -18,5 +18,6 @@ namespace HotelAPI.DAL.Interfaces
 		Task<int> ChangeStatusAsync(int collectionId, string action);
 		Task<CollectionCurationResponse?> UpsertCurationsAsync(CollectionCurationRequest request);
 		Task<CurationByIdResponse?> GetCurationsByIdAsync(int collectionId);
+		Task<long> CloneCollectionAsync(long sourceCollectionId);
 	}
 }
