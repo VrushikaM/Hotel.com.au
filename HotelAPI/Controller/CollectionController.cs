@@ -60,19 +60,6 @@ namespace HotelAPI.Controller
 		}
 
 		/// <summary>
-		/// Retrieves all content items for the specified collection.
-		/// </summary>
-		/// <param name="id">Identifier of the collection.</param>
-		/// <returns>Returns the list of content items for the collection.</returns>
-
-		[HttpGet("{id}/content")]
-		public async Task<IActionResult> GetContent(int id)
-		{
-			var result = await collectionService.GetContentAsync(id);
-			return StatusCode(result.Code, result);
-		}
-
-		/// <summary>
 		/// Adds a new content item to the specified collection.
 		/// </summary>
 		/// <param name="id">Identifier of the collection.</param>
@@ -88,19 +75,6 @@ namespace HotelAPI.Controller
 		}
 
 		/// <summary>
-		/// Retrieves the history of content changes for the specified collection.
-		/// </summary>
-		/// <param name="id">Identifier of the collection.</param>
-		/// <returns>Returns a list of historical content changes with timestamps and user info (if available).</returns>
-
-		[HttpGet("{id}/content/history")]
-		public async Task<IActionResult> GetContentHistory(int id)
-		{
-			var result = await collectionService.GetContentHistoryAsync(id);
-			return StatusCode(result.Code, result);
-		}
-
-		/// <summary>
 		/// Saves a collection rules based on the provided request details.
 		/// </summary>
 		/// <param name="request">The collection rules information to save.</param>
@@ -110,19 +84,6 @@ namespace HotelAPI.Controller
 		public async Task<IActionResult> UpsertRules([FromBody] CollectionRuleRequest request)
 		{
 			var result = await collectionService.UpsertRulesAsync(request);
-			return StatusCode(result.Code, result);
-		}
-
-		/// <summary>
-		/// Retrieves a specific collection rules by its identifier.
-		/// </summary>
-		/// <param name="id">Identifier of the collection rules.</param>
-		/// <returns>Returns the collection rules details if found, along with operation status.</returns>
-
-		[HttpGet("rules/{id}")]
-		public async Task<IActionResult> GetRulesById(int id)
-		{
-			var result = await collectionService.GetRulesByIdAsync(id);
 			return StatusCode(result.Code, result);
 		}
 
@@ -150,21 +111,6 @@ namespace HotelAPI.Controller
 		public async Task<IActionResult> UpsertCurations([FromBody] CollectionCurationRequest request)
 		{
 			var result = await collectionService.UpsertCurationsAsync(request);
-			return StatusCode(result.Code, result);
-		}
-
-		/// <summary>
-		/// Retrieves pinned and excluded hotels for a specific collection.
-		/// </summary>
-		/// <param name="id">Identifier of the collection.</param>
-		/// <returns>
-		/// Returns pinned hotels (with Position & PinType) 
-		/// and excluded hotels (with ChainID & Reason).
-		/// </returns>
-		[HttpGet("curations/{id}")]
-		public async Task<IActionResult> GetCurationsById(int id)
-		{
-			var result = await collectionService.GetCurationsByIdAsync(id);
 			return StatusCode(result.Code, result);
 		}
 

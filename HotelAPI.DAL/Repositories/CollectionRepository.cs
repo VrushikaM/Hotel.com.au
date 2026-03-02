@@ -29,7 +29,7 @@ namespace HotelAPI.DAL.Repositories
 
 					// Second result set: Paged CollectionData
 					var collections = (await multi.ReadAsync<CollectionData>()).ToList();
-					
+
 					return new CollectionListResponse
 					{
 						TotalRecords = totalRecords.ToString(),
@@ -66,8 +66,36 @@ namespace HotelAPI.DAL.Repositories
 			var parameters = new DynamicParameters();
 			parameters.Add("@CollectionId", collectionId);
 
-			return await _sqlHelper.QueryFirstOrDefaultAsync<CollectionByIdResponse>(
+			return await _sqlHelper.QueryMultipleAsync(
 				StoredProcedure.GetCollectionById,
+				async multi =>
+				{
+					var basic = await multi.ReadFirstOrDefaultAsync<BasicCollectionResponse>();
+					var content = await multi.ReadFirstOrDefaultAsync<CollectionContentResponse>();
+					var contentHistory = await multi.ReadFirstOrDefaultAsync<CollectionContentHistoryResponse>();
+					var rules = (await multi.ReadAsync<Rules>()).ToList();
+					var pinnedHotels = (await multi.ReadAsync<PinnedHotelsByIdResponse>()).ToList();
+					var excludedHotels = (await multi.ReadAsync<ExcludedHotelsByIdResponse>()).ToList();
+
+					return new CollectionByIdResponse
+					{
+						BasicCollection = basic,
+						CollectionContent = content,
+						CollectionContentHistory = contentHistory,
+						CollectionRules = new List<CollectionRuleResponse>
+						{
+							new CollectionRuleResponse { Rules = rules }
+						},
+						CollectionCuration = new List<CurationByIdResponse>
+						{
+							new CurationByIdResponse
+							{
+								PinnedHotels = pinnedHotels.Any() ? pinnedHotels : new List<PinnedHotelsByIdResponse>(),
+								ExcludedHotels = excludedHotels.Any() ? excludedHotels : new List<ExcludedHotelsByIdResponse>()
+							}
+						}
+					};
+				},
 				parameters
 			);
 		}
@@ -96,32 +124,6 @@ namespace HotelAPI.DAL.Repositories
 		}
 		#endregion
 
-		#region GetContentAsync
-		public async Task<CollectionContentResponse?> GetContentAsync(int collectionId)
-		{
-			var parameters = new DynamicParameters();
-			parameters.Add("@CollectionId", collectionId);
-
-			return await _sqlHelper.QueryFirstOrDefaultAsync<CollectionContentResponse>(
-				StoredProcedure.GetCollectionContent,
-				parameters
-			);
-		}
-		#endregion
-
-		#region GetHistoryAsync
-		public async Task<IEnumerable<CollectionContentHistoryResponse>> GetContentHistoryAsync(int collectionId)
-		{
-			var parameters = new DynamicParameters();
-			parameters.Add("@CollectionId", collectionId);
-
-			return await _sqlHelper.QueryAsync<CollectionContentHistoryResponse>(
-				StoredProcedure.GetCollectionContentHistory,
-				parameters
-			);
-		}
-		#endregion
-
 		#region UpsertRulesAsync
 		public async Task<IEnumerable<int>> UpsertRulesAsync(int collectionId, string rulesJson)
 		{
@@ -135,24 +137,6 @@ namespace HotelAPI.DAL.Repositories
 			);
 
 			return ruleIds;
-		}
-		#endregion
-
-		#region GetRulesByIdAsync
-		public async Task<CollectionRuleResponse?> GetRulesByIdAsync(int collectionId)
-		{
-			var parameters = new DynamicParameters();
-			parameters.Add("@CollectionID", collectionId);
-
-			var rules = await _sqlHelper.QueryAsync<Rules>(
-				StoredProcedure.GetCollectionRules,
-				parameters
-			);
-
-			return new CollectionRuleResponse
-			{
-				Rules = rules.ToList()
-			};
 		}
 		#endregion
 
@@ -200,36 +184,6 @@ namespace HotelAPI.DAL.Repositories
 						{
 							ExclusionIds = exclusionIds
 						}
-					};
-				},
-				parameters
-			);
-		}
-		#endregion
-
-		#region GetCurationsByIdAsync
-		public async Task<CurationByIdResponse?> GetCurationsByIdAsync(int collectionId)
-		{
-			var parameters = new DynamicParameters();
-			parameters.Add("@CollectionID", collectionId);
-
-			return await _sqlHelper.QueryMultipleAsync(
-				StoredProcedure.GetCollectionCurations,
-				async multi =>
-				{
-					// Result set 1 → Pinned Hotels
-					var pinnedHotels = (await multi.ReadAsync<PinnedHotelsByIdResponse>()).ToList();
-
-					// Result set 2 → Excluded Hotels
-					var excludedHotels = (await multi.ReadAsync<ExcludedHotelsByIdResponse>()).ToList();
-
-					if (pinnedHotels.Count == 0 && excludedHotels.Count == 0)
-						return null;
-
-					return new CurationByIdResponse
-					{
-						PinnedHotels = pinnedHotels,
-						ExcludedHotels = excludedHotels
 					};
 				},
 				parameters

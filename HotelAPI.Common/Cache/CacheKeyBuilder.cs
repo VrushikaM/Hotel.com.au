@@ -23,18 +23,6 @@
 		public static string CollectionList(string? status, string? geoNodeType, int? geoNodeId, int pageNumber, int pageSize)
 			=> $"collection:list:{status?.Trim().ToLowerInvariant() ?? "all"}:{geoNodeType?.Trim().ToLowerInvariant() ?? "all"}:{geoNodeId ?? 0}:{pageNumber}:{pageSize}";
 
-		public static string CollectionContent(int collectionId)
-			=> $"collection:content:{collectionId}";
-
-		public static string CollectionHistory(int collectionId)
-			=> $"collection:history:{collectionId}";
-
-		public static string CollectionRule(int collectionId)
-			=> $"collection:rule:{collectionId}";
-
-		public static string CollectionCuration(int collectionId)
-			=> $"collection:curation:{collectionId}";
-
 		public static string CollectionById(int collectionId)
 			=> $"collection:byId:{collectionId}";
 	}

@@ -16,17 +16,13 @@
 		public const string CreateUser = "User_Register";
 
 		// Collection Stored Procedures
-		public const string GetCollectionList = "test_Collection_GetListByGeoNode";
-		public const string GetCollectionById = "Collection_GetById";
+		public const string GetCollectionList = "Collection_GetListByGeoNode";
+		public const string GetCollectionById = "Collection_GetPreview";
 		public const string UpsertCollection = "Collection_Save";
 		public const string UpsertCollectionContent = "CollectionContent_Save";
-		public const string GetCollectionContent = "CollectionContent_Get";
-		public const string GetCollectionContentHistory = "CollectionContent_GetHistory";
 		public const string UpsertCollectionRules = "CollectionRules_AddOrUpdate";
-		public const string GetCollectionRules = "CollectionRules_GetById";
 		public const string ChangeCollectionStatus = "Collection_ChangeStatus";
 		public const string UpsertCollectionCurations = "CollectionCuration_Save";
-		public const string GetCollectionCurations = "CollectionCurations_GetById";
 		public const string CloneCollection = "Collection_Clone";
 
 		// Master Dropdown Stored Procedure

@@ -9,7 +9,6 @@
 	{
 		public long CollectionId { get; set; }
 	}
-
 	public class ExcludedHotelsResponse
 	{
 		public List<long>? ExclusionIds { get; set; }

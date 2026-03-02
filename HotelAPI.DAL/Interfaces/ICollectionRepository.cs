@@ -11,13 +11,13 @@ namespace HotelAPI.DAL.Interfaces
 		Task<int> UpsertCollectionAsync(CollectionUpsertRequest request);
 		Task<CollectionByIdResponse?> GetCollectionAsync(int collectionId);
 		Task UpsertContentAsync(CollectionContentRequest request);
-		Task<CollectionContentResponse?> GetContentAsync(int collectionId);
-		Task<IEnumerable<CollectionContentHistoryResponse>> GetContentHistoryAsync(int collectionId);
+		//Task<CollectionContentResponse?> GetContentAsync(int collectionId);
+		//Task<IEnumerable<CollectionContentHistoryResponse>> GetContentHistoryAsync(int collectionId);
 		Task<IEnumerable<int>> UpsertRulesAsync(int collectionId, string rulesJson);
-		Task<CollectionRuleResponse?> GetRulesByIdAsync(int collectionId);
+		//Task<CollectionRuleResponse?> GetRulesByIdAsync(int collectionId);
 		Task<int> ChangeStatusAsync(int collectionId, string action);
 		Task<CollectionCurationResponse?> UpsertCurationsAsync(CollectionCurationRequest request);
-		Task<CurationByIdResponse?> GetCurationsByIdAsync(int collectionId);
+		//Task<CurationByIdResponse?> GetCurationsByIdAsync(int collectionId);
 		Task<long> CloneCollectionAsync(long sourceCollectionId);
 	}
 }

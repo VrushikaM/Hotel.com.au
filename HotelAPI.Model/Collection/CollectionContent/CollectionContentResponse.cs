@@ -11,7 +11,7 @@
 		public string? IntroLongCopy { get; set; }
 		public string? HeroImageUrl { get; set; }
 		public string? Badge { get; set; }
-		public string? FAQsJson { get; set; }
+		public string? FaqsJson { get; set; }
 		public int VersionNumber { get; set; }
 		public bool IsDraft { get; set; }
 		public bool IsPublished { get; set; }

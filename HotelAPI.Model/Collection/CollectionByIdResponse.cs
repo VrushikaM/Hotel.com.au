@@ -1,6 +1,18 @@
-﻿namespace HotelAPI.Model.Collection
+﻿using HotelAPI.Model.Collection.CollectionContent;
+using HotelAPI.Model.Collection.CollectionCuration;
+using HotelAPI.Model.Collection.CollectionRule;
+
+namespace HotelAPI.Model.Collection
 {
 	public class CollectionByIdResponse
+	{
+		public BasicCollectionResponse? BasicCollection { get; set; } = new();
+		public CollectionContentResponse? CollectionContent { get; set; } = new();
+		public CollectionContentHistoryResponse? CollectionContentHistory { get; set; } = new();
+		public List<CollectionRuleResponse> CollectionRules { get; set; } = new();
+		public List<CurationByIdResponse> CollectionCuration { get; set; } = new();
+	}
+	public class BasicCollectionResponse
 	{
 		public long CollectionId { get; set; }
 		public string? Name { get; set; }
