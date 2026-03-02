@@ -2,6 +2,11 @@
 {
 	public class CollectionListResponse
 	{
+		public string? TotalRecords { get; set; }
+		public List<CollectionData> Collections { get; set; } = new List<CollectionData>();
+	}
+	public class CollectionData
+	{
 		public long CollectionId { get; set; }
 		public string? Name { get; set; }
 		public string? Slug { get; set; }

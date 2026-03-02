@@ -11,16 +11,35 @@ namespace HotelAPI.DAL.Repositories
 	public class CollectionRepository(ISqlHelper _sqlHelper) : ICollectionRepository
 	{
 		#region GetCollectionListAsync
-		public async Task<IEnumerable<CollectionListResponse>> GetCollectionListAsync(string? status, string? geoNodeType, int? geoNodeId)
+		public async Task<CollectionListResponse> GetCollectionListAsync(string? status, string? geoNodeType, int? geoNodeId, int pageNumber, int pageSize)
 		{
 			var parameters = new DynamicParameters();
 			parameters.Add("@Status", status);
 			parameters.Add("@GeoNodeType", geoNodeType);
 			parameters.Add("@GeoNodeId", geoNodeId);
+			parameters.Add("@PageNumber", pageNumber);
+			parameters.Add("@PageSize", pageSize);
 
-			return await _sqlHelper.QueryAsync<CollectionListResponse>(
-				StoredProcedure.GetCollectionList, parameters
+			var result = await _sqlHelper.QueryMultipleAsync(
+				StoredProcedure.GetCollectionList,
+				async multi =>
+				{
+					// First result set: TotalRecords
+					var totalRecords = await multi.ReadFirstAsync<int>();
+
+					// Second result set: Paged CollectionData
+					var collections = (await multi.ReadAsync<CollectionData>()).ToList();
+					
+					return new CollectionListResponse
+					{
+						TotalRecords = totalRecords.ToString(),
+						Collections = collections
+					};
+				},
+				parameters
 			);
+
+			return result;
 		}
 		#endregion
 
@@ -129,6 +148,7 @@ namespace HotelAPI.DAL.Repositories
 				StoredProcedure.GetCollectionRules,
 				parameters
 			);
+
 			return new CollectionRuleResponse
 			{
 				Rules = rules.ToList()

@@ -13,7 +13,7 @@ namespace HotelAPI.BAL.Services
 	{
 		private const string COLLECTION_LIST_CACHE_KEY = "collection:list";
 
-		public async Task<ResponseResult<IEnumerable<CollectionListResponse>>> GetCollectionListAsync(string? status, string? geoNodeType, int? geoNodeId)
+		public async Task<ResponseResult<CollectionListResponse>> GetCollectionListAsync(string? status, string? geoNodeType, int? geoNodeId, int pageNumber, int pageSize)
 		{
 			try
 			{
@@ -24,25 +24,29 @@ namespace HotelAPI.BAL.Services
 					TimeSpan.FromHours(1)
 				);
 
-				var cacheKey = $"{CacheKeyBuilder.CollectionList(status, geoNodeType, geoNodeId)}:{version}";
+				var cacheKey = $"{CacheKeyBuilder.CollectionList(status, geoNodeType, geoNodeId, pageNumber, pageSize)}:{version}";
 
 				var result = await _cache.GetOrCreateAsync(
 					cacheKey,
-					() => _collectionRepository.GetCollectionListAsync(status, geoNodeType, geoNodeId),
+					() => _collectionRepository.GetCollectionListAsync(status, geoNodeType, geoNodeId, pageNumber, pageSize),
 					TimeSpan.FromMinutes(15),
 					TimeSpan.FromMinutes(10)
 				);
+				
+				var data = result ?? new CollectionListResponse
+				{
+					TotalRecords = "0",
+					Collections = new List<CollectionData>()
+				};
 
-				var data = result ?? Enumerable.Empty<CollectionListResponse>();
-
-				return ResponseHelper<IEnumerable<CollectionListResponse>>.Success(
+				return ResponseHelper<CollectionListResponse>.Success(
 					"Collection list fetched successfully",
 					data
 				);
 			}
 			catch (Exception ex)
 			{
-				return ResponseHelper<IEnumerable<CollectionListResponse>>.Error(
+				return ResponseHelper<CollectionListResponse>.Error(
 					"Failed to fetch collection list",
 					exception: ex,
 					statusCode: StatusCode.INTERNAL_SERVER_ERROR

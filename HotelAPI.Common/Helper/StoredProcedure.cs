@@ -16,7 +16,7 @@
 		public const string CreateUser = "User_Register";
 
 		// Collection Stored Procedures
-		public const string GetCollectionList = "Collection_GetListByGeoNode";
+		public const string GetCollectionList = "test_Collection_GetListByGeoNode";
 		public const string GetCollectionById = "Collection_GetById";
 		public const string UpsertCollection = "Collection_Save";
 		public const string UpsertCollectionContent = "CollectionContent_Save";

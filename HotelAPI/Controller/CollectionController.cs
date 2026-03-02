@@ -21,9 +21,14 @@ namespace HotelAPI.Controller
 		/// <returns>Returns the filtered list of collections.</returns>
 
 		[HttpGet]
-		public async Task<IActionResult> GetCollectionList([FromQuery] string? status, [FromQuery] string? geoNodeType, [FromQuery] int? geoNodeId)
+		public async Task<IActionResult> GetCollectionList(
+			[FromQuery] string? status,
+			[FromQuery] string? geoNodeType,
+			[FromQuery] int? geoNodeId,
+			[FromQuery] int pageNumber = 1,
+			[FromQuery] int pageSize = 10)
 		{
-			var result = await collectionService.GetCollectionListAsync(status, geoNodeType, geoNodeId);
+			var result = await collectionService.GetCollectionListAsync(status, geoNodeType, geoNodeId, pageNumber, pageSize);
 			return StatusCode(result.Code, result);
 		}
 
