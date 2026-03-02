@@ -17,7 +17,7 @@
 
 		// Collection Stored Procedures
 		public const string GetCollectionList = "Collection_GetListByGeoNode";
-		public const string GetCollectionById = "Collection_GetPreview";
+		public const string GetCollectionById = "Collection_Edit";
 		public const string UpsertCollection = "Collection_Save";
 		public const string UpsertCollectionContent = "CollectionContent_Save";
 		public const string UpsertCollectionRules = "CollectionRules_AddOrUpdate";
