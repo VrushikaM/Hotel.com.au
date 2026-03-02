@@ -8,15 +8,16 @@ namespace HotelAPI.Controller
 	public class HotelController(IHotelService hotelService) : ControllerBase
 	{
 		/// <summary>
-		/// Retrieves the list of hotel based on City Id.
+		/// Retrieves the list of hotel based on GeoNode Id.
 		/// </summary>
-		/// <param name="cityId">City identifier (City Id)</param>
+		/// <param name="geoNodetype">Hotel name based on geoNodeType (country/region/district/city)</param>
+		/// <param name="geoNodeId">GeoNode identifier (GeoNode Id)</param>
 		/// <param name="search">Hotel name search keyword (Search)</param>
 
 		[HttpGet]
-		public async Task<IActionResult> GetHotelsByCity(int? cityId, string? searchTerm)
+		public async Task<IActionResult> GetHotelsByGeoNode(string geoNodeType, int geoNodeId, string? searchTerm)
 		{
-			var result = await hotelService.GetHotelsByCityAsync(cityId, searchTerm);
+			var result = await hotelService.GetHotelsByGeoNodeAsync(geoNodeType, geoNodeId, searchTerm);
 			return StatusCode(result.Code, result);
 		}
 	}

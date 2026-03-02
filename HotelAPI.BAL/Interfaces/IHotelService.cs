@@ -5,6 +5,6 @@ namespace HotelAPI.BAL.Interfaces
 {
 	public interface IHotelService
 	{
-		Task<ResponseResult<IEnumerable<HotelsByCityResponse>>> GetHotelsByCityAsync(int? cityId, string? searchTerm);
+		Task<ResponseResult<IEnumerable<HotelsByGeoNodeResponse>>> GetHotelsByGeoNodeAsync(string geoNodeType, int geoNodeId, string? searchTerm);
 	}
 }
