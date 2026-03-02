@@ -13,21 +13,17 @@ namespace HotelAPI.Controller
 	public class CollectionController(ICollectionService collectionService) : ControllerBase
 	{
 		/// <summary>
-		/// Retrieves the list of collections with optional filtering by status, country, region, and city.
-		/// Supports hierarchical filtering where city has highest priority,
-		/// followed by region, then country. If no filters are provided,
-		/// all collections are returned.
+		/// Retrieves collections with optional filtering by status and geographic node.
 		/// </summary>
 		/// <param name="status">Optional collection status (e.g., Published, Draft).</param>
-		/// <param name="countryId">Optional country identifier for filtering country-level collections.</param>
-		/// <param name="regionId">Optional region identifier for filtering region-level collections.</param>
-		/// <param name="cityId">Optional city identifier for filtering city-level collections.</param>
+		/// <param name="geoNodeType">Optional geographic node type (Country, Region, City, District).</param>
+		/// <param name="geoNodeId">Optional geographic node identifier.</param>
 		/// <returns>Returns the filtered list of collections.</returns>
 
 		[HttpGet]
-		public async Task<IActionResult> GetCollectionList([FromQuery] string? status, [FromQuery] int? countryId, [FromQuery] int? regionId, [FromQuery] int? cityId)
+		public async Task<IActionResult> GetCollectionList([FromQuery] string? status, [FromQuery] string? geoNodeType, [FromQuery] int? geoNodeId)
 		{
-			var result = await collectionService.GetCollectionListAsync(status, countryId, regionId, cityId);
+			var result = await collectionService.GetCollectionListAsync(status, geoNodeType, geoNodeId);
 			return StatusCode(result.Code, result);
 		}
 
@@ -111,7 +107,7 @@ namespace HotelAPI.Controller
 			var result = await collectionService.UpsertRulesAsync(request);
 			return StatusCode(result.Code, result);
 		}
-		
+
 		/// <summary>
 		/// Retrieves a specific collection rules by its identifier.
 		/// </summary>

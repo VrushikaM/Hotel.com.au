@@ -7,7 +7,7 @@ namespace HotelAPI.DAL.Interfaces
 {
 	public interface ICollectionRepository
 	{
-		Task<IEnumerable<CollectionListResponse>> GetCollectionListAsync(string? status, int? countryId, int? regionId, int? cityId);
+		Task<IEnumerable<CollectionListResponse>> GetCollectionListAsync(string? status, string? geoNodeType, int? geoNodeId);
 		Task<int> UpsertCollectionAsync(CollectionUpsertRequest request);
 		Task<CollectionByIdResponse?> GetCollectionAsync(int collectionId);
 		Task UpsertContentAsync(CollectionContentRequest request);

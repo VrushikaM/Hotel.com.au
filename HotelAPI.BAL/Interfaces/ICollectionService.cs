@@ -8,7 +8,7 @@ namespace HotelAPI.BAL.Interfaces
 {
 	public interface ICollectionService
 	{
-		Task<ResponseResult<IEnumerable<CollectionListResponse>>> GetCollectionListAsync(string? status, int? countryId, int? regionId, int? cityId);
+		Task<ResponseResult<IEnumerable<CollectionListResponse>>> GetCollectionListAsync(string? status, string? geoNodeType, int? geoNodeId);
 		Task<ResponseResult<CollectionUpsertResponse>> UpsertCollectionAsync(CollectionUpsertRequest request);
 		Task<ResponseResult<CollectionByIdResponse?>> GetCollectionAsync(int collectionId);
 		Task<ResponseResult<bool>> UpsertContentAsync(CollectionContentRequest request);
