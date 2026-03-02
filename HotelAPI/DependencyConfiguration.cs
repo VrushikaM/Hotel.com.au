@@ -52,7 +52,10 @@ namespace HotelAPI
 			// Region
 			services.AddScoped<IRegionRepository, RegionRepository>();
 			services.AddScoped<IRegionService, RegionService>();
-			
+
+			//District
+			services.AddScoped<IDistrictRepository, DistrictRepository>();
+			services.AddScoped<IDistrictService, DistrictService>();
 		}
 	}
 }

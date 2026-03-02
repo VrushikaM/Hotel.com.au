@@ -16,7 +16,7 @@
 		public const string CreateUser = "User_Register";
 
 		// Collection Stored Procedures
-		public const string GetCollectionList = "Collection_GetList";
+		public const string GetCollectionList = "Collection_GetListByGeoNode";
 		public const string GetCollectionById = "Collection_GetById";
 		public const string UpsertCollection = "Collection_Save";
 		public const string UpsertCollectionContent = "CollectionContent_Save";
@@ -35,9 +35,12 @@
 		public const string GetCitiesByCountryOrRegion = "City_GetByCountryOrRegion";
 
 		// Hotel Stored Procedure
-		public const string GetHotelsByCity = "Hotel_GetByCity";
+		public const string GetHotelsByGeoNode = "Hotel_GetByGeoNode";
 
 		// Region Stored Procedure
 		public const string GetRegionsByCountry = "Region_GetByCountry";
+
+		// District Stored Procedure
+		public const string GetDistrictsByCity = "District_GetByCity";
 	}
 }

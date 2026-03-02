@@ -14,11 +14,14 @@
 		public static string RegionsByCountry(int countryId, string? searchTerm)
 			=> $"region:list:{countryId}:{(string.IsNullOrWhiteSpace(searchTerm) ? "all" : searchTerm.Trim().ToLowerInvariant())}";
 
-		public static string HotelsByCity(int? cityId, string? searchTerm)
-			=> $"hotel:list:{cityId ?? 0}:{(string.IsNullOrWhiteSpace(searchTerm) ? "all" : searchTerm.Trim().ToLowerInvariant())}";
+		public static string DistrictsByCity(int cityId, string? searchTerm)
+			=> $"district:list:{cityId}:{(string.IsNullOrWhiteSpace(searchTerm) ? "all" : searchTerm.Trim().ToLowerInvariant())}";
 
-		public static string CollectionList(string? status, int? countryId, int? regionId, int? cityId)
-			=> $"collection:list:{status?.Trim().ToLowerInvariant() ?? "all"}:{countryId ?? 0}:{regionId ?? 0}:{cityId ?? 0}";
+		public static string HotelsByGeoNode(string geoNodeType, int geoNodeId, string? searchTerm)
+			=> $"hotel:list:{geoNodeType}:{geoNodeId}:{(string.IsNullOrWhiteSpace(searchTerm) ? "all" : searchTerm.Trim().ToLowerInvariant())}";
+
+		public static string CollectionList(string? status, string? geoNodeType, int? geoNodeId)
+			=> $"collection:list:{status?.Trim().ToLowerInvariant() ?? "all"}:{geoNodeType?.Trim().ToLowerInvariant() ?? "all"}:{geoNodeId ?? 0}";
 
 		public static string CollectionContent(int collectionId)
 			=> $"collection:content:{collectionId}";

@@ -12,10 +12,8 @@ namespace HotelAPI.BAL.Services
 	public class CollectionService(ICollectionRepository _collectionRepository, ICacheService _cache) : ICollectionService
 	{
 		private const string COLLECTION_LIST_CACHE_KEY = "collection:list";
-		private const string COLLECTION_CONTENT_CACHE_KEY = "collection:content";
-		private const string COLLECTION_HISTORY_CACHE_KEY = "collection:history";
 
-		public async Task<ResponseResult<IEnumerable<CollectionListResponse>>> GetCollectionListAsync(string? status, int? countryId, int? regionId, int? cityId)
+		public async Task<ResponseResult<IEnumerable<CollectionListResponse>>> GetCollectionListAsync(string? status, string? geoNodeType, int? geoNodeId)
 		{
 			try
 			{
@@ -26,11 +24,11 @@ namespace HotelAPI.BAL.Services
 					TimeSpan.FromHours(1)
 				);
 
-				var cacheKey = $"{CacheKeyBuilder.CollectionList(status, countryId, regionId, cityId)}:{version}";
+				var cacheKey = $"{CacheKeyBuilder.CollectionList(status, geoNodeType, geoNodeId)}:{version}";
 
 				var result = await _cache.GetOrCreateAsync(
 					cacheKey,
-					() => _collectionRepository.GetCollectionListAsync(status, countryId, regionId, cityId),
+					() => _collectionRepository.GetCollectionListAsync(status, geoNodeType, geoNodeId),
 					TimeSpan.FromMinutes(15),
 					TimeSpan.FromMinutes(10)
 				);
