@@ -413,5 +413,47 @@ namespace HotelAPI.BAL.Services
 				);
 			}
 		}
+
+		public async Task<ResponseResult<long>> DeleteCollectionAsync(int collectionId)
+		{
+			try
+			{
+				if (collectionId <= 0)
+				{
+					return ResponseHelper<long>.Error(
+						"Valid CollectionId is required",
+						statusCode: StatusCode.UNPROCESSABLE_ENTITY
+					);
+				}
+
+				// Call repository SP: Collection_Delete
+				var deletedId = await _collectionRepository.DeleteCollectionAsync(collectionId);
+
+				if (deletedId <= 0)
+				{
+					return ResponseHelper<long>.Error(
+						"Collection not found or could not be deleted",
+						statusCode: StatusCode.BAD_REQUEST
+					);
+				}
+
+				// 🔥 Clear caches after deletion
+				_cache.Remove(COLLECTION_LIST_CACHE_KEY);
+				_cache.Remove(CacheKeyBuilder.CollectionById(collectionId));
+
+				return ResponseHelper<long>.Success(
+					"Collection deleted successfully",
+					deletedId
+				);
+			}
+			catch (Exception ex)
+			{
+				return ResponseHelper<long>.Error(
+					"Error while deleting collection",
+					exception: ex,
+					statusCode: StatusCode.INTERNAL_SERVER_ERROR
+				);
+			}
+		}
 	}
 }

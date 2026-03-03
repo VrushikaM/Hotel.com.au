@@ -18,7 +18,7 @@ namespace HotelAPI.Model.Collection
 		public string? Name { get; set; }
 		public string? Slug { get; set; }
 		public long GeoNodeId { get; set; }
-		public string? GeoName { get; set; }
+		public string? GeoNodeName { get; set; }
 		public string? Template { get; set; }
 		public DateTime? ExpiryDate { get; set; }
 		public int? MaxHotels { get; set; }

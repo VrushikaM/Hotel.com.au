@@ -206,5 +206,20 @@ namespace HotelAPI.DAL.Repositories
 			return parameters.Get<long>("@NewCollectionId");
 		}
 		#endregion
+
+		#region DeleteCollectionAsync
+		public async Task<long> DeleteCollectionAsync(long collectionId)
+		{
+			var parameters = new DynamicParameters();
+			parameters.Add("@CollectionId", collectionId, System.Data.DbType.Int64);
+
+			var result = await _sqlHelper.QueryFirstOrDefaultAsync<long>(
+				StoredProcedure.Collection_Delete,
+				parameters
+			);
+
+			return result;
+		}
+		#endregion
 	}
 }

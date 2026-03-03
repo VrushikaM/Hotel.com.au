@@ -119,10 +119,24 @@ namespace HotelAPI.Controller
 		/// </summary>
 		/// <param name="id">Source CollectionId to clone.</param>
 		/// <returns>Returns the newly created CollectionId.</returns>
+		
 		[HttpPost("{id}/clone")]
 		public async Task<IActionResult> CloneCollection(int id)
 		{
 			var result = await collectionService.CloneCollectionAsync(id);
+			return StatusCode(result.Code, result);
+		}
+
+		/// <summary>
+		/// Deletes a collection along with all its dependent data (content, rules, curations, revisions, and URL registry entry).
+		/// </summary>
+		/// <param name="id">Identifier of the collection to delete.</param>
+		/// <returns>Returns the deleted CollectionId and a success message.</returns>
+	
+		[HttpDelete("{id}")]
+		public async Task<IActionResult> DeleteCollection(int id)
+		{
+			var result = await collectionService.DeleteCollectionAsync(id);
 			return StatusCode(result.Code, result);
 		}
 	}

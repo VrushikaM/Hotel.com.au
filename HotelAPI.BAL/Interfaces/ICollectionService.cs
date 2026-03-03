@@ -12,13 +12,10 @@ namespace HotelAPI.BAL.Interfaces
 		Task<ResponseResult<CollectionUpsertResponse>> UpsertCollectionAsync(CollectionUpsertRequest request);
 		Task<ResponseResult<CollectionByIdResponse?>> GetCollectionAsync(int collectionId);
 		Task<ResponseResult<bool>> UpsertContentAsync(CollectionContentRequest request);
-		//Task<ResponseResult<CollectionContentResponse?>> GetContentAsync(int collectionId);
-		//Task<ResponseResult<IEnumerable<CollectionContentHistoryResponse>>> GetContentHistoryAsync(int collectionId);
 		Task<ResponseResult<IEnumerable<int>>> UpsertRulesAsync(CollectionRuleRequest request);
-		//Task<ResponseResult<CollectionRuleResponse?>> GetRulesByIdAsync(int collectionId);
 		Task<ResponseResult<int>> ChangeStatusAsync(int collectionId, string action);
 		Task<ResponseResult<CollectionCurationResponse>> UpsertCurationsAsync(CollectionCurationRequest request);
-		//Task<ResponseResult<CurationByIdResponse?>> GetCurationsByIdAsync(int collectionId);
 		Task<ResponseResult<long>> CloneCollectionAsync(int sourceCollectionId);
+		Task<ResponseResult<long>> DeleteCollectionAsync(int collectionId);
 	}
 }
