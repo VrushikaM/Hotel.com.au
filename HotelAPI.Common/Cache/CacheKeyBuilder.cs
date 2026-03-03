@@ -20,8 +20,8 @@
 		public static string HotelsByGeoNode(string geoNodeType, int geoNodeId, string? searchTerm)
 			=> $"hotel:list:{geoNodeType}:{geoNodeId}:{(string.IsNullOrWhiteSpace(searchTerm) ? "all" : searchTerm.Trim().ToLowerInvariant())}";
 
-		public static string CollectionList(string? status, string? geoNodeType, int? geoNodeId, int pageNumber, int pageSize)
-			=> $"collection:list:{status?.Trim().ToLowerInvariant() ?? "all"}:{geoNodeType?.Trim().ToLowerInvariant() ?? "all"}:{geoNodeId ?? 0}:{pageNumber}:{pageSize}";
+		public static string CollectionList(string? status, string? geoNodeType, int? sourceId, int pageNumber, int pageSize)
+			=> $"collection:list:{status?.Trim().ToLowerInvariant() ?? "all"}:{geoNodeType?.Trim().ToLowerInvariant() ?? "all"}:{sourceId ?? 0}:{pageNumber}:{pageSize}";
 
 		public static string CollectionById(int collectionId)
 			=> $"collection:byId:{collectionId}";

@@ -13,7 +13,7 @@ namespace HotelAPI.BAL.Services
 	{
 		private const string COLLECTION_LIST_CACHE_KEY = "collection:list";
 
-		public async Task<ResponseResult<CollectionListResponse>> GetCollectionListAsync(string? status, string? geoNodeType, int? geoNodeId, int pageNumber, int pageSize)
+		public async Task<ResponseResult<CollectionListResponse>> GetCollectionListAsync(string? status, string? geoNodeType, int? sourceId, int pageNumber, int pageSize)
 		{
 			try
 			{
@@ -24,11 +24,11 @@ namespace HotelAPI.BAL.Services
 					TimeSpan.FromHours(1)
 				);
 
-				var cacheKey = $"{CacheKeyBuilder.CollectionList(status, geoNodeType, geoNodeId, pageNumber, pageSize)}:{version}";
+				var cacheKey = $"{CacheKeyBuilder.CollectionList(status, geoNodeType, sourceId, pageNumber, pageSize)}:{version}";
 
 				var result = await _cache.GetOrCreateAsync(
 					cacheKey,
-					() => _collectionRepository.GetCollectionListAsync(status, geoNodeType, geoNodeId, pageNumber, pageSize),
+					() => _collectionRepository.GetCollectionListAsync(status, geoNodeType, sourceId, pageNumber, pageSize),
 					TimeSpan.FromMinutes(15),
 					TimeSpan.FromMinutes(10)
 				);

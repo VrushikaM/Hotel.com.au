@@ -17,18 +17,18 @@ namespace HotelAPI.Controller
 		/// </summary>
 		/// <param name="status">Optional collection status (e.g., Published, Draft).</param>
 		/// <param name="geoNodeType">Optional geographic node type (Country, Region, City, District).</param>
-		/// <param name="geoNodeId">Optional geographic node identifier.</param>
+		/// <param name="sourceId">Optional geographic node identifier.</param>
 		/// <returns>Returns the filtered list of collections.</returns>
 
 		[HttpGet]
 		public async Task<IActionResult> GetCollectionList(
 			[FromQuery] string? status,
 			[FromQuery] string? geoNodeType,
-			[FromQuery] int? geoNodeId,
+			[FromQuery] int? sourceId,
 			[FromQuery] int pageNumber = 1,
 			[FromQuery] int pageSize = 10)
 		{
-			var result = await collectionService.GetCollectionListAsync(status, geoNodeType, geoNodeId, pageNumber, pageSize);
+			var result = await collectionService.GetCollectionListAsync(status, geoNodeType, sourceId, pageNumber, pageSize);
 			return StatusCode(result.Code, result);
 		}
 
