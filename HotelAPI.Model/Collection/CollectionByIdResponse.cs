@@ -15,6 +15,7 @@ namespace HotelAPI.Model.Collection
 	public class BasicCollectionResponse
 	{
 		public long CollectionId { get; set; }
+		public long SourceId { get; set; }
 		public string? Name { get; set; }
 		public string? Slug { get; set; }
 		public string? Template { get; set; }
