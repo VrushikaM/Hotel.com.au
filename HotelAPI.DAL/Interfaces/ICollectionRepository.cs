@@ -15,5 +15,6 @@ namespace HotelAPI.DAL.Interfaces
 		Task<CollectionCurationResponse?> UpsertCurationsAsync(CollectionCurationRequest request);
 		Task<long> CloneCollectionAsync(long sourceCollectionId);
 		Task<long> DeleteCollectionAsync(long collectionId);
+		Task<List<CollectionPreviewHotelsResponse>> GetCollectionPreviewHotelsAsync(int collectionId);
 	}
 }

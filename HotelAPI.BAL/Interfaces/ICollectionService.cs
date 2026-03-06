@@ -17,5 +17,6 @@ namespace HotelAPI.BAL.Interfaces
 		Task<ResponseResult<CollectionCurationResponse>> UpsertCurationsAsync(CollectionCurationRequest request);
 		Task<ResponseResult<long>> CloneCollectionAsync(int sourceCollectionId);
 		Task<ResponseResult<long>> DeleteCollectionAsync(int collectionId);
+		Task<ResponseResult<List<CollectionPreviewHotelsResponse>>> GetCollectionPreviewHotelsAsync(int collectionId);
 	}
 }

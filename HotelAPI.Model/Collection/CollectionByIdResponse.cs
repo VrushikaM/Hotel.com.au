@@ -11,6 +11,7 @@ namespace HotelAPI.Model.Collection
 		public CollectionContentHistoryResponse? CollectionContentHistory { get; set; } = new();
 		public List<CollectionRuleResponse> CollectionRules { get; set; } = new();
 		public List<CurationByIdResponse> CollectionCuration { get; set; } = new();
+		public List<CollectionPreviewHotelsResponse> CollectionPreviewHotels { get; set; } = new();
 	}
 	public class BasicCollectionResponse
 	{

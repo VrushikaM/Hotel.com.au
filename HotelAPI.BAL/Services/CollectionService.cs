@@ -94,6 +94,7 @@ namespace HotelAPI.BAL.Services
 				// 🔥 Clear collection list cache after insert/update
 				_cache.Remove(COLLECTION_LIST_CACHE_KEY);
 				_cache.Remove(CacheKeyBuilder.CollectionById(collectionId));
+				_cache.Remove(CacheKeyBuilder.CollectionPreviewHotels(collectionId));
 
 				return ResponseHelper<CollectionUpsertResponse>.Success(
 					request.CollectionId == null
@@ -191,6 +192,7 @@ namespace HotelAPI.BAL.Services
 
 				// 🔥 Clear content & history cache after save
 				_cache.Remove(CacheKeyBuilder.CollectionById(request.CollectionId));
+				_cache.Remove(CacheKeyBuilder.CollectionPreviewHotels(request.CollectionId));
 
 				return ResponseHelper<bool>.Success(
 					"Content saved successfully",
@@ -239,6 +241,7 @@ namespace HotelAPI.BAL.Services
 				}
 
 				_cache.Remove(CacheKeyBuilder.CollectionById(request.CollectionId));
+				_cache.Remove(CacheKeyBuilder.CollectionPreviewHotels(request.CollectionId));
 
 				return ResponseHelper<IEnumerable<int>>.Success(
 					"Rules saved successfully",
@@ -358,6 +361,7 @@ namespace HotelAPI.BAL.Services
 				// 🔥 Clear relevant caches
 				_cache.Remove(COLLECTION_LIST_CACHE_KEY);
 				_cache.Remove(CacheKeyBuilder.CollectionById(request.CollectionId.Value));
+				_cache.Remove(CacheKeyBuilder.CollectionPreviewHotels(request.CollectionId.Value));
 
 				return ResponseHelper<CollectionCurationResponse>.Success(
 					"Collection curations saved successfully",
@@ -398,6 +402,7 @@ namespace HotelAPI.BAL.Services
 
 				// 🔥 Clear collection list cache
 				_cache.Remove(COLLECTION_LIST_CACHE_KEY);
+				_cache.Remove(CacheKeyBuilder.CollectionPreviewHotels((int)newId));
 
 				return ResponseHelper<long>.Success(
 					"Collection cloned successfully",
@@ -440,6 +445,7 @@ namespace HotelAPI.BAL.Services
 				// 🔥 Clear caches after deletion
 				_cache.Remove(COLLECTION_LIST_CACHE_KEY);
 				_cache.Remove(CacheKeyBuilder.CollectionById(collectionId));
+				_cache.Remove(CacheKeyBuilder.CollectionPreviewHotels(collectionId));
 
 				return ResponseHelper<long>.Success(
 					"Collection deleted successfully",
@@ -450,6 +456,50 @@ namespace HotelAPI.BAL.Services
 			{
 				return ResponseHelper<long>.Error(
 					"Error while deleting collection",
+					exception: ex,
+					statusCode: StatusCode.INTERNAL_SERVER_ERROR
+				);
+			}
+		}
+
+		public async Task<ResponseResult<List<CollectionPreviewHotelsResponse>>> GetCollectionPreviewHotelsAsync(int collectionId)
+		{
+			try
+			{
+				if (collectionId <= 0)
+				{
+					return ResponseHelper<List<CollectionPreviewHotelsResponse>>.Error(
+						"Valid CollectionId is required",
+						statusCode: StatusCode.UNPROCESSABLE_ENTITY
+					);
+				}
+
+				var cacheKey = CacheKeyBuilder.CollectionPreviewHotels(collectionId);
+
+				var data = await _cache.GetOrCreateAsync(
+					cacheKey,
+					() => _collectionRepository.GetCollectionPreviewHotelsAsync(collectionId),
+					TimeSpan.FromMinutes(15),
+					TimeSpan.FromMinutes(10)
+				);
+
+				if (data == null || !data.Any())
+				{
+					return ResponseHelper<List<CollectionPreviewHotelsResponse>>.Error(
+						"No hotels found for the given collection",
+						statusCode: StatusCode.NOT_FOUND
+					);
+				}
+
+				return ResponseHelper<List<CollectionPreviewHotelsResponse>>.Success(
+					"Preview hotels fetched successfully",
+					data
+				);
+			}
+			catch (Exception ex)
+			{
+				return ResponseHelper<List<CollectionPreviewHotelsResponse>>.Error(
+					"Error fetching preview hotels",
 					exception: ex,
 					statusCode: StatusCode.INTERNAL_SERVER_ERROR
 				);

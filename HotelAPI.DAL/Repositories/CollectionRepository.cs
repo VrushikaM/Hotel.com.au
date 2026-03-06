@@ -5,6 +5,7 @@ using HotelAPI.Model.Collection;
 using HotelAPI.Model.Collection.CollectionContent;
 using HotelAPI.Model.Collection.CollectionCuration;
 using HotelAPI.Model.Collection.CollectionRule;
+using System.Data;
 
 namespace HotelAPI.DAL.Repositories
 {
@@ -76,6 +77,7 @@ namespace HotelAPI.DAL.Repositories
 					var rules = (await multi.ReadAsync<Rules>()).ToList();
 					var pinnedHotels = (await multi.ReadAsync<PinnedHotelsByIdResponse>()).ToList();
 					var excludedHotels = (await multi.ReadAsync<ExcludedHotelsByIdResponse>()).ToList();
+					var previewHotels = await GetCollectionPreviewHotelsAsync(collectionId);
 
 					return new CollectionByIdResponse
 					{
@@ -93,7 +95,8 @@ namespace HotelAPI.DAL.Repositories
 								PinnedHotels = pinnedHotels.Any() ? pinnedHotels : new List<PinnedHotelsByIdResponse>(),
 								ExcludedHotels = excludedHotels.Any() ? excludedHotels : new List<ExcludedHotelsByIdResponse>()
 							}
-						}
+						},
+						CollectionPreviewHotels = previewHotels
 					};
 				},
 				parameters
@@ -211,14 +214,29 @@ namespace HotelAPI.DAL.Repositories
 		public async Task<long> DeleteCollectionAsync(long collectionId)
 		{
 			var parameters = new DynamicParameters();
-			parameters.Add("@CollectionId", collectionId, System.Data.DbType.Int64);
+			parameters.Add("@CollectionId", collectionId);
 
 			var result = await _sqlHelper.QueryFirstOrDefaultAsync<long>(
-				StoredProcedure.Collection_Delete,
+				StoredProcedure.CollectionDelete,
 				parameters
 			);
 
 			return result;
+		}
+		#endregion
+
+		#region GetCollectionPreviewHotelsAsync
+		public async Task<List<CollectionPreviewHotelsResponse>> GetCollectionPreviewHotelsAsync(int collectionId)
+		{
+			var parameters = new DynamicParameters();
+			parameters.Add("@CollectionId", collectionId);
+
+			var previewHotels = (await _sqlHelper.QueryAsync<CollectionPreviewHotelsResponse>(
+				StoredProcedure.CollectionPreviewHotels,
+				parameters
+			)).ToList();
+
+			return previewHotels;
 		}
 		#endregion
 	}

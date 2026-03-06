@@ -24,7 +24,8 @@
 		public const string ChangeCollectionStatus = "Collection_ChangeStatus";
 		public const string UpsertCollectionCurations = "CollectionCuration_Save";
 		public const string CloneCollection = "Collection_Clone";
-		public const string Collection_Delete = "Collection_Delete";
+		public const string CollectionDelete = "Collection_Delete";
+		public const string CollectionPreviewHotels = "Collection_PreviewHotels";
 
 		// Master Dropdown Stored Procedure
 		public const string MasterDropdowns = "MasterDropdown_Get";

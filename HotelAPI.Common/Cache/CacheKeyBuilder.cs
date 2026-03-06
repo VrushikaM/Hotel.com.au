@@ -25,5 +25,8 @@
 
 		public static string CollectionById(int collectionId)
 			=> $"collection:byId:{collectionId}";
+
+		public static string CollectionPreviewHotels(int collectionId)
+			=> $"collection:previewHotels:{collectionId}";
 	}
 }

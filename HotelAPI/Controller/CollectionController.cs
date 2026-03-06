@@ -119,7 +119,7 @@ namespace HotelAPI.Controller
 		/// </summary>
 		/// <param name="id">Source CollectionId to clone.</param>
 		/// <returns>Returns the newly created CollectionId.</returns>
-		
+
 		[HttpPost("{id}/clone")]
 		public async Task<IActionResult> CloneCollection(int id)
 		{
@@ -132,11 +132,24 @@ namespace HotelAPI.Controller
 		/// </summary>
 		/// <param name="id">Identifier of the collection to delete.</param>
 		/// <returns>Returns the deleted CollectionId and a success message.</returns>
-	
+
 		[HttpDelete("{id}")]
 		public async Task<IActionResult> DeleteCollection(int id)
 		{
 			var result = await collectionService.DeleteCollectionAsync(id);
+			return StatusCode(result.Code, result);
+		}
+
+		/// <summary>
+		/// Retrieves the list of hotels for a collection along with their reason (matched rule, pinned, etc.)
+		/// </summary>
+		/// <param name="id">CollectionId to preview hotels for.</param>
+		/// <returns>Returns hotel count and hotel list with reason.</returns>
+
+		[HttpGet("{id}/preview")]
+		public async Task<IActionResult> GetCollectionPreviewHotels(int id)
+		{
+			var result = await collectionService.GetCollectionPreviewHotelsAsync(id);
 			return StatusCode(result.Code, result);
 		}
 	}
