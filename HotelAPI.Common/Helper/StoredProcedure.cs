@@ -41,5 +41,8 @@
 
 		// District Stored Procedure
 		public const string GetDistrictsByCity = "District_GetByCity";
+	
+		// Slug Stored Procedure
+		public const string GeoNodeResolveSlug = "GeoNode_ResolveSlug";
 	}
 }

@@ -53,7 +53,7 @@ namespace HotelAPI.BAL.Services
 				};
 
 				return ResponseHelper<LoginResponse>.Success(
-					"Login successful",
+					"Login successfully",
 					response
 				);
 			}

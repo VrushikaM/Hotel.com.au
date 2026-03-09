@@ -56,6 +56,10 @@ namespace HotelAPI
 			//District
 			services.AddScoped<IDistrictRepository, DistrictRepository>();
 			services.AddScoped<IDistrictService, DistrictService>();
+
+			//Slug
+			services.AddScoped<ISlugRepository, SlugRepository>();
+			services.AddScoped<ISlugService, SlugService>();
 		}
 	}
 }

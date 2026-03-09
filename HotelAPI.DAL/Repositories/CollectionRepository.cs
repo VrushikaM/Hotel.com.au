@@ -5,7 +5,6 @@ using HotelAPI.Model.Collection;
 using HotelAPI.Model.Collection.CollectionContent;
 using HotelAPI.Model.Collection.CollectionCuration;
 using HotelAPI.Model.Collection.CollectionRule;
-using System.Data;
 
 namespace HotelAPI.DAL.Repositories
 {
