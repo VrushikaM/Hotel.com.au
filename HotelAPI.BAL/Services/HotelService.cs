@@ -8,15 +8,15 @@ namespace HotelAPI.BAL.Services
 {
 	public class HotelService(IHotelRepository _hotelRepository, ICacheService _cache) : IHotelService
 	{
-		public async Task<ResponseResult<IEnumerable<HotelsByGeoNodeResponse>>> GetHotelsByGeoNodeAsync(string geoNodeType, int geoNodeId, string? searchTerm)
+		public async Task<ResponseResult<IEnumerable<HotelsByGeoNodeResponse>>> GetHotelsByGeoNodeAsync(string geoNodeType, int geoNodeId, string? searchTerm, int maxCount)
 		{
-			var cacheKey = CacheKeyBuilder.HotelsByGeoNode(geoNodeType, geoNodeId, searchTerm);
+			var cacheKey = CacheKeyBuilder.HotelsByGeoNode(geoNodeType, geoNodeId, searchTerm, maxCount);
 
 			try
 			{
 				var result = await _cache.GetOrCreateAsync(
 					cacheKey,
-					factory: () => _hotelRepository.GetHotelsByGeoNode(geoNodeType, geoNodeId, searchTerm),
+					factory: () => _hotelRepository.GetHotelsByGeoNode(geoNodeType, geoNodeId, searchTerm, maxCount),
 					expiration: TimeSpan.FromMinutes(15),
 					slidingExpiration: TimeSpan.FromMinutes(10)
 				);
