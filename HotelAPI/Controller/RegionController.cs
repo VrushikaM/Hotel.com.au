@@ -15,7 +15,19 @@ namespace HotelAPI.Controller
 		[HttpGet]
 		public async Task<IActionResult> GetRegionsByCountry(int countryId, string? searchTerm)
 		{
-			var result = await regionService.GetRegionsByCountryAsync(countryId,searchTerm);
+			var result = await regionService.GetRegionsByCountryAsync(countryId, searchTerm);
+			return StatusCode(result.Code, result);
+		}
+
+		/// <summary>
+		/// Retrieves the region data based on Region UrlName.
+		/// </summary>
+		/// <param name="urlName">Region identifier (UrlName)</param>
+
+		[HttpGet("{urlName}")]
+		public async Task<IActionResult> GetRegionByUrl(string urlName)
+		{
+			var result = await regionService.GetRegionByUrlAsync(urlName);
 			return StatusCode(result.Code, result);
 		}
 	}
