@@ -16,9 +16,9 @@ namespace HotelAPI.Controller
 		/// <param name="maxCount">Hotel name based on maxCount</param>
 
 		[HttpGet]
-		public async Task<IActionResult> GetHotelsByGeoNode(string geoNodeType, int geoNodeId, string? searchTerm, int maxCount)
+		public async Task<IActionResult> GetHotelsByGeoNode(string geoNodeType, int geoNodeId, string? searchTerm)
 		{
-			var result = await hotelService.GetHotelsByGeoNodeAsync(geoNodeType, geoNodeId, searchTerm, maxCount);
+			var result = await hotelService.GetHotelsByGeoNodeAsync(geoNodeType, geoNodeId, searchTerm);
 			return StatusCode(result.Code, result);
 		}
 	}

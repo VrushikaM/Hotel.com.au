@@ -353,7 +353,7 @@ namespace HotelAPI.BAL.Services
 				if (result == null)
 				{
 					return ResponseHelper<CollectionCurationResponse>.Error(
-						"Failed to save collection curations",
+						"Maximum 8 hotels can be pinned for a collection curation.",
 						statusCode: StatusCode.BAD_REQUEST
 					);
 				}

@@ -19,6 +19,7 @@ builder.Services.AddCors(options =>
 		policy
 			.WithOrigins(
 				"http://localhost:3000",
+				"http://192.168.1.184:3000",
 				"http://hotel.au",
 				"https://hotel.au",
 				"http://www.hotel.au",

@@ -170,6 +170,7 @@ namespace HotelAPI.DAL.Repositories
 				{
 					// Result set 1 → CollectionID (from SP)
 					var collectionResult = (await multi.ReadAsync<long>()).FirstOrDefault();
+					
 					if (collectionResult == 0)
 						return null;
 
