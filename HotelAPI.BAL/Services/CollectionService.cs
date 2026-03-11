@@ -338,15 +338,6 @@ namespace HotelAPI.BAL.Services
 					);
 				}
 
-				if (string.IsNullOrWhiteSpace(request.PinnedJson) &&
-					string.IsNullOrWhiteSpace(request.ExcludeJson))
-				{
-					return ResponseHelper<CollectionCurationResponse>.Error(
-						"PinnedJson or ExcludeJson must be provided",
-						statusCode: StatusCode.UNPROCESSABLE_ENTITY
-					);
-				}
-
 				// 🔥 Call repository (SP: CollectionCuration_Save)
 				var result = await _collectionRepository.UpsertCurationsAsync(request);
 
