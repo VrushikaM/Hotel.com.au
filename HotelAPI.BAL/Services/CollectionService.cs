@@ -466,7 +466,7 @@ namespace HotelAPI.BAL.Services
 					TimeSpan.FromMinutes(10)
 				);
 
-				if (data == null || data.Count() == 0)
+				if (data == null || data.Count == 0)
 				{
 					return ResponseHelper<List<CollectionPreviewHotelsResponse>>.Error(
 						"No hotels found for the given collection",

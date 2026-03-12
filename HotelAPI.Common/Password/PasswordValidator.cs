@@ -31,7 +31,7 @@
 				errorMessages.Add("Password must contain at least one special character.");
 			}
 
-			return errorMessages.Count() == 0;
+			return errorMessages.Count == 0;
 		}
 	}
 }

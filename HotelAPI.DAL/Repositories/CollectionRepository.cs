@@ -93,9 +93,9 @@ namespace HotelAPI.DAL.Repositories
 						{
 							new CurationByIdResponse
 							{
-								IncludedHotels = includedHotels.Count() == 0 ? includedHotels : new List<IncludedHotelsByIdResponse>(),
-								PinnedHotels = pinnedHotels.Count() == 0  ? pinnedHotels : new List<PinnedHotelsByIdResponse>(),
-								ExcludedHotels = excludedHotels.Count() == 0 ? excludedHotels : new List<ExcludedHotelsByIdResponse>()
+								IncludedHotels = includedHotels.Count == 0 ? includedHotels : new List<IncludedHotelsByIdResponse>(),
+								PinnedHotels = pinnedHotels.Count == 0  ? pinnedHotels : new List<PinnedHotelsByIdResponse>(),
+								ExcludedHotels = excludedHotels.Count == 0 ? excludedHotels : new List<ExcludedHotelsByIdResponse>()
 							}
 						},
 						CollectionPreviewHotels = previewHotels
