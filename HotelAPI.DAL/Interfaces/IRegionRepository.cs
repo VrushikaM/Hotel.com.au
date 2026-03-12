@@ -5,5 +5,6 @@ namespace HotelAPI.DAL.Interfaces
 	public interface IRegionRepository
 	{
 		Task<IEnumerable<RegionsByCountryResponse>> GetRegionsByCountryAsync(int countryId, string? searchTerm);
+		Task<IEnumerable<RegionsByUrlResponse>> GetRegionByUrlAsync(string urlName);
 	}
 }

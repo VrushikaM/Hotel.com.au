@@ -20,5 +20,18 @@ namespace HotelAPI.DAL.Repositories
 			);
 		}
 		#endregion
+
+		#region GetRegionByUrlAsync
+		public async Task<IEnumerable<RegionsByUrlResponse>> GetRegionByUrlAsync(string urlName)
+		{
+			var parameters = new DynamicParameters();
+			parameters.Add("@UrlName", urlName);
+
+			return await _sqlHelper.QueryAsync<RegionsByUrlResponse>(
+				StoredProcedure.GetRegionByUrl,
+				parameters
+			);
+		}
+		#endregion
 	}
 }

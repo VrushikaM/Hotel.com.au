@@ -12,7 +12,8 @@ namespace HotelAPI.Controller
 		/// </summary>
 		/// <param name="geoNodetype">Hotel name based on geoNodeType (country/region/district/city)</param>
 		/// <param name="geoNodeId">GeoNode identifier (GeoNode Id)</param>
-		/// <param name="search">Hotel name search keyword (Search)</param>
+		/// <param name="searchTerm">Hotel name search keyword (Search)</param>
+		/// <param name="maxCount">Hotel name based on maxCount</param>
 
 		[HttpGet]
 		public async Task<IActionResult> GetHotelsByGeoNode(string geoNodeType, int geoNodeId, string? searchTerm)

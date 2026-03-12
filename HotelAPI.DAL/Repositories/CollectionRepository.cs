@@ -74,6 +74,7 @@ namespace HotelAPI.DAL.Repositories
 					var content = await multi.ReadFirstOrDefaultAsync<CollectionContentResponse>();
 					var contentHistory = await multi.ReadFirstOrDefaultAsync<CollectionContentHistoryResponse>();
 					var rules = (await multi.ReadAsync<Rules>()).ToList();
+					var includedHotels = (await multi.ReadAsync<IncludedHotelsByIdResponse>()).ToList();
 					var pinnedHotels = (await multi.ReadAsync<PinnedHotelsByIdResponse>()).ToList();
 					var excludedHotels = (await multi.ReadAsync<ExcludedHotelsByIdResponse>()).ToList();
 					var previewHotels = await GetCollectionPreviewHotelsAsync(collectionId);
@@ -91,6 +92,7 @@ namespace HotelAPI.DAL.Repositories
 						{
 							new CurationByIdResponse
 							{
+								IncludedHotels = includedHotels.Any() ? includedHotels : new List<IncludedHotelsByIdResponse>(),
 								PinnedHotels = pinnedHotels.Any() ? pinnedHotels : new List<PinnedHotelsByIdResponse>(),
 								ExcludedHotels = excludedHotels.Any() ? excludedHotels : new List<ExcludedHotelsByIdResponse>()
 							}
@@ -161,38 +163,19 @@ namespace HotelAPI.DAL.Repositories
 		{
 			var parameters = new DynamicParameters();
 			parameters.Add("@CollectionID", request.CollectionId);
+			parameters.Add("@IncludeJson", request.IncludeJson);
 			parameters.Add("@PinnedJson", request.PinnedJson);
 			parameters.Add("@ExcludeJson", request.ExcludeJson);
 
-			return await _sqlHelper.QueryMultipleAsync(
+			var result = await _sqlHelper.QueryFirstOrDefaultAsync<CollectionCurationResponse>(
 				StoredProcedure.UpsertCollectionCurations,
-				async multi =>
-				{
-					// Result set 1 → CollectionID (from SP)
-					var collectionResult = (await multi.ReadAsync<long>()).FirstOrDefault();
-					if (collectionResult == 0)
-						return null;
-
-					// Result set 2 → Exclusion IDs
-					var exclusionIds = (await multi.ReadAsync<long>()).ToList();
-
-					return new CollectionCurationResponse
-					{
-						PinnedHotels = new PinnedHotelsResponse
-						{
-							CollectionId = collectionResult
-						},
-						ExcludedHotels = new ExcludedHotelsResponse
-						{
-							ExclusionIds = exclusionIds
-						}
-					};
-				},
 				parameters
 			);
+
+			return result;
 		}
 		#endregion
-
+		
 		#region CloneCollectionAsync
 		public async Task<long> CloneCollectionAsync(long sourceCollectionId)
 		{

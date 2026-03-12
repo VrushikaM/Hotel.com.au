@@ -92,9 +92,7 @@ namespace HotelAPI.BAL.Services
 				}
 
 				// 🔥 Clear collection list cache after insert/update
-				_cache.Remove(COLLECTION_LIST_CACHE_KEY);
-				_cache.Remove(CacheKeyBuilder.CollectionById(collectionId));
-				_cache.Remove(CacheKeyBuilder.CollectionPreviewHotels(collectionId));
+				ClearCollectionCache(collectionId);
 
 				return ResponseHelper<CollectionUpsertResponse>.Success(
 					request.CollectionId == null
@@ -191,8 +189,7 @@ namespace HotelAPI.BAL.Services
 				await _collectionRepository.UpsertContentAsync(request);
 
 				// 🔥 Clear content & history cache after save
-				_cache.Remove(CacheKeyBuilder.CollectionById(request.CollectionId));
-				_cache.Remove(CacheKeyBuilder.CollectionPreviewHotels(request.CollectionId));
+				ClearCollectionCache(request.CollectionId);
 
 				return ResponseHelper<bool>.Success(
 					"Content saved successfully",
@@ -240,8 +237,7 @@ namespace HotelAPI.BAL.Services
 					);
 				}
 
-				_cache.Remove(CacheKeyBuilder.CollectionById(request.CollectionId));
-				_cache.Remove(CacheKeyBuilder.CollectionPreviewHotels(request.CollectionId));
+				ClearCollectionCache(request.CollectionId);
 
 				return ResponseHelper<IEnumerable<int>>.Success(
 					"Rules saved successfully",
@@ -299,7 +295,7 @@ namespace HotelAPI.BAL.Services
 				}
 
 				// 🔥 Clear collection list cache after status change
-				_cache.Remove(COLLECTION_LIST_CACHE_KEY);
+				ClearCollectionCache(collectionId);
 
 				return ResponseHelper<int>.Success(
 					normalizedAction == "publish"
@@ -338,30 +334,19 @@ namespace HotelAPI.BAL.Services
 					);
 				}
 
-				if (string.IsNullOrWhiteSpace(request.PinnedJson) &&
-					string.IsNullOrWhiteSpace(request.ExcludeJson))
-				{
-					return ResponseHelper<CollectionCurationResponse>.Error(
-						"PinnedJson or ExcludeJson must be provided",
-						statusCode: StatusCode.UNPROCESSABLE_ENTITY
-					);
-				}
-
 				// 🔥 Call repository (SP: CollectionCuration_Save)
 				var result = await _collectionRepository.UpsertCurationsAsync(request);
 
 				if (result == null)
 				{
 					return ResponseHelper<CollectionCurationResponse>.Error(
-						"Failed to save collection curations",
+						"Maximum 8 hotels can be pinned for a collection curation.",
 						statusCode: StatusCode.BAD_REQUEST
 					);
 				}
 
 				// 🔥 Clear relevant caches
-				_cache.Remove(COLLECTION_LIST_CACHE_KEY);
-				_cache.Remove(CacheKeyBuilder.CollectionById(request.CollectionId.Value));
-				_cache.Remove(CacheKeyBuilder.CollectionPreviewHotels(request.CollectionId.Value));
+				ClearCollectionCache(request.CollectionId.Value);
 
 				return ResponseHelper<CollectionCurationResponse>.Success(
 					"Collection curations saved successfully",
@@ -401,8 +386,7 @@ namespace HotelAPI.BAL.Services
 				}
 
 				// 🔥 Clear collection list cache
-				_cache.Remove(COLLECTION_LIST_CACHE_KEY);
-				_cache.Remove(CacheKeyBuilder.CollectionPreviewHotels((int)newId));
+				ClearCollectionCache((int)newId);
 
 				return ResponseHelper<long>.Success(
 					"Collection cloned successfully",
@@ -443,9 +427,7 @@ namespace HotelAPI.BAL.Services
 				}
 
 				// 🔥 Clear caches after deletion
-				_cache.Remove(COLLECTION_LIST_CACHE_KEY);
-				_cache.Remove(CacheKeyBuilder.CollectionById(collectionId));
-				_cache.Remove(CacheKeyBuilder.CollectionPreviewHotels(collectionId));
+				ClearCollectionCache(collectionId);
 
 				return ResponseHelper<long>.Success(
 					"Collection deleted successfully",
@@ -504,6 +486,13 @@ namespace HotelAPI.BAL.Services
 					statusCode: StatusCode.INTERNAL_SERVER_ERROR
 				);
 			}
+		}
+
+		private void ClearCollectionCache(int collectionId)
+		{
+			_cache.Remove(COLLECTION_LIST_CACHE_KEY);
+			_cache.Remove(CacheKeyBuilder.CollectionById(collectionId));
+			_cache.Remove(CacheKeyBuilder.CollectionPreviewHotels(collectionId));
 		}
 	}
 }

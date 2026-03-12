@@ -38,6 +38,7 @@
 
 		// Region Stored Procedure
 		public const string GetRegionsByCountry = "Region_GetByCountry";
+		public const string GetRegionByUrl = "Region_GetByUrlName";
 
 		// District Stored Procedure
 		public const string GetDistrictsByCity = "District_GetByCity";

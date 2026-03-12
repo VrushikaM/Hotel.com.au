@@ -14,6 +14,9 @@
 		public static string RegionsByCountry(int countryId, string? searchTerm)
 			=> $"region:list:{countryId}:{(string.IsNullOrWhiteSpace(searchTerm) ? "all" : searchTerm.Trim().ToLowerInvariant())}";
 
+		public static string RegionByUrl(string urlName)
+						=> $"region:url:{urlName}";
+
 		public static string DistrictsByCity(int cityId, string? searchTerm)
 			=> $"district:list:{cityId}:{(string.IsNullOrWhiteSpace(searchTerm) ? "all" : searchTerm.Trim().ToLowerInvariant())}";
 
