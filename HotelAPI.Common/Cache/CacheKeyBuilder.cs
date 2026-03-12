@@ -1,6 +1,6 @@
 ﻿namespace HotelAPI.Common.Cache
 {
-	public class CacheKeyBuilder
+	public static class CacheKeyBuilder
 	{
 		public static string CountryList(string? searchTerm)
 			=> $"country:list:{(string.IsNullOrWhiteSpace(searchTerm) ? "all" : searchTerm.Trim().ToLowerInvariant())}";

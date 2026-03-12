@@ -27,7 +27,7 @@ namespace HotelAPI.BAL.Services
 				if (!PasswordValidator.ValidatePassword(model.Password, out var errors))
 				{
 					return ResponseHelper<UserCreateResponse>.Error(
-						"Invalid password format",
+						string.Join(" ", errors),
 						statusCode: StatusCode.BAD_REQUEST
 					);
 				}

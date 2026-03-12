@@ -1,6 +1,6 @@
 ﻿namespace HotelAPI.Common.Password
 {
-	public class PasswordValidator
+	public static class PasswordValidator
 	{
 		public static bool ValidatePassword(string password, out List<string> errorMessages)
 		{
@@ -31,7 +31,7 @@
 				errorMessages.Add("Password must contain at least one special character.");
 			}
 
-			return !errorMessages.Any();
+			return errorMessages.Count == 0;
 		}
 	}
 }

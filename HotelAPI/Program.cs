@@ -42,12 +42,10 @@ app.UseSwaggerUI(c =>
 	c.SwaggerEndpoint("/api/swagger/v1/swagger.json", "Hotel API V1");
 });
 
-//app.UseHttpsRedirection();
-
 app.UseCors("AllowFrontend");
 
 app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
+await app.RunAsync();

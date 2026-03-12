@@ -22,7 +22,7 @@ namespace HotelAPI.Common.Cache
 
 				var result = await factory();
 
-				if (result == null)
+				if (EqualityComparer<T>.Default.Equals(result, default))
 				{
 					entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromSeconds(5);
 				}

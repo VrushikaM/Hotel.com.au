@@ -22,11 +22,11 @@
 		public int HotelCount { get; set; }
 		public CountryItemType Type { get; set; }
 	}
-}
-public enum CountryItemType
-{
-	City = 0,
-	Region = 1,
-	HotelBrand = 2,
-	HotelType = 3
+	public enum CountryItemType
+	{
+		City = 0,
+		Region = 1,
+		HotelBrand = 2,
+		HotelType = 3
+	}
 }

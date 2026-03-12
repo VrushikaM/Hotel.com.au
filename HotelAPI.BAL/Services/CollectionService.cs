@@ -1,5 +1,6 @@
 ﻿using HotelAPI.BAL.Interfaces;
 using HotelAPI.Common.Cache;
+using HotelAPI.Common.Constants;
 using HotelAPI.Common.Helper;
 using HotelAPI.DAL.Interfaces;
 using HotelAPI.Model.Collection;
@@ -121,7 +122,7 @@ namespace HotelAPI.BAL.Services
 				if (collectionId <= 0)
 				{
 					return ResponseHelper<CollectionByIdResponse?>.Error(
-						"Valid CollectionId is required",
+						ErrorMessages.ValidCollectionIdRequired,
 						statusCode: StatusCode.UNPROCESSABLE_ENTITY
 					);
 				}
@@ -173,7 +174,7 @@ namespace HotelAPI.BAL.Services
 				if (request.CollectionId <= 0)
 				{
 					return ResponseHelper<bool>.Error(
-						"Valid CollectionId is required",
+						ErrorMessages.ValidCollectionIdRequired,
 						statusCode: StatusCode.UNPROCESSABLE_ENTITY
 					);
 				}
@@ -261,7 +262,7 @@ namespace HotelAPI.BAL.Services
 				if (collectionId <= 0)
 				{
 					return ResponseHelper<int>.Error(
-						"Valid CollectionId is required",
+						ErrorMessages.ValidCollectionIdRequired,
 						statusCode: StatusCode.UNPROCESSABLE_ENTITY
 					);
 				}
@@ -329,7 +330,7 @@ namespace HotelAPI.BAL.Services
 				if (request.CollectionId == null || request.CollectionId <= 0)
 				{
 					return ResponseHelper<CollectionCurationResponse>.Error(
-						"Valid CollectionId is required",
+						ErrorMessages.ValidCollectionIdRequired,
 						statusCode: StatusCode.UNPROCESSABLE_ENTITY
 					);
 				}
@@ -370,7 +371,7 @@ namespace HotelAPI.BAL.Services
 				if (sourceCollectionId <= 0)
 				{
 					return ResponseHelper<long>.Error(
-						"Valid CollectionId is required",
+						ErrorMessages.ValidCollectionIdRequired,
 						statusCode: StatusCode.UNPROCESSABLE_ENTITY
 					);
 				}
@@ -410,7 +411,7 @@ namespace HotelAPI.BAL.Services
 				if (collectionId <= 0)
 				{
 					return ResponseHelper<long>.Error(
-						"Valid CollectionId is required",
+						ErrorMessages.ValidCollectionIdRequired,
 						statusCode: StatusCode.UNPROCESSABLE_ENTITY
 					);
 				}
@@ -451,7 +452,7 @@ namespace HotelAPI.BAL.Services
 				if (collectionId <= 0)
 				{
 					return ResponseHelper<List<CollectionPreviewHotelsResponse>>.Error(
-						"Valid CollectionId is required",
+						ErrorMessages.ValidCollectionIdRequired,
 						statusCode: StatusCode.UNPROCESSABLE_ENTITY
 					);
 				}
@@ -465,7 +466,7 @@ namespace HotelAPI.BAL.Services
 					TimeSpan.FromMinutes(10)
 				);
 
-				if (data == null || !data.Any())
+				if (data == null || data.Count == 0)
 				{
 					return ResponseHelper<List<CollectionPreviewHotelsResponse>>.Error(
 						"No hotels found for the given collection",

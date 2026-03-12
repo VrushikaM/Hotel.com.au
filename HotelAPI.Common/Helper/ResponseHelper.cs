@@ -50,11 +50,8 @@ namespace HotelAPI.Common.Helper
 	ExceptionResponse? exceptionDetails = null,
 	List<string>? errors = null,
 	StatusCode statusCode = StatusCode.OK,
-	int? totalRecords = null,
-	int? pageNumber = null,
-	int? pageSize = null,
-	string? sortBy = null,
-	string? sortOrder = null)
+	PaginationInfo? pagination = null
+)
 	{
 		public string Status { get; } = status.ToString().ToLower();
 		public int Code { get; } = (int)statusCode;
@@ -62,17 +59,22 @@ namespace HotelAPI.Common.Helper
 		public T? Data { get; } = data;
 		public ExceptionResponse? ExceptionDetails { get; } = exceptionDetails;
 		public List<string>? Errors { get; } = errors;
-		public int? TotalRecords { get; } = totalRecords;
-		public int? PageNumber { get; } = pageNumber;
-		public int? PageSize { get; } = pageSize;
-		public string? SortBy { get; set; } = sortBy;
-		public string? SortOrder { get; set; } = sortOrder;
+		public PaginationInfo? Pagination { get; } = pagination;
 		public string TraceId { get; } =
-				System.Diagnostics.Activity.Current?.Id
-				?? Guid.NewGuid().ToString();
+			System.Diagnostics.Activity.Current?.Id
+			?? Guid.NewGuid().ToString();
 		public int? TotalPages =>
-			PageSize.HasValue && PageSize > 0 && TotalRecords.HasValue
-				? (int)Math.Ceiling((double)TotalRecords.Value / PageSize.Value)
-				: null;
+			Pagination?.PageSize > 0 && Pagination?.TotalRecords != null
+			? (int)Math.Ceiling((double)Pagination.TotalRecords.Value / Pagination.PageSize.Value)
+			: null;
+	}
+
+	public class PaginationInfo
+	{
+		public int? TotalRecords { get; set; }
+		public int? PageNumber { get; set; }
+		public int? PageSize { get; set; }
+		public string? SortBy { get; set; }
+		public string? SortOrder { get; set; }
 	}
 }
