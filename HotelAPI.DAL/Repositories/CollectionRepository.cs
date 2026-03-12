@@ -1,4 +1,5 @@
 ﻿using Dapper;
+using HotelAPI.Common.Constants;
 using HotelAPI.Common.Helper;
 using HotelAPI.DAL.Interfaces;
 using HotelAPI.Model.Collection;
@@ -47,7 +48,7 @@ namespace HotelAPI.DAL.Repositories
 		public async Task<int> UpsertCollectionAsync(CollectionUpsertRequest request)
 		{
 			var parameters = new DynamicParameters();
-			parameters.Add("@CollectionId", request.CollectionId);
+			parameters.Add(DbParameters.CollectionId, request.CollectionId);
 			parameters.Add("@CollectionJson", request.CollectionJson);
 			parameters.Add("@ChangedBy", request.ChangedBy);
 
@@ -64,7 +65,7 @@ namespace HotelAPI.DAL.Repositories
 		public async Task<CollectionByIdResponse?> GetCollectionAsync(int collectionId)
 		{
 			var parameters = new DynamicParameters();
-			parameters.Add("@CollectionId", collectionId);
+			parameters.Add(DbParameters.CollectionId, collectionId);
 
 			return await _sqlHelper.QueryMultipleAsync(
 				StoredProcedure.GetCollectionById,
@@ -92,9 +93,9 @@ namespace HotelAPI.DAL.Repositories
 						{
 							new CurationByIdResponse
 							{
-								IncludedHotels = includedHotels.Any() ? includedHotels : new List<IncludedHotelsByIdResponse>(),
-								PinnedHotels = pinnedHotels.Any() ? pinnedHotels : new List<PinnedHotelsByIdResponse>(),
-								ExcludedHotels = excludedHotels.Any() ? excludedHotels : new List<ExcludedHotelsByIdResponse>()
+								IncludedHotels = includedHotels.Count() == 0 ? includedHotels : new List<IncludedHotelsByIdResponse>(),
+								PinnedHotels = pinnedHotels.Count() == 0  ? pinnedHotels : new List<PinnedHotelsByIdResponse>(),
+								ExcludedHotels = excludedHotels.Count() == 0 ? excludedHotels : new List<ExcludedHotelsByIdResponse>()
 							}
 						},
 						CollectionPreviewHotels = previewHotels
@@ -110,7 +111,7 @@ namespace HotelAPI.DAL.Repositories
 		{
 			var parameters = new DynamicParameters();
 
-			parameters.Add("@CollectionId", request.CollectionId);
+			parameters.Add(DbParameters.CollectionId, request.CollectionId);
 			parameters.Add("@Header", request.Header);
 			parameters.Add("@MetaTitle", request.MetaTitle);
 			parameters.Add("@MetaDescription", request.MetaDescription);
@@ -132,7 +133,7 @@ namespace HotelAPI.DAL.Repositories
 		public async Task<IEnumerable<int>> UpsertRulesAsync(int collectionId, string rulesJson)
 		{
 			var parameters = new DynamicParameters();
-			parameters.Add("@CollectionID", collectionId);
+			parameters.Add(DbParameters.CollectionId, collectionId);
 			parameters.Add("@RulesJson", rulesJson);
 
 			var ruleIds = await _sqlHelper.QueryAsync<int>(
@@ -148,7 +149,7 @@ namespace HotelAPI.DAL.Repositories
 		public async Task<int> ChangeStatusAsync(int collectionId, string action)
 		{
 			var parameters = new DynamicParameters();
-			parameters.Add("@CollectionId", collectionId);
+			parameters.Add(DbParameters.CollectionId, collectionId);
 			parameters.Add("@Action", action);
 
 			return await _sqlHelper.QueryFirstOrDefaultAsync<int>(
@@ -162,7 +163,7 @@ namespace HotelAPI.DAL.Repositories
 		public async Task<CollectionCurationResponse?> UpsertCurationsAsync(CollectionCurationRequest request)
 		{
 			var parameters = new DynamicParameters();
-			parameters.Add("@CollectionID", request.CollectionId);
+			parameters.Add(DbParameters.CollectionId, request.CollectionId);
 			parameters.Add("@IncludeJson", request.IncludeJson);
 			parameters.Add("@PinnedJson", request.PinnedJson);
 			parameters.Add("@ExcludeJson", request.ExcludeJson);
@@ -175,7 +176,7 @@ namespace HotelAPI.DAL.Repositories
 			return result;
 		}
 		#endregion
-		
+
 		#region CloneCollectionAsync
 		public async Task<long> CloneCollectionAsync(long sourceCollectionId)
 		{
@@ -196,7 +197,7 @@ namespace HotelAPI.DAL.Repositories
 		public async Task<long> DeleteCollectionAsync(long collectionId)
 		{
 			var parameters = new DynamicParameters();
-			parameters.Add("@CollectionId", collectionId);
+			parameters.Add(DbParameters.CollectionId, collectionId);
 
 			var result = await _sqlHelper.QueryFirstOrDefaultAsync<long>(
 				StoredProcedure.CollectionDelete,
@@ -211,7 +212,7 @@ namespace HotelAPI.DAL.Repositories
 		public async Task<List<CollectionPreviewHotelsResponse>> GetCollectionPreviewHotelsAsync(int collectionId)
 		{
 			var parameters = new DynamicParameters();
-			parameters.Add("@CollectionId", collectionId);
+			parameters.Add(DbParameters.CollectionId, collectionId);
 
 			var previewHotels = (await _sqlHelper.QueryAsync<CollectionPreviewHotelsResponse>(
 				StoredProcedure.CollectionPreviewHotels,

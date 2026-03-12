@@ -29,7 +29,7 @@ namespace HotelAPI.BAL.Services
 				if (!PasswordValidator.ValidatePassword(model.Password, out var errors))
 				{
 					return ResponseHelper<LoginResponse>.Error(
-						"Invalid password format",
+						string.Join(" ", errors),
 						statusCode: StatusCode.BAD_REQUEST
 					);
 				}
@@ -89,8 +89,8 @@ namespace HotelAPI.BAL.Services
 		{
 			var jwtKey = _configuration["Jwt:Key"];
 
-			if (string.IsNullOrEmpty(jwtKey))
-				throw new Exception("JWT Key is not configured.");
+			if (string.IsNullOrWhiteSpace(jwtKey))
+				throw new InvalidOperationException("JWT Key is not configured.");
 
 			var key = Encoding.ASCII.GetBytes(jwtKey);
 

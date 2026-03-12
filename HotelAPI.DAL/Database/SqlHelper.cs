@@ -18,7 +18,7 @@ namespace HotelAPI.DAL.Database
 					$"Connection string '{ConstantData.HotelConnectionString}' not found.");
 		}
 
-		private IDbConnection CreateConnection()
+		private SqlConnection CreateConnection()
 			=> new SqlConnection(_connectionString);
 
 		public async Task<T?> GetSingleAsync<T>(

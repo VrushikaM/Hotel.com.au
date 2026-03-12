@@ -41,7 +41,6 @@ namespace HotelAPI.BAL.Services
 
 		public async Task<ResponseResult<IEnumerable<RegionsByUrlResponse>>> GetRegionByUrlAsync(string urlName)
 		{
-			//var normalizedUrl = urlName.Trim().ToLowerInvariant();
 			urlName = WebUtility.UrlDecode(urlName);
 			var cacheKey = CacheKeyBuilder.RegionByUrl(urlName);
 
